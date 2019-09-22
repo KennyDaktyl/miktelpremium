@@ -76,16 +76,6 @@ WSGI_APPLICATION = 'miktelpremium.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "NAME": "premium02",
-#         "ENGINE": "django.db.backends.postgresql",
-#         "USER": "postgres",
-#         "PASSWORD": "Tofik123!",
-#         "HOST": "localhost",
-#     }
-# }
-
 DATABASES = {
     "default": {
         "NAME": "premium02",
