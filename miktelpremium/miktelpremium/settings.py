@@ -19,7 +19,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '5m4^i4*i*vfwf=lle4!=7c+1!-x_5b7$#f17s1%5j*w@obcf0&'
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+ACCESS_TOKEN_SMS = os.environ.get('ACCESS_TOKEN_SMS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,12 +76,22 @@ WSGI_APPLICATION = 'miktelpremium.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "NAME": "premium02",
+#         "ENGINE": "django.db.backends.postgresql",
+#         "USER": "postgres",
+#         "PASSWORD": "Tofik123!",
+#         "HOST": "localhost",
+#     }
+# }
+
 DATABASES = {
     "default": {
         "NAME": "premium02",
         "ENGINE": "django.db.backends.postgresql",
-        "USER": "postgres",
-        "PASSWORD": "Tofik123!",
+        "USER": os.environ.get('DB_USER'),
+        "PASSWORD": os.environ.get('DB_PASSWORD'),
         "HOST": "localhost",
     }
 }

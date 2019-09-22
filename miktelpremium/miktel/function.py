@@ -1,15 +1,18 @@
+import os
 import smtplib
 from googlevoice.util import input
 from googlevoice import Voice
 from smsapi.client import SmsApiPlClient
 from miktel.models import UmowaKomisowaNew
 
-from miktel.hasla import access_token
-
 from datetime import datetime
 
 rok = datetime.now().year
 miesiac = datetime.now().month
+
+ACCESS_TOKEN_SMS = os.environ.get('ACCESS_TOKEN_SMS')
+gmail_user = os.environ.get('GMAIL_USER')
+gmail_password = os.environ.get('GMAIL_PASSWORD')
 
 
 def numer_umowy():
@@ -44,7 +47,7 @@ def numer_umowy():
     return number_format
 
 
-client = SmsApiPlClient(access_token=access_token)
+client = SmsApiPlClient(access_token=ACCESS_TOKEN_SMS)
 
 
 def send(to, message):
@@ -69,10 +72,10 @@ def strip_non_ascii(string):
 
 
 def send_email(subject, text):
-    gmail_user = 'miktelgsm@miktelgsm.pl'
-    gmail_pwd = 'MiktelHKS123'
+    user = gmail_user
+    password = gmail_password
     FROM = 'miktelgsm@miktelgsm.pl'
-    TO = ['kennydak@interia.pl', 'miktelgsm@miktelgsm.pl']
+    TO = ['kennydak@interia.pl']
     SUBJECT = strip_non_ascii(subject)
     TEXT = strip_non_ascii(text)
 
@@ -83,6 +86,6 @@ def send_email(subject, text):
     server = smtplib.SMTP("smtp.miktelgsm.nazwa.pl", 587)
     server.ehlo()
     server.starttls()
-    server.login(gmail_user, gmail_pwd)
+    server.login(user, password)
     server.sendmail(FROM, TO, message)
     server.close()

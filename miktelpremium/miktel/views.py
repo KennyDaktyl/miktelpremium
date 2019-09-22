@@ -29,7 +29,7 @@ from django.core.paginator import Paginator
 from miktel.models import *
 from miktel.forms import *
 from miktel.function import *
-from miktel.hasla import *
+# from miktel.hasla import *
 
 rok = datetime.now().year
 miesiac = datetime.now().month
