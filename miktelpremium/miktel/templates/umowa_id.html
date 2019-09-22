@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row col-10 mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Numer umowy</th>
+                    <th scope="col">Data zakupu</th>
+                    <th scope="col">Miejsce zakupu</th>
+                    <th scope="col">Kto kupił</th>
+                    <th scope="col">Komitent</th>
+                    <th scope="col">Adres komi.</th>
+                    <th scope="col">Numer dow.</th>
+                    <th scope="col">Marka tumowa.</th>
+                    <th scope="col">Modumowa nazwa</th>
+                    <th scope="col">Numer imei</th>
+                    <th scope="col">Akcja</th>
+                    <th scope="col">PDF</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{umowa.number}}</td>
+                    <td>{{umowa.data_zak}}</td>
+                    <td>{{umowa.sklep_zak}}</td>
+                    <td>{{umowa.pracownik_zak.username}}</td>
+                    <td>{{umowa.komitent}}</td>
+                    <td>{{umowa.adres_komitenta}}</td>
+                    <td>{{umowa.numer_dowodu}}</td>
+                    <td>{{umowa.telefon_id.marka.nazwa}}</td>
+                    <td>{{umowa.telefon_id.nazwa}}</td>
+                    <td>{{umowa.telefon_id.imei}}</td>
+                    <td><a href="/generuj_pdf/{{umowa.id}}">PDF</a><br>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    {% endblock %}

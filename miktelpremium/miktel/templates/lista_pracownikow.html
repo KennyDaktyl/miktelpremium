@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row col-10 mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Foto</th>
+                    <th scope="col">Login</th>
+                    <th scope="col">Imię</th>
+                    <th scope="col">Nazwisko</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Umowa</th>
+                    <th scope="col">Sklep</th>
+                    <th scope="col">Info</th>
+                    <th scope="col">Edycja</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pracownik in pracownicy %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><img class="img-fluid img-thumbnail pracownik"
+                            src="{{MEDIA_URL}}/static/media/{{pracownik.photo}}"></td>
+                    <td>{{pracownik.username}}</td>
+                    <td>{{pracownik.first_name}}</td>
+                    <td>{{pracownik.last_name}}</td>
+                    <td>{{pracownik.get_status_osoby_display}}</td>
+                    <td>{{pracownik.get_umowa_display}}</td>
+                    <td>
+                        <ul> {% for el in pracownik.sklep.all %}
+                            <li>
+                                {{el.nazwa}}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{pracownik.info}}</td>
+                    <td><a href="{% url 'edycja_uzytkownika' pk=pracownik.id %}">Edytuj</a><br></td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+    {% endblock %}

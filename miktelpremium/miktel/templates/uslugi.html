@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row col-10 mt-2">
+        <div class="row col-10 mt-2">
+            <button type="button" class="btn btn-dark mb-2"><a href="{% url 'dodaj_usluge' %}">Dodaj uslugę</a></button>
+        </div>
+        {% for sklep in sklepy %}
+        <h3>Usługi przypisane do sklepu <b>{{sklep}}</b></h3>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Sklep</th>
+                    <th scope="col">Nazwa</th>
+                    <th scope="col">Typ prowizji</th>
+                    <th scope="col">Kwota/procent</th>
+                    <th scope="col">Edycja</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usluga in sklep.serwis_type_set.all %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <th>{{sklep}}</th>
+                    <td>{{usluga}}</td>
+                    <td>{{usluga.get_typ_prowizji_display}}</td>
+                    {% if usluga.typ_prowizji == 0 %}
+                    <td>{{usluga.kwota}} %</td>
+                    {% else %}
+                    <td>{{usluga.kwota}} zł</td>
+                    {% endif %}
+                    <td><a href="/edycja_uslugi/{{usluga.id}}">Edytuj</a><br><a
+                            href="/usun_usluge/{{usluga.id}}">Usuń</a><br>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endfor %}
+    </div>
+    {% endblock %}

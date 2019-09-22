@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+
+    <p>Wprowadzasz dokument nr: <b>{{umowa.number}} </b>Data zakupu: <b>{{umowa.data_zak}}</b></p>
+    <ul class="list-group list-group-flush">
+        <form method="POST">
+            {% csrf_token %}
+            <input name="tele_id" type="hidden" value={{umowa.phones.id}}>
+            <li class="list-group-item">Miejsce zakupu:
+                <b>{{umowa.sklep_zak}}</b></li>
+            <li class="list-group-item">Imię i nazwisko komitenta: <b>{{umowa.komitent}}</b></li>
+            <li class="list-group-item">Numer dowodu komitenta: <b>{{umowa.numer_dowodu}}</b></li>
+            <li class="list-group-item">Model telefonu: <b>{{umowa.phones.marka}} {{umowa.phones.nazwa}}
+                    imei:{{umowa.phones.imei}} </b></li>
+            <li class="list-group-item">Cena zakupu: <b>{{umowa.phones.cena_zak}}</b></li>
+            <li class="list-group-item"><a href="/generuj_pdf/{{umowa.id}}"><button type="button"
+                        class="btn btn-warning">Drukuj Umowę
+                        PDF</button></a></li>
+
+    </ul>
+</div>
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/delete_document/{{umowa.id}}"><button type="button" class="btn btn-danger">Cofnij
+                wprowadzanie</button></a>
+        <i class="col-4"></i>
+        <a class="col-4" href="#"><button type="submit" class="btn btn-success">Zapisz i
+                przejdź
+                do listy umów</button></a>
+        </form>
+    </div>
+</div>
+{% endblock %}

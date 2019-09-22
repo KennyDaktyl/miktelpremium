@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3>Premie pracowników przypisanych do sklepu <b>{{sklep.nazwa}}</b></h3>
+    <div class="row mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="row">Szczegóły</th>
+                    <th scope="row">Pracownik</th>
+                    {% for el in typ %}
+                    <th scope="col">{{el.nazwa}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for pracownik in pracownicy %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a
+                            href="{% url 'szczegoly_serwisow_serwisanta' pk=pracownik.id miesiac=miesiac rok=rok %}">Szczegóły</a>
+                    <td scope="col"> {{pracownik.username}}</td>
+                    {% for el in typ %}
+                    <td class="ilosc">
+                        {% for id, ilosc in pracownik.wykonane_uslugi.items %}
+                        {% if el.id == id %}
+                        {{ ilosc }}
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row col-10 mt-2 mr-auto">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group row col-10">
+                <label for="exampleFormControlInput1">Wybierz markę</label>
+            </div>
+            <div class="form-group row col-10">
+                <select name="marka" class="form-group">
+                    {% for el in marka %}
+                    <option value="{{el.id}}"> {{el.nazwa}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row col-6 mt-2 form-group">
+                <label for="exampleFormControlInput1">Mazwa modelu</label></div>
+            <div>
+                <input value="{{product.Company}} {{product.Product_Name}} {{product.Product_Type}}" name="model"
+                    type="text" class="form-control" maxlength="128">
+            </div>
+            <div class="active_form">
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Numer imei</label>
+                    <input name="imei" type="text" default="" maxlength="14" class="form-control">
+                </div>
+            </div>
+            <div class="active_form">
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Cena zakupu</label>
+                    <input name="cena_zak" type="number" default=0 class="form-control">
+                </div>
+            </div>
+
+            <div class="active_form">
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Imię i nazwisko komitenta</label>
+                    <input name="imie_nazwisko" type="text" default="" class="form-control">
+                </div>
+            </div>
+            <div class="active_form">
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Adres zamieszkania komitenta</label>
+                    <input name="adres" type="text" default="" class="form-control">
+                </div>
+            </div>
+            <div class="active_form">
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Numer dowodu</label>
+                    <input name="dowod" type="text" default="" maxlength="9" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-group row col-10 mt-2">
+                <button type="submit" class="btn btn-dark">Zapisz</button>
+            </div>
+        </form>
+    </div>
+    {% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+
+
+    <!-- {{pracownik.Salon_workers.all|join:", " }} -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group row col-10">
+            <div class="row col-6 mt-2 form-group"></div>
+            <input type="hidden" value="{{usluga.id}}" name="usluga" class="form-control" maxlength="128">
+        </div>
+        <div class="row col-6 mt-2 form-group">
+            <label for="exampleFormControlInput1">Mazwa modelu lub usługi</label>
+            <input name="model" type="text" class="form-control" maxlength="128">
+        </div>
+        <div class="form-group row col-3 mt-2">
+            <div class="form-group row col-12">
+                <label for="exampleFormControlSelect1">Miejsce pracy</label><br>
+            </div><br>
+            <div class="form-group row col-3 ">
+                <select name="sklep" class="form-group" id="exampleFormControlSelect1">
+                    {% for sklep in salon %}
+                    <option value="{{sklep.id}}">{{sklep}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Od kogo kupiony</label>
+                    <select name="od_kogo" class="form-control" id="exampleFormControlSelect1">
+                        {% for key,value in od_kogo %}
+                        <option value="{{key}}">{{value}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Cena zakupu telefonu</label>
+                    <input name="cena_zakupu" type="number" class="form-control">
+                    <label for="exampleFormControlInput1">Imei</label>
+                    <input name="imei" type="text" class="form-control" maxlength="14">
+                </div>
+            </div>
+        </div>
+</div>
+<div class="form-group row col-10 mt-2">
+    <button type="submit" class="btn btn-dark">Zapisz</button>
+</div>
+</form>
+
+</div>
+{% endblock %}

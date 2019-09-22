@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Foto</th>
+                    <th scope="col">Nazwa salonu</th>
+                    <th scope="col">Magazyn części</th>
+                    <th scope="col">Magazyn telefonów</th>
+                    <th scope="col">Pracownicy</th>
+                    <th scope="col">Działania</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><img class="img-fluid img-thumbnail pracownik" src="{{MEDIA_URL}}/static/media/{{salon.cover}}">
+                    </td>
+                    <td>{{salon.Salon_name}}</td>
+                    <td><a href="{% url 'magazyn' pk=salon.id %}">magazyn</a><br>
+                        <a href="{% url 'dodaj_czesc' %}">dodaj czesc</a></td>
+                    <td><a href="{% url 'telefony' pk=salon.id %}">magazyn</a><br>
+                        <a href="{% url 'dodaj_telefon' %}">dodaj telefon</a></td>
+                    <td>
+                        <ul>
+                            {% for pracownik in pracownicy %}
+                            <li><a href="/edycja_pracownika/{{pracownik.id}}">{{pracownik.username}}</a> </li>
+                            {% endfor %}
+                        </ul>
+
+                    </td>
+                    <td><a href="/edycja_sklepu/{{salon.id}}">Edytuj</a><br><a href="/usun_sklep/{{salon.id}}">Usuń</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+{% endblock %}

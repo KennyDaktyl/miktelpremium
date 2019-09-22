@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container content">
+    <div class="row profile">
+        <div class="col-md-3">
+            <div class="profile-sidebar position-fixed">
+                <!-- SIDEBAR USERPIC -->
+                <div class="profile-userpic">
+                    <img src="https://media.rockstargames.com/chinatownwars/global/downloads/avatars/zhou_256x256.jpg"
+                        class="img-responsive" alt="">
+                </div>
+                <!-- END SIDEBAR USERPIC -->
+                <!-- SIDEBAR USER TITLE -->
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">
+                        Jason Davis
+                    </div>
+                    <div class="profile-usertitle-job">
+                        Developer
+                    </div>
+                </div>
+                <!-- END SIDEBAR USER TITLE -->
+                <!-- SIDEBAR BUTTONS -->
+                <div class="profile-userbuttons">
+                    <button type="button" class="btn btn-success btn-sm">Follow</button>
+                    <button type="button" class="btn btn-danger btn-sm">Message</button>
+                </div>
+                <!-- END SIDEBAR BUTTONS -->
+                <!-- SIDEBAR MENU -->
+                <div class="profile-usermenu sidebar-sticky">
+                    <ul class="nav flex-column">
+                        <li class="active nav-item">
+                            <a href="#" class="nav-link active">
+                                <i class="fa fa-home"></i>
+                                Overview </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="https://codepen.io/jasondavis/pen/jVRwaG?editors=1000">
+                                <i class="fa fa-user"></i>
+                                Account Settings </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" target="_blank">
+                                <i class="fa fa-check"></i>
+                                Tasks </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fa fa-flag"></i>
+                                Help </a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- END MENU -->
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="profile-content">
+                Profil pracownika: <p><b>{{ user.username }}</b></p>
+                <p><b>Imię :{{ user.first_name }}</b></p>
+                <p><b>Nazwisko :{{ user.last_name }}</b></p>
+                <p><b>Przypisany do sklepów :
+                        <ul>
+                            <p>{% for sklep in sklepy %}</p>
+                            <li>{{sklep}}</li>
+                            {% endfor %}
+                    </b></ul>
+                </p>
+                <li class="list-inline-item">
+                    <a href="/staw_sklep/">Ustaw sesję dla sklepu w którym aktualnie pracujesz</a>
+                    <p>(dzięki temu twoje
+                        wyniki zapisywane będą w odpowiednim sklepie)</p>
+
+                    <p>Aktualnie ustwiono dla ,<b>{{user.sklep_dzisiaj}}</b></p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <select name="sklep_sesja" class="custom-select m-2 col-4">
+
+                            {% for sklep in sklepy %}
+                            <option value="{{sklep.id}}">{{sklep.nazwa}}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-dark m-2 col-4">Ustaw sklep</button>
+                    </form>
+                </li>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9 ft">
+            <footer class="footer">
+                <div class="row">
+                    <div class="col-md-4">
+                        <span class="copyright">Copyright &copy; Miktel Premium 2019</span>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-inline social-buttons">
+                            <li class="list-inline-item">
+                                <a href="https://github.com/ELMORABITYounes">
+                                    <i class="fa fa-github"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="https://www.facebook.com/younes.elmorabit.92">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="https://www.linkedin.com/in/younes-elmorabit-2a162310b/">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <ul class="list-inline quicklinks">
+                            <li class="list-inline-item">
+                                <a href="#">Privacy Policy</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="#">Terms of Use</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+{% endblock %}

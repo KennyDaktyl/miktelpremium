@@ -1,0 +1,319 @@
+<html lang="pl">
+
+
+<head>
+
+    <title>Title</title>
+    <style type="text/css">
+        body {
+            font-family: 'Arial Unicode MS';
+            font-weight: 200;
+            font-size: 10px;
+        }
+
+        .header {
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        div.right {
+            text-align: right;
+        }
+
+        .title {
+            font-weight: 300;
+            padding: 10px 20px 0px 20px;
+        }
+
+        p.podtytul {
+            font-size: 11px;
+        }
+
+        p.title {
+            font-size: 13px;
+        }
+
+        .details {
+            padding: 10px 20px 0px 20px;
+            text-align: left !important;
+            /*margin-left: 40%;*/
+        }
+
+        .hrItem {
+            border: none;
+            height: 1px;
+            /* Set the hr color */
+            color: #333;
+            /* old IE */
+            background-color: #fff;
+            /* Modern Browsers */
+        }
+
+        section.ramka {
+            width: 100%;
+        }
+
+        .ramka {
+            font-size: 12px;
+        }
+
+        span.imie {
+            width: 150px;
+            background-color: rebeccapurple;
+            font-size: 1, 1rem;
+            font-weight: 700;
+        }
+
+        div.naglowek {
+            display: flex;
+            width: 100%;
+        }
+
+        .naglowek div {
+            width: 50%;
+        }
+
+        section.polowa {
+            display: flex;
+            width: 100%;
+        }
+
+        div.opis {
+            display: inline-block;
+            width: 35%;
+        }
+
+        div.kropki {
+            display: inline-block;
+            width: 15%;
+            border-right: 1px solid;
+        }
+
+        div.zmiany {
+            margin-left: 10px;
+            display: inline-block;
+            width: 17%;
+        }
+
+        section.polowa2 {
+            display: flex;
+            width: 100%;
+            border: 1px solid;
+            flex-wrap: wrap;
+            font-size: 11px;
+            align-content: space-between;
+            border: 1px solid;
+        }
+
+        div.linia {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+            font-size: 11px;
+            align-content: space-between;
+            margin: 10px;
+        }
+
+        div.tytul {
+            min-width: 100%;
+            text-align: center;
+        }
+
+        div.wyplaty {
+            width: 25%;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        div.pokw {
+            width: 100%;
+            text-align: center;
+            font-size: 10px;
+        }
+
+        div.otrz {
+            width: 100%;
+            text-align: right;
+            font-size: 10px;
+            margin-right: 11px;
+        }
+
+        div.podpisy {
+            width: 50%;
+            font-size: 10px;
+        }
+
+        div.podpisy2 {
+            width: 50%;
+            font-size: 8px;
+            text-align: right;
+        }
+
+        .podpisy p {
+            text-align: center;
+        }
+
+        .podpisy2 p {
+            text-align: center;
+        }
+
+        div.podpisy3 {
+            width: 100%;
+            text-align: center;
+        }
+
+        .podpisy3 p {
+            width: 100%;
+            text-align: right;
+        }
+
+        p.vertical {
+            font-size: 10px;
+            height: 100%;
+            text-align: center;
+            writing-mode: vertical-lr;
+            text-orientation: sideways-left;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class='wrapper'>
+        <div class="naglowek">
+            <div class="left">
+                ..........................<br>
+                Pieczątka sklepu
+            </div>
+            <div class="right">
+                {{umowa.sklep_zak}}, {{umowa.data_zak}}<br>
+                Miejscowość, Data
+            </div>
+        </div>
+        <div class='header'>
+            <p class='title'> <b> Umowa komisu -- Pokwitowanie Nr <b>{{umowa.number}}</b></b> </p>
+            <p class='podtytul'>za przyjęty przez sklep punkt sprzedaży komisowej <br>
+                (przedmiot do komisowej sprzedaży oznaczony wywieszką nr..............)</p>
+        </div>
+
+        <section class="ramka">
+            Od pana <b>{{umowa.komitent}}</b> zamieszkały <b>31-924 Kraków, Centrum B 2/2 </b><br><br>
+            Numer dowodu: <b>{{umowa.numer_dowodu}}</b><br><br>
+            do komisowej sprzedaży : <b> {{umowa.telefon_id.marka}} {{umowa.telefon_id.nazwa}}</b><br><br>
+            o numerze imei: <b>{{umowa.telefon_id.imei}}</b>
+        </section>
+        <p class="left"><b>Ustalono warunki:</b></p>
+        <section class="polowa">
+            <div class="opis">
+                <p>a) jednostkowa cena sprzedaży:</p>
+                <p>b) ilość:</p>
+                <p>c) wartość wg ceny sprzedaży:</p>
+                <p>d) wysokość prowizji komisowej <br><br>
+                    ........................ kwota</p>
+                <p>e) wysokość zobowiązań podatkowych<br>
+                    .........................kwota</p>
+                <p>f) należność dla komitenta</p><br><br>
+                ..............{{umowa.pracownik_zak.first_name}} {{umowa.pracownik_zak.last_name}} ..............<br>
+                <p> podpis pracownika sklepu<br>
+                    przyjmującego przedmiot</p>
+            </div>
+            <div class="kropki">
+                <p>......................</p>
+                <p>......................</p>
+                <p>......................</p><br><br>
+                <p>......................</p><br>
+                <p>......................</p>
+                <p>......................</p>
+            </div>
+            <div class="zmiany">
+                <p>Zmiany -- data</p>
+                <p>...................</p>
+                <p>...................</p><br><br>
+                <p>...................</p><br>
+                <p>...................</p>
+                <p>...................</p>
+            </div>
+            <div opis="opis">
+                <p>
+                    ......................................<br><br>
+                </p>
+                <br>
+                <br>
+                <p> ..................................
+                    <br>
+                    <b>podpis komitenta</b></p>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+
+                ............................................<br>
+                <p> podpis pracownika sklepu<br>
+                    zmieniającego warunki</p>
+            </div>
+        </section>
+        <section>
+            Oświadczam że:<br>
+            1. Ww. przedmiot stanowi moją własność, nie jest zajęty przez komornika sądowego ani przez Urząd
+            Skarbowy.<br>
+            2. Warunki na jakich przedmiot ten został przyjęty do sprzedaży komisowej podane w niniejszej
+            umowie-pokwitowaniu oraz zarządzeniu (decyzji) Dyrektora przedsiębiorstwa, którego wyciąg w formie wywieszki
+            zamieszczony jest w sklepie znam i przyjmuję.
+        </section><br>
+        <div class="podpisy3">
+            <p>................................</p>
+            <p> <b>podpis komitenta</b></p>
+        </div>
+        <section class="polowa2">
+            <div class="linia">
+                <div class="tytul">WYPŁATY</div>
+                <div class="wyplaty">dnia .......................</div>
+                <div class="wyplaty">Nr asygn. K.W. .......................</div>
+                <div class="wyplaty">suma .......................</div>
+                <div class="wyplaty">ilość .......................</div>
+            </div>
+            <div class="linia">
+                <div class="wyplaty">dnia .......................</div>
+                <div class="wyplaty">Nr asygn. K.W. .......................</div>
+                <div class="wyplaty">suma .......................</div>
+                <div class="wyplaty">ilość .......................</div>
+            </div>
+            <div class="linia">
+                <div class="wyplaty">dnia .......................</div>
+                <div class="wyplaty">Nr asygn. K.W. .......................</div>
+                <div class="wyplaty">suma .......................</div>
+                <div class="wyplaty">ilość .......................</div>
+            </div>
+        </section>
+        <section class="polowa2">
+            <div class="linia">
+                <div class="tytul">POKWITOWANIE ZWROTU PRZEDMIOTU</div><br>
+                <div class="pokw">W dniu ..................................... szt.
+                    .......................................... o łącznej wartości
+                    zł.................................................</div>
+                <div class="pokw">Słownie zł .................................................................... o
+                    łącznej wartości
+                    zł...................................................................... </div>
+                <div class="otrz">otrzymałem</div>
+                <div class="podpisy">
+                    <p>...................................................................</p>
+                    <p> podpis pracownika sklepu zwracającego przedmiot</p>
+                </div>
+                <div class="podpisy2">
+                    <p>.................................</p>
+                    <p> podpis komitenta</p>
+                </div>
+        </section>
+        <p class="vertical">SKLEP NIE PONOSI ODPOWIEDZALNOŚCI ZA WADY UKRYTE PRZEDMIOTU</p>
+
+
+</body>
+
+</html>

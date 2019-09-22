@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row col-10 mt-2">
+        <div class="row col-10 mt-2">
+            <button type="button" class="btn btn-dark mb-2"><a href="{% url 'dodaj_telefon' %}">Dodaj
+                    telefon</a></button>
+        </div>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Marka</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Cena zakupu</th>
+                    <th scope="col">imei</th>
+                    <th scope="col">OD</th>
+                    <th scope="col">Edycja</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tele in telefony %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{tele.company}}</td>
+                    <th>{{tele.model_name}}</th>
+                    <td>{{tele.cena_zak}}</td>
+                    <td>{{tele.imei}}</td>
+                    <td>{{tele.get_status_display}}</td>
+                    <td><a href="/edycja_telefonu/{{tele.id}}">Edytuj</a><br><a
+                            href="/usun_telefon/{{tele.id}}">Usuń</a><br>
+                    </td>
+                    <td><a href="/sprzedaj_telefon/{{tele.id}}"><b>Sprzedaj</b></a><br>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}

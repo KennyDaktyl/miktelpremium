@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mr-auto">
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO 200 WYNIKÓW!</label>
+    </div>
+    <div class="row col-8 m-2">
+        <select name="szukaj" id="search2">
+            <option value="{{el.nazwa}}">Wybierz sklep</option>
+            {% for el in sklepy %}
+            <option value="{{el.nazwa}}">{{el.nazwa}}{{el.adres.miasto}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <form method="POST" class="row col-10 m-2">
+        {% csrf_token %}
+        <input id="search" class="row col-4 m-2" name="szukaj" maxlength="128" type="text" class="form-control"
+            placeholder="numer umowy, kategoria, nazwa, model, imei" aria-label="Recipient's username"
+            aria-describedby="basic-addon2">
+
+        <button type="submit" class="btn btn-dark col-4 m-2">Przeszukaj całą bazę</button>
+    </form>
+
+</div>
+<div class="row col-12 mt-2 mx-auto">
+    <h1>Telefony sprzedane:</h1>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">L.P.</th>
+                <th scope="col">Marka</th>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Cena zak.</th>
+                <th scope="col">Cena sprz.</th>
+                <th scope="col">Zysk</th>
+                <th scope="col">Imei</th>
+                <th scope="col">Stan</th>
+                <th scope="col">Miejsce zakupu</th>
+                <th scope="col">Zakupił</th>
+                <th scope="col">Miejsce sprzedaży</th>
+                <th scope="col">Sprzedał</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in telefony %}
+
+            <tr class="lista">
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{el.marka.nazwa}}</td>
+                <td>{{el.nazwa}}</td>
+                <td>{{el.cena_zak}}</td>
+                <td>{{el.cena_sprzed}}</td>
+                <td><b>{{el.zysk}}</b></td>
+                <td>{{el.imei}}</td>
+                <td>{{el.get_stan_display}}</td>
+                <td>{{el.sklep}}</td>
+                <td>{{el.pracownik_zak}}</td>
+                <td>{{el.sklep_sprzed}}</td>
+                <td>{{el.pracownik_sprzed}}</td>
+                {% for umowa in umowy %}
+                {% if el.id == umowa.phones.id %}
+                <td>{{umowa.number}}<br><a href="/umowa_imei/{{el.id}}">Umowa</a></td>
+                {% endif %}
+                {% endfor %}
+                <td></td>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if telefony.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if telefony.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ telefony.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ telefony.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in telefony.paginator.page_range %}
+            {% if telefony.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if telefony.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ telefony.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ telefony.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
+</div>
+{% endblock %}

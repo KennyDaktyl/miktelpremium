@@ -1,0 +1,36 @@
+body {
+    min-height: 110vh;
+    background-color: beige;
+}
+
+.na_skroty {
+    font-size: 12px;
+    text-align: left;
+}
+
+img {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.carousel-item img {
+    /* max-width: 150px; */
+    height: 280px;
+}
+
+td,
+th {
+    text-align: center;
+    /* color: brown; */
+}
+
+@media (max-width: 700px) {
+    * {
+        font-size: 1.3rem;
+        color: red;
+    }
+}
+
+.big {
+    color: blue;
+}

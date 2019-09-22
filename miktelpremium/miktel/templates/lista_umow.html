@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter)</label>
+    </div>
+    <div class="row col-8 m-2">
+        <select name="szukaj" id="search2">
+            <option value="{{el.nazwa}}">Wybierz sklep</option>
+            {% for el in sklepy %}
+            <option value="{{el.nazwa}}">{{el.nazwa}}{{el.adres.miasto}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <form method="POST" class="row col-10 m-2">
+        {% csrf_token %}
+        <input id="search" class="row col-4 m-2" name="szukaj" maxlength="128" type="text" class="form-control"
+            placeholder="numer umowy, kategoria, nazwa, model, imei" aria-label="Recipient's username"
+            aria-describedby="basic-addon2">
+
+        <button type="submit" class="btn btn-dark col-4 m-2">Przeszukaj całą bazę</button>
+    </form>
+</div>
+
+<div class="row col-12 mt-2 mx-auto">
+    <table class="table table-dark ">
+        <thead>
+            <tr>
+                <th scope="col">Numer umowy</th>
+                <th scope="col">Data zakupu</th>
+                <th scope="col">Miejsce zakupu</th>
+                <th scope="col">Kto kupił</th>
+                <th scope="col">Komitent</th>
+                <th scope="col">Adres komi.</th>
+                <th scope="col">Numer dow.</th>
+                <th scope="col">Marka tel.</th>
+                <th scope="col">Model nazwa</th>
+                <th scope="col">Numer imei</th>
+                <!-- <th scope="col">Akcja</th> -->
+                <th scope="col">PDF</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in umowy %}
+
+            <tr class="lista">
+
+                <td>{{el.number}}</td>
+                <td>{{el.data_zak}}</td>
+                <td>{{el.sklep_zak}}</td>
+                <td>{{el.pracownik_zak.username}}</td>
+                <td>{{el.komitent}}</td>
+                <td>{{el.adres_komitenta}}</td>
+
+                <td>{{el.numer_dowodu}}</td>
+                <td>{{el.phones.marka.nazwa}}</td>
+                <td>{{el.phones.nazwa}}</td>
+                <td>{{el.phones.imei}}</td>
+                <!-- <td><a href="/wystaw_telefon/{{el.telefon_id.id}}">Wystaw telefon</a><br> -->
+                <td><a href="/generuj_pdf/{{el.id}}">PDF</a><br>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if umowy.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if umowy.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ umowy.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ umowy.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in umowy.paginator.page_range %}
+            {% if umowy.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if umowy.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ umowy.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ umowy.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
+
+</div>
+{% endblock %}

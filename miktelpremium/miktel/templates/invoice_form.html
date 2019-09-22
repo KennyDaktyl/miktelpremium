@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <p>Pamiętaj!!! Przed dodaniem dokumentu, <b>dodaj telefon</b></p>
+    <div class="row col-10 mt-2 mr-auto">
+        <form method="post">
+            {% csrf_token %}
+            <div>{{ form.as_p }}</div>
+            <input type="submit" value="Wyślij">
+            {% if form.login.errors %}
+            <ol>
+                {% for err in form.imei.errors %}
+                <li>
+                    <strong>
+                        {{ err|escape }}
+                    </strong>
+                </li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+        </form>
+    </div>
+    {% endblock %}

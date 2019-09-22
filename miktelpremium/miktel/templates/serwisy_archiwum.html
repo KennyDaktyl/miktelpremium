@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter)</label>
+    </div>
+    <div class="col-8 input-group mb-3 mr-auto">
+
+        <input id="search" name="szukaj" maxlength="128" type="text" class="form-control"
+            placeholder="numer umowy, kategoria, nazwa, model, imei" aria-label="Recipient's username"
+            aria-describedby="basic-addon2">
+
+    </div>
+    <div class="row col-12 mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Numer serwisu</th>
+                    <th scope="col">Data wyd.</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">imei</th>
+                    <th scope="col">Numer telefonu</th>
+                    <th scope="col">Cena ustalona</th>
+                    <th scope="col">Co naprawiamy</th>
+                    <th scope="col">Przyjmujący</th>
+                    <th scope="col">Naprawiający</th>
+                    <th scope="col">Sklep</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for el in serwisy %}
+
+                <tr class="lista">
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{el.id}}</td>
+                    <td>{{el.data_wydania}}</td>
+                    <td>{{el.model}}</td>
+                    <td>{{el.imei}}</td>
+                    <td>{{el.numer_telefonu}}</td>
+                    <td>{{el.cena_zgoda}}</td>
+                    <td>{{el.usluga.nazwa}}</td>
+                    <!-- <td>{{el.get_status_display}}</td> -->
+                    <td>{{el.pracownik}}</td>
+                    <td>{{el.serwisant}}</td>
+                    <td>{{el.sklep}}</td>
+                    <td><a href="/reklamacja_serwis/{{el.id}}">Przyjmij reklamację</a><br>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    {% endblock %}
