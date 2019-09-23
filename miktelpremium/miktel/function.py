@@ -10,7 +10,7 @@ from datetime import datetime
 rok = datetime.now().year
 miesiac = datetime.now().month
 
-ACCESS_TOKEN_SMS = os.environ.get('ACCESS_TOKEN_SMS')
+ACCESS_TOKEN_SMS = os.environ.get('TOKEN_SMS')
 gmail_user = os.environ.get('GMAIL_USER')
 gmail_password = os.environ.get('GMAIL_PASSWORD')
 

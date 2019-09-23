@@ -86,10 +86,32 @@ $(document).ready(function () {
     });
 });
 
-// $(document).ready(function () {
-//     var p = $('#dupa').find('p');
-// });
 
+
+
+$(document).ready(function () {
+
+    var wybierz = $('#wybierz').css({
+        "color": "red"
+    });
+    var button = $('#ready_button').hide();
+
+    $('#wybierz_serwis').change(function () {
+
+        if ($(this).val() != "") {
+            wybierz.html("OK").css({
+                "color": "green"
+            });
+            button.show();
+
+        } else {
+            wybierz.html("Nie wybrano").css({
+                "color": "red"
+            });
+            button.hide();
+        };
+    });
+});
 // var cvv = document.querySelectorAll('. div:nth-child(3)');
 
 // $(document).ready(function () {

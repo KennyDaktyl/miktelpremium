@@ -347,6 +347,7 @@ class PremiaJob(models.Model):
 
 class DodajSerwis(models.Model):
     sklep = models.ForeignKey("Sklep", on_delete=models.CASCADE)
+
     pracownik = models.ForeignKey("MyUser",
                                   on_delete=models.CASCADE,
                                   related_name="Przyjmujacy")
@@ -358,6 +359,8 @@ class DodajSerwis(models.Model):
         null=True,
     )
     usluga = models.ForeignKey("Usluga", on_delete=models.CASCADE)
+    marka = models.ForeignKey(
+        "Marka", verbose_name="Wybierz marke", on_delete=models.CASCADE, default=1)
     model = models.CharField(max_length=128, blank=True, null=True)
     imei = models.CharField(max_length=14, blank=True, null=True)
     cena_zgoda = models.IntegerField(verbose_name="Cena naprawy",

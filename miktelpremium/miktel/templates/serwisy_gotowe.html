@@ -23,7 +23,7 @@
     </form>
 
 </div>
-<h1>Serwisy przyjęte do naprawy</h1>
+<h1>Serwisy gotowe do odbioru</h1>
 <div class="row col-12 mt-2">
     <table class="table table-dark">
         <thead>
@@ -38,7 +38,7 @@
                 <th scope="col">Cena ustalona</th>
                 <th scope="col">Co naprawiamy</th>
                 <th scope="col">Przyjmujący</th>
-                <!-- <th scope="col">Naprawiał</th> -->
+                <th scope="col">Naprawiał</th>
                 <th scope="col">Status</th>
                 <th scope="col">Szczegóły</th>
             </tr>
@@ -57,11 +57,11 @@
                 <td>{{el.cena_zgoda}}</td>
                 <td>{{el.usluga.nazwa}}</td>
                 <td>{{el.pracownik}}</td>
-                <!-- <td>{{el.serwisant}}</td> -->
+                <td>{{el.serwisant}}</td>
                 <td>{{el.get_status_display}}</td>
                 <td>{{el.sklep}}</td>
-                <td><a href="{% url 'gotowy_serwis' pk=el.id %}">Gotowy do odbioru</a><a>
-                        <!-- <td><a href="{% url 'wydaj_serwis' pk=el.id %}">Wydaj serwis</a><br> -->
+                <!-- <td><a href="{% url 'gotowy_serwis' pk=el.id %}">Gotowy do odbioru</a><a> -->
+                <td><a href="{% url 'wydaj_serwis' pk=el.id %}">Wydaj serwis</a><br>
             </tr>
 
             {% endfor %}

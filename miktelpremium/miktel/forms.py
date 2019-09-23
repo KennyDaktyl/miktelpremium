@@ -57,6 +57,8 @@ class GetServiceForm(forms.Form):
         queryset=Usluga.objects.filter(sprzedaz=False).filter(
             zakup=False).filter(grawer=False),
     )
+    marka = forms.ModelChoiceField(label="Marka",
+                                   queryset=Marka.objects.all())
     model = forms.CharField(label="Nazwa modelu", min_length=3, max_length=128)
     imei = forms.CharField(min_length=4, max_length=14)
     cena_zgoda = forms.IntegerField(label="Wstępna wycena naprawy",
@@ -123,16 +125,27 @@ class CzescCreateForm(forms.Form):
                                max_value=10000)
     opis = forms.CharField(label="Opis części", max_length=300)
 
-    #     def __init__(self, *args, **kwargs):
-    #         dokument = kwargs.pop('dokument')
-    #         super(UmowaKomisowaForm, self).__init__(*args, **kwargs)
-    #         self.fields['telefon_id'].queryset = UmowaKomisowaNew.objects.filter(
-    #             dokument=False)
-    # def __init__(self, *args, **kwargs):
-    #     user = kwargs.pop('user')
-    #     super(UmowaKomisuForm, self).__init__(self, *args, **kwargs)
-    #     self.fields['phones'].queryset = UmowaKomisowaNew.objects.filter(
-    #         user=user)
+
+def cena_klient(value):
+    if value < 1 or value > 10000:
+        raise ValidationError("<b>Wypełnij pole cena klient</b>")
+
+
+class CenaKlientForm(forms.Form):
+    cena_klient = forms.IntegerField(
+        label="Cena klient", min_value=0, max_value=10000, help_text="Cena od 0 do 10000", validators=[cena_klient])
+
+
+#     def __init__(self, *args, **kwargs):
+#         dokument = kwargs.pop('dokument')
+#         super(UmowaKomisowaForm, self).__init__(*args, **kwargs)
+#         self.fields['telefon_id'].queryset = UmowaKomisowaNew.objects.filter(
+#             dokument=False)
+# def __init__(self, *args, **kwargs):
+#     user = kwargs.pop('user')
+#     super(UmowaKomisuForm, self).__init__(self, *args, **kwargs)
+#     self.fields['phones'].queryset = UmowaKomisowaNew.objects.filter(
+#         user=user)
 
 
 # class SesjaForm(forms.Form):
