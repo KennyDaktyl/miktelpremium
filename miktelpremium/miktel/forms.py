@@ -57,8 +57,7 @@ class GetServiceForm(forms.Form):
         queryset=Usluga.objects.filter(sprzedaz=False).filter(
             zakup=False).filter(grawer=False),
     )
-    marka = forms.ModelChoiceField(label="Marka",
-                                   queryset=Marka.objects.all())
+    marka = forms.ModelChoiceField(label="Marka", queryset=Marka.objects.all())
     model = forms.CharField(label="Nazwa modelu", min_length=3, max_length=128)
     imei = forms.CharField(min_length=4, max_length=14)
     cena_zgoda = forms.IntegerField(label="Wstępna wycena naprawy",
@@ -100,29 +99,31 @@ class UmowaKomisuForm(ModelForm):
 
 
 class CzescCreateForm(forms.Form):
-    foto = forms.ModelMultipleChoiceField(required=False,
-                                          label="Dodaj zdjęcia",
-                                          queryset=Foto.objects.filter(used=False))
+    foto = forms.ModelMultipleChoiceField(
+        required=False,
+        label="Dodaj zdjęcia",
+        queryset=Foto.objects.filter(used=False))
     typ = forms.ModelChoiceField(label="Typ części",
                                  queryset=Typ.objects.all())
-    marka = forms.ModelChoiceField(label="Marka",
-                                   queryset=Marka.objects.all())
-    stan = forms.ChoiceField(choices=StanCzesci, label="Stan części",
-                             initial='0', widget=forms.Select(), required=True)
-    kolor = forms.ChoiceField(choices=Kolor, label="Kolor części",
-                              initial='0', widget=forms.Select(), required=True)
-    nazwa = forms.CharField(label="Nazwa modelu",
-                            min_length=1,
-                            max_length=30)
+    marka = forms.ModelChoiceField(label="Marka", queryset=Marka.objects.all())
+    stan = forms.ChoiceField(choices=StanCzesci,
+                             label="Stan części",
+                             initial='0',
+                             widget=forms.Select(),
+                             required=True)
+    kolor = forms.ChoiceField(choices=Kolor,
+                              label="Kolor części",
+                              initial='0',
+                              widget=forms.Select(),
+                              required=True)
+    nazwa = forms.CharField(label="Nazwa modelu", min_length=1, max_length=30)
     cena_zak = forms.IntegerField(label="Cena zakupu",
                                   min_value=0,
                                   max_value=10000)
     cena_sprzed = forms.IntegerField(label="Cena sprzedaży",
                                      min_value=0,
                                      max_value=10000)
-    ilosc = forms.IntegerField(label="Ilość",
-                               min_value=0,
-                               max_value=10000)
+    ilosc = forms.IntegerField(label="Ilość", min_value=0, max_value=10000)
     opis = forms.CharField(label="Opis części", max_length=300)
 
 
@@ -132,8 +133,25 @@ def cena_klient(value):
 
 
 class CenaKlientForm(forms.Form):
-    cena_klient = forms.IntegerField(
-        label="Cena klient", min_value=0, max_value=10000, help_text="Cena od 0 do 10000", validators=[cena_klient])
+    cena_klient = forms.IntegerField(label="Cena klient",
+                                     min_value=0,
+                                     max_value=10000,
+                                     help_text="Cena od 0 do 10000",
+                                     validators=[cena_klient])
+
+
+class DodajWiecejCzesci(forms.Form):
+    ilosc = forms.IntegerField(label="Ile sztuk dodajesz?",
+                               min_value=1,
+                               max_value=10,
+                               help_text="Minimu 1 maximum 10")
+
+
+class UsunWiecejCzesci(forms.Form):
+    ilosc = forms.IntegerField(label="Ile sztuk usuwasz?",
+                               min_value=1,
+                               max_value=10,
+                               help_text="Minimu 1 maximum 10")
 
 
 #     def __init__(self, *args, **kwargs):
@@ -146,7 +164,6 @@ class CenaKlientForm(forms.Form):
 #     super(UmowaKomisuForm, self).__init__(self, *args, **kwargs)
 #     self.fields['phones'].queryset = UmowaKomisowaNew.objects.filter(
 #         user=user)
-
 
 # class SesjaForm(forms.Form):
 #     sklepy_praca = forms.ModelChoiceField(label='Wybierz dzisiejsze miejsce pracy',

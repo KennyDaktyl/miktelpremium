@@ -112,38 +112,24 @@ $(document).ready(function () {
         };
     });
 });
-// var cvv = document.querySelectorAll('. div:nth-child(3)');
+
 
 // $(document).ready(function () {
-//     var option = $('#id_marka').find('option')
-//     // marka.html("Dupa jas")
 
-// marka.change(function () {
-//     if ($(this).val() == '2') {
-//         marka.html('Dupa')
-//     }
+//     var ilosc = $('#ilosc').css({
+//         "color": "red"
+//     });
+//     var plus = $('#plus');
+//     var minus = $('#minus');
+//     var i = 0;
+
+//     plus.click(function () {
+//         ilosc.val(i);
+//         i++;
+//     });
+//     minus.click(function () {
+//         ilosc.val(i);
+//         i--;
+
+//     });
 // });
-
-// });
-// var option = $('#id_marka')
-// var input_model = $('#id_nazwa')
-// $('#id_marka').change(function () {
-//     if ($(this).val() === '2') {
-//         input_model.val('MaxCom')
-//     }
-// });
-
-$(document).ready(function () {
-    var p = $('.dupa').find('p')
-    $('dupa').change(function () {
-        //pole szukaj
-        var text = $(this).val();
-
-        // //na dziendobry ukryj wszystko po nacisnieciu klawisza
-        // $('.lista').hide();
-
-        // //lecz nastepnie pokaż pasujące frary
-        // $('.lista:contains("' + text + '")').show();
-
-    });
-});

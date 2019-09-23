@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+
+    <p>Dodajesz części do magazynu <b>{{user.sklep_dzisiaj}} </b></p>
+    <ul class="list-group list-group-flush">
+        <form method="POST">
+            {% csrf_token %}
+            <li class="list-group-item">Marka: <b>{{czesc.marka}}</b>
+            <li class="list-group-item">Typ: <b>{{czesc.typ}}</b></li>
+            <li class="list-group-item">Nazwa modelu: <b>{{czesc.nazwa}}</b></li>
+            <li class="list-group-item">Stan: <b>{{czesc.get_stan_display}}</b></li>
+            <li class="list-group-item">Kolor: <b>{{czesc.get_kolor_display}}</b></li>
+            <li class="list-group-item">Cena zakupu: <b>{{czesc.cena_zak}}zł</b></li>
+            <li class="list-group-item">ilość: <b>{{czesc.ilosc}} szt.</b>
+
+            <li class="list-group-item"> <b>{{ form.as_p }}</b></li>
+
+            <!-- <li class="list-group-item">Ile sztuk dodajesz?: <input name="ilosc" id="ilosc"
+                    class="img-thumbnail col-1 ilosc_sztuk" value="0"></span>
+                <span class="col-1"></span>
+                <ion-icon name="add"><img id="plus" class="img-thumbnail col-1 plusminus"
+                        src="/static/media/images/_ionicons_svg_md-add.svg" alt=""></ion-icon>
+                <ion-icon name="remove"><img id="minus" class="img-thumbnail col-1 plusminus"
+                        src="/static/media/images/_ionicons_svg_md-remove.svg" alt=""></ion-icon>
+            </li> -->
+            <li class="list-group-item">Info: <b>{{czesc.opis}}zł</b></li>
+            <li class="list-group-item"><a href="/dodaj_podobna_czesc/{{czesc.id}}"><button type="button"
+                        class="btn btn-warning">Dodaj podobną część lecz ma inne parametry</button></a></li>
+    </ul>
+</div>
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/lista_czesci/"><button type="button" class="btn btn-danger">Cofnij
+                wprowadzanie</button></a>
+        <i class="col-4"></i>
+        <a class="col-4" href="#"><button type="submit" class="btn btn-success">Zapisz i
+                dodaj do magazynu</button></a>
+        </form>
+    </div>
+</div>
+{% endblock %}
