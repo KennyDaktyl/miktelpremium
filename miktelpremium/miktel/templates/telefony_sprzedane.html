@@ -46,7 +46,7 @@
             {% for el in telefony %}
 
             <tr class="lista">
-                <th scope="row">{{ forloop.counter }}</th>
+                <th scope="row">{{ forloop.counter0|add:telefony.start_index }}</<th>
                 <td>{{el.marka.nazwa}}</td>
                 <td>{{el.nazwa}}</td>
                 <td>{{el.cena_zak}}</td>

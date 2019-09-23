@@ -51,7 +51,7 @@
                     {% for el in czesc %}
 
                     <tr class="lista">
-                        <th scope="row">{{ forloop.counter }}</th>
+                        <th scope="row">{{ forloop.counter0|add:czesc.start_index }}</th>
                         {% if el.ilosc > 0 %}
                         <td><input name="checks" class="form-check-input position-static" type="checkbox"
                                 id="blankCheckbox" value="{{el.id}}" aria-label="...">
@@ -90,4 +90,48 @@
             </table>
     </form>
 </div>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if czesc.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if czesc.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ czesc.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ czesc.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in czesc.paginator.page_range %}
+            {% if czesc.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if czesc.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ czesc.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ czesc.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
+
 {% endblock %}

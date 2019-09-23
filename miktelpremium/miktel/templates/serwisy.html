@@ -60,8 +60,9 @@
                 <!-- <td>{{el.serwisant}}</td> -->
                 <td>{{el.get_status_display}}</td>
                 <td>{{el.sklep}}</td>
-                <td><a href="{% url 'gotowy_serwis' pk=el.id %}">Gotowy do odbioru</a><a>
-                        <!-- <td><a href="{% url 'wydaj_serwis' pk=el.id %}">Wydaj serwis</a><br> -->
+                <td><a href="{% url 'gotowy_serwis' pk=el.id %}">Gotowy do odbioru</a></td>
+                <td> <a href="{% url 'wykonaj_serwis_z_czesciami' pk=el.id %}">Użyj części</a></td>
+                <!-- <td><a href="{% url 'wydaj_serwis' pk=el.id %}">Wydaj serwis</a><br> -->
             </tr>
 
             {% endfor %}

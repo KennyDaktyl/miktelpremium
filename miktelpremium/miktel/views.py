@@ -54,7 +54,7 @@ class TelefonyMagazynView(View):
         paginator = Paginator(telefony, page_records)
         telefony_pagi = paginator.get_page(page)
 
-        ctx = {'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy}
+        ctx = {'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy,'paginator':paginator}
         return TemplateResponse(request, "telefony_magazyn.html", ctx)
 
     def post(self, request):
@@ -69,7 +69,11 @@ class TelefonyMagazynView(View):
         faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
         umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
         print(faktury)
-        ctx = {'telefony': telefony, 'faktury': faktury, 'umowy': umowy}
+        page = request.GET.get('page')
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+
+        ctx = {'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy,'paginator':paginator}
         return TemplateResponse(request, "telefony_magazyn.html", ctx)
 
 
@@ -1094,7 +1098,7 @@ class ListaCzesciView(View):
         page = request.GET.get('page')
         paginator = Paginator(czesc, page_records)
         czesc_pagi = paginator.get_page(page)
-        ctx={"czesc":czesc_pagi}
+        ctx={"czesc":czesc_pagi,'paginator':paginator}
         return render(request, 'lista_czesci.html', ctx)
 
 
@@ -1171,7 +1175,7 @@ class WydajSerwisCzesciView(View):
                 serwis.save()
                 zysk=int(cena_zgoda)-koszt
 
-                subject = "Wykonano serwis z wielu czesci w {} przez {}".format(
+                subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
                             premia.sklep, premia.pracownik)
                 text = "{} wykonał {} w {} za {} zysk {}".format(premia.pracownik,
                                                 premia.usluga,
@@ -1206,13 +1210,23 @@ class WydajSerwisCzesciView(View):
 
                         zysk=int(cena_zgoda)-koszt         
 
-                        subject = "Wykonano serwis z wielu czesci w {} przez {}".format(
+                        subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
                                     premia.sklep, premia.pracownik)
                         text = "{} wykonał {} w {} za {} zysk {}".format(premia.pracownik,
                                                         premia.usluga,
                                                         premia.model,premia.cena_klient,zysk
                                                         )
                         send_email(subject, text)
-            return HttpResponseRedirect('/lista_serwisow/')
+            return HttpResponseRedirect('/lista_serwisow_gotowych/')
                 
         return HttpResponseRedirect('/RETURNERRORS/')
+
+
+@method_decorator(login_required, name='dispatch')
+class GetServiceForItems(View):
+    def get(self,request,pk):
+        service=DodajSerwis.objects.get(pk=pk)
+        marka=service.marka
+        items=Czesc.objects.filter(marka=marka)
+        ctx={'serwis':service,'czesc':items}
+        return render(request, 'lista_czesci.html', ctx)

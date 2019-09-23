@@ -45,7 +45,7 @@
             {% for el in telefony %}
 
             <tr class="lista">
-                <th scope="row">{{ forloop.counter }}</th>
+                <th scope="row">{{ telefony.start_index|add:forloop.counter0 }}</th>
                 <td><a href="/sell_phones/{{el.id}}">Sprzedaj</a></td>
                 <td>{{el.kategoria.nazwa}}</td>
                 <td>{{el.marka.nazwa}}</td>
