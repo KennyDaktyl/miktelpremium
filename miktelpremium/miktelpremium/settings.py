@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'miktelpremium.wsgi.application'
 
 DATABASES = {
     "default": {
-        "NAME": "premium02",
+        "NAME": "premium03",
         "ENGINE": "django.db.backends.postgresql",
         "USER": os.environ.get('DB_USER'),
         "PASSWORD": os.environ.get('DB_PASSWORD'),

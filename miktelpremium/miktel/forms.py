@@ -56,8 +56,7 @@ class GetServiceForm(forms.Form):
     usluga = forms.ModelChoiceField(
         label="Usługa",
         queryset=Usluga.objects.filter(sprzedaz=False).filter(
-            zakup=False).filter(grawer=False),
-    )
+            zakup=False).filter(grawer=False).filter(akcesoria=False))
     marka = forms.ModelChoiceField(label="Marka", queryset=Marka.objects.all())
     model = forms.CharField(label="Nazwa modelu", min_length=3, max_length=128)
     imei = forms.CharField(min_length=4, max_length=14)
