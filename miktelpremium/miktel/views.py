@@ -178,16 +178,19 @@ class TelefonySprzedaneView(View):
     def post(self, request):
         szukaj = request.POST.get('szukaj')
 
-        Telefony_dostepne = Telefon.objects.filter(dostepny=False)
-        telefony = Telefony_dostepne.filter(
+        Telefony_sprzedane = Telefon.objects.filter(dostepny=False)
+        telefony = Telefony_sprzedane.filter(
             Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
             | Q(kategoria__nazwa__icontains=szukaj)
             | Q(imei__icontains=szukaj))
-        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        # faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
         umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
-        print(faktury)
-        ctx = {'telefony': telefony, 'faktury': faktury, 'umowy': umowy}
-        return TemplateResponse(request, "telefony_magazyn.html", ctx)
+        # print(faktury)
+        page = request.GET.get('page')
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        ctx = {'telefony': telefony_pagi, 'umowy': umowy}
+        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
 
 
 class UserLoginView(View):
@@ -528,6 +531,7 @@ class TelefonCreateView(View):
             shop_buying = pracownik.sklep_dzisiaj
 
             Telefon.objects.create(marka=marka,
+                                   stan=stan,
                                    nazwa=nazwa,
                                    sklep=shop_buying,
                                    imei=imei,
@@ -607,6 +611,7 @@ class GenerujPdfView(View):
     def get(self, request, pk, *args, **kwargs):
         pk = pk
         umowa = UmowaKomisowaNew.objects.get(pk=pk)
+
         context = {
             'umowa': umowa,
         }
@@ -677,7 +682,7 @@ class DodajPremiaJobView(View):
         sklepy = pracownik.sklep.all()
         dlugosc = len(pracownik.sklep.all())
         uslugi = Usluga.objects.filter(sklep__in=sklepy).filter(
-            zakup=False).filter(sprzedaz=False).filter(czesci=False).order_by('nazwa')
+            zakup=False).filter(sprzedaz=False).filter(czesci=False).filter(akcesoria=False).order_by('nazwa')
         uslugi_unique = []
         for el in uslugi:
             if el not in uslugi_unique:

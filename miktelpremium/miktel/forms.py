@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
 from miktel.models import *
+from miktel.choices_field import *
 
 # from djang1o.views.generic.edit \
 #     import CreateView

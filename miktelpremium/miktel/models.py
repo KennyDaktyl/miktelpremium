@@ -122,17 +122,13 @@ class UmowaKomisowaNew(models.Model):
 
 
 class Telefon(models.Model):
-    marka = models.ForeignKey("Marka",
-                              on_delete=models.CASCADE,
-                              blank=True,
-                              null=True)
+    marka = models.ForeignKey(
+        "Marka",
+        on_delete=models.CASCADE,
+    )
     stan = models.IntegerField(verbose_name="Stan telefon",
-                               choices=StanTelefonu,
-                               default=0)
-    kategoria = models.ForeignKey("Kategoria",
-                                  on_delete=models.CASCADE,
-                                  blank=True,
-                                  null=True)
+                               choices=StanTelefonu)
+    kategoria = models.ForeignKey("Kategoria", on_delete=models.CASCADE)
     nazwa = models.CharField(verbose_name="Model", max_length=64)
     imei = models.CharField(verbose_name="imei", max_length=14)
     cena_zak = models.FloatField()

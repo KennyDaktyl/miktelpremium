@@ -200,8 +200,8 @@
         <section class="ramka">
             Od pana <b>{{umowa.komitent}}</b> zamieszkały <b>31-924 Kraków, Centrum B 2/2 </b><br><br>
             Numer dowodu: <b>{{umowa.numer_dowodu}}</b><br><br>
-            do komisowej sprzedaży : <b> {{umowa.telefon_id.marka}} {{umowa.telefon_id.nazwa}}</b><br><br>
-            o numerze imei: <b>{{umowa.telefon_id.imei}}</b>
+            do komisowej sprzedaży : <b> {{umowa.phones.marka}} {{umowa.phones.nazwa}}</b><br><br>
+            o numerze imei: <b>{{umowa.phones.imei}}</b>
         </section>
         <p class="left"><b>Ustalono warunki:</b></p>
         <section class="polowa">
@@ -214,7 +214,8 @@
                 <p>e) wysokość zobowiązań podatkowych<br>
                     .........................kwota</p>
                 <p>f) należność dla komitenta</p><br><br>
-                ..............{{umowa.pracownik_zak.first_name}} {{umowa.pracownik_zak.last_name}} ..............<br>
+                ..............{{umowa.pracownik_zak.first_name}} {{umowa.pracownik_zak.last_name}}
+                ..............<br>
                 <p> podpis pracownika sklepu<br>
                     przyjmującego przedmiot</p>
             </div>
