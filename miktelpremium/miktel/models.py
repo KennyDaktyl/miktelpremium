@@ -144,7 +144,8 @@ class Telefon(models.Model):
     sklep_sprzed = models.ForeignKey("Sklep",
                                      on_delete=models.CASCADE,
                                      blank=True,
-                                     null=True, related_name="sklep_sprzadzy")
+                                     null=True,
+                                     related_name="sklep_sprzadzy")
 
     dostepny = models.BooleanField(default=True)
     dokument = models.BooleanField(default=False)
@@ -161,7 +162,9 @@ class Telefon(models.Model):
         null=True,
         blank=True,
         on_delete=models.CASCADE,
-        related_name="sprzdawal",)
+        related_name="sprzdawal",
+    )
+
     # zdjecia = models.ManyToManyField("Foto", blank=True)
 
     class Meta:
@@ -169,7 +172,7 @@ class Telefon(models.Model):
 
     @property
     def zysk(self):
-        zysk = self.cena_sprzed-self.cena_zak
+        zysk = self.cena_sprzed - self.cena_zak
         return zysk
 
     @property
@@ -179,7 +182,7 @@ class Telefon(models.Model):
         for el in faktura:
             total.append(el.cena_zak)
         total_price = sum[total]
-        print(total_price)
+
         return total_price
 
     @property
@@ -188,8 +191,7 @@ class Telefon(models.Model):
         for el in fv:
             for tele in el.telefon.all():
                 if tele.id == self.id:
-                    print(tele)
-                    print(fv)
+
                     return (el.numer)
 
     @property
@@ -271,6 +273,9 @@ class Usluga(models.Model):
     zakup = models.BooleanField(default=False)
     sprzedaz = models.BooleanField(default=False)
     grawer = models.BooleanField(default=False)
+    akcesoria = models.BooleanField(default=False)
+
+    # akcesoria = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("nazwa", )
@@ -280,7 +285,7 @@ class Usluga(models.Model):
 
 
 class PremiaJob(models.Model):
-    check = models.IntegerField()
+    check = models.IntegerField(default=0)
     sklep = models.ForeignKey("Sklep", on_delete=models.CASCADE)
     pracownik = models.ForeignKey("MyUser", on_delete=models.CASCADE)
     usluga = models.ForeignKey("Usluga", on_delete=models.CASCADE)
@@ -345,6 +350,21 @@ class PremiaJob(models.Model):
                 str(self.pracownik) + " " + str(self.data))
 
 
+class InnePracePremiowane(models.Model):
+    nazwa = models.CharField(verbose_name="Nazwa czynności premiowanej",
+                             max_length=128)
+    pracownik = models.ForeignKey('MyUser', on_delete=models.CASCADE)
+    czas = models.IntegerField(
+        verbose_name="Czas trwania w godzinach lub ilość")
+    opis = models.TextField(verbose_name="Opis wykonanje czynności",
+                            blank=True,
+                            null=True)
+    data = models.DateField(auto_now_add=True, verbose_name="Data")
+
+    def __str__(self):
+        return str(self.nazwa) + " " + str(self.czas) + "h"
+
+
 class DodajSerwis(models.Model):
     sklep = models.ForeignKey("Sklep", on_delete=models.CASCADE)
 
@@ -359,8 +379,10 @@ class DodajSerwis(models.Model):
         null=True,
     )
     usluga = models.ForeignKey("Usluga", on_delete=models.CASCADE)
-    marka = models.ForeignKey(
-        "Marka", verbose_name="Wybierz marke", on_delete=models.CASCADE, default=1)
+    marka = models.ForeignKey("Marka",
+                              verbose_name="Wybierz marke",
+                              on_delete=models.CASCADE,
+                              default=1)
     model = models.CharField(max_length=128, blank=True, null=True)
     imei = models.CharField(max_length=14, blank=True, null=True)
     cena_zgoda = models.IntegerField(verbose_name="Cena naprawy",
@@ -388,8 +410,10 @@ class DodajSerwis(models.Model):
 
 class Czesc(models.Model):
     id = models.AutoField(primary_key=True)
-    foto = models.ManyToManyField(
-        "Foto", verbose_name="Foto_produktu", blank=True)
+
+    foto = models.ManyToManyField("Foto",
+                                  verbose_name="Foto_produktu",
+                                  blank=True)
     marka = models.ForeignKey("Marka", on_delete=models.CASCADE)
     typ = models.ForeignKey("Typ", on_delete=models.CASCADE)
     nazwa = models.CharField(max_length=64)
@@ -401,20 +425,27 @@ class Czesc(models.Model):
                                 default=0)
     date_add = models.DateField(auto_now_add=True)
     cena_zak = models.IntegerField()
-    cena_sprzed = models.IntegerField(default=0)
+    cena_sprzed = models.IntegerField(blank=True, null=True)
     ilosc = models.IntegerField()
     opis = models.CharField(max_length=128, blank=True, null=True)
-    sklep = models.ForeignKey(
-        "Sklep", verbose_name="Magazyn", on_delete=models.CASCADE)
-    pracownik = models.ForeignKey(
-        "MyUser", verbose_name="Wprowadził", on_delete=models.CASCADE, default=1)
+    sklep = models.ForeignKey("Sklep",
+                              verbose_name="Magazyn",
+                              on_delete=models.CASCADE)
+    pracownik = models.ForeignKey("MyUser",
+                                  verbose_name="Wprowadził",
+                                  on_delete=models.CASCADE,
+                                  default=1)
     dostepny = models.BooleanField(default=True)
 
     class Meta:
-        ordering = ("marka", "typ", "nazwa",)
+        ordering = (
+            "marka",
+            "typ",
+            "nazwa",
+        )
 
     def __str__(self):
-        return str(self.nazwa)+" "+str(self.typ)
+        return str(self.nazwa) + " " + str(self.typ)
 
 
 class Typ(models.Model):
@@ -422,7 +453,7 @@ class Typ(models.Model):
     nazwa = models.CharField(max_length=64)
 
     class Meta:
-        ordering = ("nazwa",)
+        ordering = ("nazwa", )
 
     def __str__(self):
         return str(self.nazwa)

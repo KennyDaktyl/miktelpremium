@@ -104,27 +104,40 @@ class CzescCreateForm(forms.Form):
         label="Dodaj zdjęcia",
         queryset=Foto.objects.filter(used=False))
     typ = forms.ModelChoiceField(label="Typ części",
-                                 queryset=Typ.objects.all())
-    marka = forms.ModelChoiceField(label="Marka", queryset=Marka.objects.all())
+                                 queryset=Typ.objects.all(),
+                                 help_text='*')
+    marka = forms.ModelChoiceField(label="Marka",
+                                   queryset=Marka.objects.all(),
+                                   help_text='*')
     stan = forms.ChoiceField(choices=StanCzesci,
                              label="Stan części",
                              initial='0',
                              widget=forms.Select(),
-                             required=True)
+                             required=True,
+                             help_text='*')
     kolor = forms.ChoiceField(choices=Kolor,
                               label="Kolor części",
                               initial='0',
                               widget=forms.Select(),
-                              required=True)
-    nazwa = forms.CharField(label="Nazwa modelu", min_length=1, max_length=30)
+                              required=True,
+                              help_text='*')
+    nazwa = forms.CharField(label="Nazwa modelu",
+                            min_length=1,
+                            max_length=30,
+                            help_text='*')
     cena_zak = forms.IntegerField(label="Cena zakupu",
                                   min_value=0,
-                                  max_value=10000)
+                                  max_value=10000,
+                                  help_text='*')
     cena_sprzed = forms.IntegerField(label="Cena sprzedaży",
                                      min_value=0,
-                                     max_value=10000)
-    ilosc = forms.IntegerField(label="Ilość", min_value=0, max_value=10000)
-    opis = forms.CharField(label="Opis części", max_length=300)
+                                     max_value=10000,
+                                     required=False)
+    ilosc = forms.IntegerField(label="Ilość",
+                               min_value=0,
+                               max_value=10000,
+                               help_text='*')
+    opis = forms.CharField(label="Opis części", max_length=300, required=False)
 
 
 def cena_klient(value):
@@ -152,6 +165,84 @@ class UsunWiecejCzesci(forms.Form):
                                min_value=1,
                                max_value=10,
                                help_text="Minimu 1 maximum 10")
+
+
+class DodajWiecejCzesci_podbne(forms.Form):
+    # foto = forms.ModelMultipleChoiceField(
+    #     required=False,
+    #     label="Dodaj zdjęcia",
+    #     queryset=Foto.objects.filter(used=False))
+    stan = forms.ChoiceField(choices=StanCzesci,
+                             label="Stan części",
+                             initial='0',
+                             widget=forms.Select(),
+                             required=True,
+                             help_text='*')
+
+    kolor = forms.ChoiceField(choices=Kolor,
+                              label="Kolor części",
+                              initial='0',
+                              widget=forms.Select(),
+                              required=True,
+                              help_text='*')
+    cena_zak = forms.IntegerField(label="Cena zakupu",
+                                  min_value=0,
+                                  max_value=10000,
+                                  help_text='*')
+    cena_sprzed = forms.IntegerField(label="Cena sprzedaży",
+                                     min_value=0,
+                                     max_value=10000,
+                                     required=False)
+    ilosc = forms.IntegerField(label="Ilość",
+                               min_value=0,
+                               max_value=10000,
+                               help_text='*')
+    opis = forms.CharField(label="Opis części", max_length=300, required=False)
+
+
+class AddJobForm(forms.Form):
+    model = forms.CharField(label="Nazwa modelu", min_length=3, max_length=128)
+    cena_klient = forms.IntegerField(label="Cena klient",
+                                     min_value=0,
+                                     max_value=10000,
+                                     help_text='*')
+    koszt = forms.IntegerField(label="Koszt",
+                               min_value=0,
+                               max_value=10000,
+                               help_text='*')
+
+
+class InnePraceForm(forms.Form):
+    nazwa = forms.CharField(label="Nazwa czynności",
+                            min_length=3,
+                            max_length=128,
+                            help_text='*')
+    czas = forms.IntegerField(label="Czas trwania",
+                              min_value=0,
+                              max_value=10000,
+                              help_text='*')
+    opis = forms.CharField(label="Opis usługi",
+                           widget=forms.Textarea(),
+                           max_length=300,
+                           required=False,
+                           help_text='*')
+
+
+class DodajAkcesoriaForm(forms.Form):
+    miesiac = forms.ChoiceField(choices=MIESIACE,
+                                label="Wybierz miesiąc sprzedaży",
+                                widget=forms.Select(),
+                                required=True,
+                                help_text='*')
+    cena_klient = forms.IntegerField(label="Suma sprzedaży akcesoriów",
+                                     min_value=0,
+                                     max_value=100000,
+                                     help_text='*')
+    # def clean(self, pk):
+    #     ilosc = self
+    #     quantity = Czesc.objects.get(pk=pk)
+    #     if (quantity.ilosc < ilosc):
+    #         raise ValidationError("Insufficient inventory")
 
 
 #     def __init__(self, *args, **kwargs):
