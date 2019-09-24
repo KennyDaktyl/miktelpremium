@@ -720,8 +720,7 @@ class DodajPremiaJobView(View):
             text = "{} wykonał {} {} za {}, koszt {} ".format(
             pracownik, usluga_instance, model, cena, koszt)
             # send_email(subject, text)
-            return redirect('szczegoly_serwisow_serwisanta', pracownik.id, miesiac,
-                        rok)
+            return redirect('szczegoly_serwisow_serwisanta')
 
 
 @method_decorator(login_required, name='dispatch')
@@ -788,6 +787,8 @@ class TwojePremieJobView(View):
         data = MIESIACE[miesiac - 1][1]
        
         usluga_akc=Usluga.objects.get(akcesoria=True)
+        if not usluga_akc:
+            usluga_akc=[]
         akcesoria=PremiaJob.objects.filter(
             data__year=rok,
             data__month=miesiac).filter(pracownik=pracownik).filter(usluga=usluga_akc)
@@ -1089,7 +1090,8 @@ class ServiceReadyView(View):
         if serwis_wlasny == "1":
             usluga = Usluga.objects.filter(czesci=True)
             premia = PremiaJob.objects.filter(usluga__in=usluga).last()
-
+            if not premia:
+                premia.check=-1
             if premia.check != service.id:
                 service.serwisant = request.user
                 service.cena_zgoda = cena_zgoda
