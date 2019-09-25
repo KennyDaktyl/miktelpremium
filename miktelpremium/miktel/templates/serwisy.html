@@ -70,4 +70,47 @@
     </table>
 
 </div>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if serwisy.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if serwisy.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ serwisy.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ serwisy.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in serwisy.paginator.page_range %}
+            {% if serwisy.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if serwisy.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ serwisy.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ serwisy.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
 {% endblock %}

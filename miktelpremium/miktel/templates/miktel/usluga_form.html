@@ -4,11 +4,14 @@
 <div class="container">
 
     <div class="row col-12 mt-2">
+        <h3>Dodaj usługę premiowaną</h3>
+        <div class="row col-12 mt-2">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="dodaj">
+            </form>
+        </div>
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="dodaj">
-        </form>
     </div>
     {% endblock %}

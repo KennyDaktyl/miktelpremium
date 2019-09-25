@@ -111,10 +111,14 @@
                 <td>{{usluga.sklep.nazwa}}</td>
                 <td>{{usluga.usluga}}</td>
                 <td>{{usluga.model}}</td>
+                {% if usluga.cena_klinet == 0 %}
+                <td></td>
+                {% else %}
                 <td>{{usluga.cena_klient}}</td>
+                {% endif %}
                 <td>{{usluga.koszt}}</td>
                 <td>{{usluga.get_zysk}}</td>
-                <td>{{usluga.show_premia}} zł</td>
+                <td>{{usluga.show_premia}}</td>
                 <td><a href="/edycja_premiaJob/{{usluga.id}}">Edytuj</a><br>
 
                 </td>

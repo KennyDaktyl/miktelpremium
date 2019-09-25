@@ -6,7 +6,8 @@
     <!-- {{pracownik.Salon_workers.all|join:", " }} -->
     <form method="POST">
         {% csrf_token %}
-        <div class="form-group row col-10">
+        <div class="form-group row col-12 ml-3">
+
             <div class="row col-6 mt-2 form-group">
                 <label for="exampleFormControlInput1">Wybierz rodzaj usługi</label>
             </div>
@@ -18,7 +19,7 @@
             </select>
         </div>
 
-        <div class="form-group row col-6 mt-2">
+        <div class="form-group row col-6 mt-2 ml-3">
             <div class="active_form">
                 {{ form.as_p }}
                 <div class="form-group row col-10 mt-2">

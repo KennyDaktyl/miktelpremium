@@ -50,6 +50,9 @@ class Adres(models.Model):
     numerTelefonu = models.CharField(verbose_name="Numer telefonu",
                                      max_length=128)
 
+    def __str__(self):
+        return str(self.ulica) + ", " + str(self.miasto)
+
 
 class Foto(models.Model):
     foto = models.ImageField(upload_to="images/")
@@ -298,18 +301,23 @@ class PremiaJob(models.Model):
 
     @property
     def get_zysk(self):
-        return self.cena_klient - self.koszt
+        if self.cena_klient > self.koszt:
+            zysk = self.cena_klient - self.koszt
+            return zysk
+        else:
+            zysk = 0
+            return zysk
 
     @property
     def show_premia(self):
-        if self.cena_klient != "" and self.koszt != "":
+        if self.cena_klient != "" and self.koszt != "" and self.cena_klient >= self.koszt:
             if self.usluga.typ == 0:
                 return (self.cena_klient - self.koszt) * (
                     (self.usluga.kwota)) / 100
             else:
                 return self.usluga.kwota
         else:
-            c = "Bez zysku"
+            c = "Brak premii"
             return c
 
     def get_services(self, serwisant):

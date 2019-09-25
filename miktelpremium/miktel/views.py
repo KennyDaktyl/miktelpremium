@@ -187,7 +187,7 @@ class TelefonySprzedaneView(View):
         umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
         print(faktury)
         ctx = {'telefony': telefony, 'faktury': faktury, 'umowy': umowy}
-        return TemplateResponse(request, "telefony_magazyn.html", ctx)
+        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
 
 
 class UserLoginView(View):
@@ -223,10 +223,27 @@ def User_Logout(request):
 
 # @method_decorator(login_required, name='dispatch')
 
+@method_decorator(login_required, name='dispatch')
+class AddShopView(CreateView):
+    model = Sklep
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
 
 @method_decorator(login_required, name='dispatch')
 class DodajMyUserView(CreateView):
     model = MyUser
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class AddTypeItemView(CreateView):
+    model = Typ
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class AddCompanyView(CreateView):
+    model = Marka
     fields = '__all__'
     success_url = reverse_lazy("widok_klienta")
 
@@ -674,11 +691,11 @@ class DodajPremiaJobView(View):
     def get(self, request):
         form=AddJobForm()
         pracownik = request.user
-        print(pracownik.id)
+        # print(pracownik.id)
         sklepy = pracownik.sklep.all()
         dlugosc = len(pracownik.sklep.all())
         uslugi = Usluga.objects.filter(sklep__in=sklepy).filter(
-            zakup=False).filter(sprzedaz=False).filter(czesci=False).order_by('nazwa')
+            zakup=False).filter(sprzedaz=False).filter(czesci=False).filter(akcesoria=False).order_by('nazwa')
         uslugi_unique = []
         for el in uslugi:
             if el not in uslugi_unique:
@@ -793,9 +810,12 @@ class TwojePremieJobView(View):
         premia_akc = []
         if len(akcesoria)>0:
             for el in akcesoria:
-                suma_akc.append(el.cena_klient)
-                suma_all_akc = sum(suma_akc)
-                premia_result_akc = suma_all_akc*(el.usluga.kwota) / 100
+                if el.cena_klient>0:
+                    suma_akc.append(el.cena_klient)
+                    suma_all_akc = sum(suma_akc)
+                    premia_result_akc = suma_all_akc*(el.usluga.kwota) / 100
+                else:
+                    premia_result_akc=0
         else:
             premia_result_akc=0
             suma_all_akc=0
@@ -810,14 +830,25 @@ class TwojePremieJobView(View):
         zysk = []
         premia = []
         for el in uslugi:
+            print(el.model)
             if el.cena_klient is not None and el.koszt is not None:
-                zysk.append(el.cena_klient - el.koszt)
-                if el.usluga == 0:
-                    premia.append(((el.cena_klient - el.koszt) *
+                zysk.append(el.cena_klient-el.koszt)
+                if el.usluga.typ == 0:
+                    if el.cena_klient>=el.koszt: 
+                        premia.append(((el.cena_klient - el.koszt) *
                                    (el.usluga.kwota)) / 100)
-
+                        print("pierwszy if")
+                        print(premia)
+                        print(el.usluga.typ)
+                    else:
+                        premia.append(0)
                 else:
                     premia.append(el.usluga.kwota)
+                    
+        for el in premia:
+            print(el) 
+              
+                
 
         suma_zysk = sum(zysk)
         premia_result = sum(premia)
@@ -877,16 +908,20 @@ class TwojePremieJobView(View):
         zysk = []
         premia = []
         for el in uslugi:
+            print(el.model)
             if el.cena_klient is not None and el.koszt is not None:
-                zysk.append(el.cena_klient - el.koszt)
-                if el.usluga == 0:
-                    premia.append(((el.cena_klient - el.koszt) *
+                zysk.append(el.cena_klient-el.koszt)
+                if el.usluga.typ == 0:
+                    if el.cena_klient>=el.koszt: 
+                        premia.append(((el.cena_klient - el.koszt) *
                                    (el.usluga.kwota)) / 100)
-
+                        print("pierwszy if")
+                        print(premia)
+                        print(el.usluga.typ)
+                    else:
+                        premia.append(0)
                 else:
                     premia.append(el.usluga.kwota)
-            else:
-                premia=[]
 
         suma_zysk = sum(zysk)
         premia_result = sum(premia)
@@ -962,45 +997,206 @@ class EdycjaPremiaJobView(UpdateView):
 
 @method_decorator(login_required, name='dispatch')
 class SzczegolySerwisySerwisantaView(View):
-    def get(self, request):
-
-        pracownik = request.user
-        miesiac=datetime.now().month
-        rok=datetime.now().year
+    def get(self, request,pk,miesiac,rok):
+        pracownik = MyUser.objects.get(pk=pk)
+        miesiac=miesiac
+        rok=rok
         data = MIESIACE[miesiac - 1][1]
+       
+        usluga_akc=Usluga.objects.get(akcesoria=True)
+        akcesoria=PremiaJob.objects.filter(
+            data__year=rok,
+            data__month=miesiac).filter(pracownik=pracownik).filter(usluga=usluga_akc)
+        usluga_serwis=Usluga.objects.filter(akcesoria=False)
+
+        suma_akc = []
+        premia_akc = []
+        if len(akcesoria)>0:
+            for el in akcesoria:
+                if el.cena_klient>0:
+                    suma_akc.append(el.cena_klient)
+                    suma_all_akc = sum(suma_akc)
+                    premia_result_akc = suma_all_akc*(el.usluga.kwota) / 100
+                else:
+                    premia_result_akc=0
+        else:
+            premia_result_akc=0
+            suma_all_akc=0
+        # zysk_netto_akc = suma_zysk_akc - premia_result
+        
         uslugi = PremiaJob.objects.filter(
             data__year=rok,
+            data__month=miesiac).filter(pracownik=pracownik).filter(usluga__in=usluga_serwis).order_by('-id')
+        inne=InnePracePremiowane.objects.filter(
+            data__year=rok,
             data__month=miesiac).filter(pracownik=pracownik).order_by('-id')
-
         zysk = []
         premia = []
         for el in uslugi:
+            print(el.model)
             if el.cena_klient is not None and el.koszt is not None:
-                zysk.append(el.cena_klient - el.koszt)
-                if el.usluga == 0:
-                    premia.append(((el.cena_klient - el.koszt) *
+                zysk.append(el.cena_klient-el.koszt)
+                if el.usluga.typ == 0:
+                    if el.cena_klient>=el.koszt: 
+                        premia.append(((el.cena_klient - el.koszt) *
                                    (el.usluga.kwota)) / 100)
-                    # (premiaprint)
+                        print("pierwszy if")
+                        print(premia)
+                        print(el.usluga.typ)
+                    else:
+                        premia.append(0)
                 else:
                     premia.append(el.usluga.kwota)
-                    # print(premia)
+                    
+        for el in premia:
+            print(el) 
+              
+                
 
         suma_zysk = sum(zysk)
         premia_result = sum(premia)
         zysk_netto = suma_zysk - premia_result
-
+        
+        miesiace = MIESIACE
+        rok_lista = ROK
         ctx = {
+            'akcesoria':akcesoria,
+            'suma_all_akc':suma_all_akc,
+            'premia_result_akc':premia_result_akc,
             'uslugi': uslugi,
+            'inne':inne,
             'pracownik': pracownik,
             'miesiac': miesiac,
+            'miesiace':miesiace,
             'data': data,
             'rok': rok,
+            'rok_lista':rok_lista,
             'zysk': suma_zysk,
             'premia': premia_result,
             'zysk_netto': zysk_netto
         }
         return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",
                                 ctx)
+    def post(self, request,pk,miesiac,rok):
+        pracownik = MyUser.objects.get(pk=pk)
+        miesiac_filter = request.POST.get('miesiac')
+        rok_filter = request.POST.get('rok')
+        pracownik=request.user
+        data = MIESIACE[miesiac - 1][1]
+        print(miesiac)
+        print(rok)
+
+        usluga_akc=Usluga.objects.get(akcesoria=True)
+        akcesoria=PremiaJob.objects.filter(
+            data__year=rok_filter,
+            data__month=miesiac_filter).filter(pracownik=pracownik).filter(usluga=usluga_akc)
+        
+        suma_all_akc=0
+        premia_result_akc=0
+        suma_akc = []
+        premia_akc = []
+        for el in akcesoria:
+            if el.cena_klient is not None and el.koszt is not None:
+                suma_akc.append(el.cena_klient)
+
+                suma_all_akc = sum(suma_akc)
+                premia_result_akc = suma_all_akc*(el.usluga.kwota) / 100
+            
+                
+        usluga_serwis=Usluga.objects.filter(akcesoria=False)
+        uslugi = PremiaJob.objects.filter(
+            data__year=rok_filter,
+            data__month=miesiac_filter).filter(pracownik=pracownik).filter(usluga__in=usluga_serwis).order_by('-id')
+        
+        
+        zysk = []
+        premia = []
+        for el in uslugi:
+            print(el.model)
+            if el.cena_klient is not None and el.koszt is not None:
+                zysk.append(el.cena_klient-el.koszt)
+                if el.usluga.typ == 0:
+                    if el.cena_klient>=el.koszt: 
+                        premia.append(((el.cena_klient - el.koszt) *
+                                   (el.usluga.kwota)) / 100)
+                        print("pierwszy if")
+                        print(premia)
+                        print(el.usluga.typ)
+                    else:
+                        premia.append(0)
+                else:
+                    premia.append(el.usluga.kwota)
+
+        suma_zysk = sum(zysk)
+        premia_result = sum(premia)
+        zysk_netto = suma_zysk - premia_result
+
+        inne=InnePracePremiowane.objects.filter(
+            data__year=rok_filter,
+            data__month=miesiac_filter).filter(pracownik=pracownik).order_by('-id')
+        
+        miesiace = MIESIACE
+        rok_lista = ROK
+        ctx = {
+            'akcesoria':akcesoria,
+            'suma_all_akc':suma_all_akc,
+            'premia_result_akc':premia_result_akc,
+            'uslugi': uslugi,
+            'inne':inne,
+            'pracownik': pracownik,
+            'miesiac': miesiac,
+            'miesiace':miesiace,
+            'data': data,
+            'rok': rok,
+            'rok_lista':rok_lista,
+            'zysk': suma_zysk,
+            'premia': premia_result,
+            'zysk_netto': zysk_netto
+        }
+        return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",ctx)
+    # def get(self, request,pk,rok,miesiac):
+
+    #     pracownik = MyUser.objects.get(pk=pk)
+    #     miesiac=miesiac
+    #     rok=rok
+    #     data = MIESIACE[miesiac - 1][1]
+    #     uslugi = PremiaJob.objects.filter(
+    #         data__year=rok,
+    #         data__month=miesiac).filter(pracownik=pracownik).order_by('-id')
+
+    #     zysk = []
+    #     premia = []
+    #     for el in uslugi:
+    #         if el.cena_klient is not None and el.koszt is not None:
+    #             if el.cena_klient >= el.koszt:
+    #                 zysk.append(el.cena_klient - el.koszt)
+    #                 if el.usluga == 0:
+    #                     premia.append(((el.cena_klient - el.koszt) *
+    #                                (el.usluga.kwota)) / 100)
+    #                     premia(print)
+    #                 else:
+    #                     premia.append(el.usluga.kwota)
+    #                 print(premia)
+    #             else:
+    #                 premia.append(0)
+    #     for el in premia:
+    #         print(el)
+    #     suma_zysk = sum(zysk)
+    #     premia_result = sum(premia)
+    #     zysk_netto = suma_zysk - premia_result
+
+    #     ctx = {
+    #         'uslugi': uslugi,
+    #         'pracownik': pracownik,
+    #         'miesiac': miesiac,
+    #         'data': data,
+    #         'rok': rok,
+    #         'zysk': suma_zysk,
+    #         'premia': premia_result,
+    #         'zysk_netto': zysk_netto
+    #     }
+    #     return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",
+    #                             ctx)
     
 
 @method_decorator(login_required, name='dispatch')
@@ -1046,9 +1242,28 @@ class DodajSerwisView(View):
 class ListaSerwisowMagazynView(View):
     def get(self, request):
         serwisy = DodajSerwis.objects.filter(naprawa=True).order_by('-id')
-        ctx = {'serwisy': serwisy}
+        # serwisy = DodajSerwis.objects.all().order_by('-id')
+        page = request.GET.get('page')
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi}
         return render(request, 'serwisy.html', ctx)
+    
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
 
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        page = request.GET.get('page')
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi}
+        return render(request, 'serwisy.html', ctx)
+        
+    
+    
 
 @method_decorator(login_required, name='dispatch')
 class ListaSerwisowGotowychMagazynView(View):
@@ -1056,6 +1271,17 @@ class ListaSerwisowGotowychMagazynView(View):
         serwisy = DodajSerwis.objects.filter(status="4").order_by('-id')
         ctx = {'serwisy': serwisy}
         return render(request, 'serwisy_gotowe.html', ctx)
+    
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False).filter(status=4)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        
+        ctx = {'serwisy': serwisy}
+        return TemplateResponse(request, 'serwisy_gotowe.html', ctx)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1184,13 +1410,18 @@ class WydajSerwisView(View):
     def post(self, request, pk):
         service_id = request.POST['serwis_id']
         cena = request.POST['cena']
+        premia=PremiaJob.objects.get(check=service_id)
         service = DodajSerwis.objects.get(pk=service_id)
-        service.cena_zgoda = cena
+        if cena!=service.cena_zgoda:
+            premia.cena_klient=cena
+            premia.save()
+            service.cena_zgoda = cena
         service.status = "5"
         service.data_wydania = datetime.now()
         service.archiwum = True
 
         service.save()
+        
 
         return redirect('/archiwum_serwisow/')
 
@@ -1221,6 +1452,17 @@ class ArchiwumSerwisView(View):
         serwisy_pagi = paginator.get_page(page)
         ctx = {'serwisy': serwisy_pagi}
         return render(request, 'serwisy_archiwum.html', ctx)
+    
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=True)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        
+        ctx = {'serwisy': serwisy}
+        return TemplateResponse(request, 'serwisy_archiwum.html', ctx)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -1477,6 +1719,105 @@ class WydajSerwisCzesciView(View):
         czesci_lista = request.POST.getlist('checks')
         koszt = request.POST.get('koszt')
         serwis_id = request.POST.get('serwis_id')
+        print(serwis_id)
+        cena_zgoda = request.POST.get('cena_klient')
+
+        total_koszt = []
+        query_list = []
+
+        usluga = Usluga.objects.filter(czesci=True)
+        premia = PremiaJob.objects.filter(usluga__in=usluga).last()
+        # print(premia.check)
+
+        if serwis_id != "":
+            serwis = DodajSerwis.objects.get(pk=serwis_id)
+            if not premia:
+                # print("not")
+                premia = PremiaJob.objects.create(
+                    check=serwis_id,
+                    sklep=request.user.sklep_dzisiaj,
+                    pracownik=request.user,
+                    usluga=serwis.usluga,
+                    model=serwis.model,
+                    cena_klient=cena_zgoda,
+                    koszt=koszt)
+                if len(czesci_lista) > 0:
+                    for el in czesci_lista:
+                        czesc = Czesc.objects.get(pk=el)
+                        query_list.append(czesc)
+                        total_koszt.append(czesc.cena_zak)
+                        if czesc.ilosc > 0:
+                            czesc.ilosc -= 1
+
+                        marka = czesc.marka
+                        czesc.save()
+                        koszt = sum(total_koszt)
+                else:
+                    koszt = 0
+                serwis.status = "4"
+                serwis.naprawa = False
+                serwis.serwisant = request.user
+                serwis.save()
+                zysk = int(cena_zgoda) - koszt
+
+                subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
+                    premia.sklep, premia.pracownik)
+                text = "{} wykonał {} w {} za {} zysk {}".format(
+                    premia.pracownik, premia.usluga, premia.model,
+                    premia.cena_klient, zysk)
+                send_email(subject, text)
+
+            else:
+                if int(premia.check) != int(serwis_id):
+                    print("jestem tutuaj")
+                    print(premia.check)
+                    print(serwis_id)
+                    premia = PremiaJob.objects.create(
+                        check=serwis_id,
+                        sklep=request.user.sklep_dzisiaj,
+                        pracownik=request.user,
+                        usluga=serwis.usluga,
+                        model=serwis.model,
+                        cena_klient=cena_zgoda,
+                        koszt=koszt)
+
+                    if len(czesci_lista) > 0:
+                        for el in czesci_lista:
+                            czesc = Czesc.objects.get(pk=el)
+                            query_list.append(czesc)
+                            total_koszt.append(czesc.cena_zak)
+                            if czesc.ilosc > 0:
+                                czesc.ilosc -= 1
+
+                            marka = czesc.marka
+                            czesc.save()
+                            koszt = sum(total_koszt)
+                    else:
+                        koszt = 0
+                    serwis.status = "4"
+                    serwis.naprawa = False
+                    serwis.serwisant = request.user
+                    serwis.save()
+
+                    zysk = int(cena_zgoda) - koszt
+
+                    subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
+                        premia.sklep, premia.pracownik)
+                    text = "{} wykonał {} w {} za {} zysk {}".format(
+                        premia.pracownik, premia.usluga, premia.model,
+                        premia.cena_klient, zysk)
+                    send_email(subject, text)
+            return HttpResponseRedirect('/lista_serwisow_gotowych/')
+
+        return HttpResponseRedirect('/RETURNERRORS/')
+
+@method_decorator(login_required, name='dispatch')
+class WydajSerwisCzesci2View(View):
+    def post(self, request):
+        czesci_lista = request.POST.getlist('checks')
+        koszt = request.POST.get('koszt')
+        serwis_id = request.POST.get('serwis_id')
+        print(serwis_id)
         cena_zgoda = request.POST.get('cena_klient')
 
         total_koszt = []
@@ -1575,5 +1916,41 @@ class GetServiceForItems(View):
         service = DodajSerwis.objects.get(pk=pk)
         marka = service.marka
         items = Czesc.objects.filter(marka=marka)
-        ctx = {'serwis': service, 'czesc': items}
-        return render(request, 'lista_czesci.html', ctx)
+        page = request.GET.get('page')
+        paginator = Paginator(items, page_records)
+        items_pagi = paginator.get_page(page)
+        ctx = {'serwis': service,"czesc": items_pagi}
+        return render(request, 'lista_czesci_serwis.html', ctx)
+
+@method_decorator(login_required, name='dispatch')
+class UzyjCzesciSerwisView(View):
+    def post(self, request):
+        form = CenaKlientForm()
+        czesci_lista = request.POST.getlist('checks')
+        serwis_id = request.POST.get('serwis_id')
+        serwis=DodajSerwis.objects.get(pk=serwis_id)
+
+        query_list = []
+        total_koszt = []
+        for el in czesci_lista:
+            czesc = Czesc.objects.get(pk=el)
+            marka_czesci = czesc.marka.id
+            query_list.append(czesc)
+            total_koszt.append(czesc.cena_zak)
+        total = sum(total_koszt)
+        saldo = saldo_sms()
+        marka = Marka.objects.get(pk=marka_czesci)
+        # print(marka)
+        usluga = Usluga.objects.filter(czesci=True)
+        serwisy = DodajSerwis.objects.filter(usluga__in=usluga).filter(
+            naprawa=True).filter(marka=marka)
+        ctx = {
+            'form': form,
+            'query_list': query_list,
+            'total': total,
+            'marka': marka,
+            'serwis': serwis,
+            'saldo': saldo,
+            'czesci_lista': czesci_lista
+        }
+        return render(request, 'wydaj_serwis_czesci2.html', ctx)
