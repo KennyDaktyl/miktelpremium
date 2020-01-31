@@ -19,6 +19,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from django.db.models import Q
+from django.db.models import Count
 
 from googlevoice import Voice
 from googlevoice.util import input
@@ -33,35 +34,289 @@ from miktel.function import *
 
 rok = datetime.now().year
 miesiac = datetime.now().month
-page_records = 2
+page_records=40
+
 # Create your views here.
 
 
 class MainView(View):
     def get(self, request):
-        return TemplateResponse(request, "base.html")
+        sklep=Sklep.objects.filter(serwis_zew=False)
+        # telefon=Telefon.objects.filter(sklep=1).count()
+        # print(telefon)
+        ctx={'sklep':sklep}
+        return TemplateResponse(request, "klient.html", ctx)
+
+
+class UserLoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        # send(50602998, 'Zalogowano')
+        return render(request, "user_login.html", context={'form': form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username, password = form.cleaned_data.values()
+            user = authenticate(username=username, password=password)
+            # user = MyUser.objects.get(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                id_user=request.user.id
+                url="/profil/{}".format(id_user)
+                return redirect(url)
+            else:
+                return HttpResponse('Użytkownik {username} niepoprawny')
+        return render(request, "/user_login.html", context={'form': form})
+
+
+@login_required
+def User_Logout(request):
+    logout(request)
+
+    return redirect('/')
+
+@method_decorator(login_required, name='dispatch')
+class ProfilView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_myuser'
+    def get(self, request, pk):
+        page_records=40
+        pracownik = request.user
+        sklepy = pracownik.sklep.all()
+        form=PageRecordsForm()
+        # global page_records
+        # page_records=40
+        ilosc_wynikow= page_records
+        print(ilosc_wynikow)
+        # print(sklepy)
+        ctx = {'form':form,'sklepy': sklepy,'pracownik':pracownik,'ilosc':ilosc_wynikow}
+        return TemplateResponse(request, "profil_user.html", ctx)
+
+    def post(self, request, pk):
+        pracownik = request.user
+        sklepy = pracownik.sklep.all()
+
+        form=PageRecordsForm(request.POST)
+        if form.is_valid():
+            global page_records
+            page_records = int(form.cleaned_data['page_records'])
+            
+            ctx = {'sklepy': sklepy,'pracownik':pracownik,'ilosc':page_records}
+            url="/profil/{}".format(pracownik.id)
+            
+            sklep_sesja = request.POST.get('sklep_sesja')
+            if sklep_sesja != "" and sklep_sesja is not None:
+                sklep_instancja = Sklep.objects.get(pk=sklep_sesja)
+                user = MyUser.objects.get(pk=pracownik.id)
+                user = MyUser.objects.get(pk=pracownik.id)
+                user.sklep_dzisiaj = sklep_instancja
+                user.save()
+                
+                request.user.sklep_dzisiaj = sklep_instancja
+                print("jestem, tutaj")
+                return redirect(url, ctx)
+            
+            ctx = {'sklepy': sklepy,'pracownik':pracownik, 'ilosc':page_records,'form':form}
+            return TemplateResponse(request, "profil_user.html", ctx)
+
+
+        else:
+            ilosc_rekordow = request.POST.get('page_records')
+            sklep_sesja = request.POST.get('sklep_sesja')
+            if sklep_sesja != "":
+                print("ustawiam sklep")
+                ilosc=request.POST.get('ilosc')
+                sklep_instancja = Sklep.objects.get(pk=sklep_sesja)
+                user = MyUser.objects.get(pk=pracownik.id)
+                user.sklep_dzisiaj = sklep_instancja
+                user.save()
+                
+                request.user.sklep_dzisiaj = sklep_instancja
+                # global page_records
+               
+                page_records=40
+                form=PageRecordsForm()
+
+                ctx = {'sklepy': sklepy,'pracownik':pracownik, 'ilosc':page_records,'form':form}
+                return TemplateResponse(request, "profil_user.html", ctx)
+
+@method_decorator(login_required, name='dispatch')
+class PageRecordsView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_myuser'
+    def post(self, request):
+        pracownik = request.user
+        sklepy = pracownik.sklep.all()
+        
+        form=PageRecordsForm(request.POST)
+        if form.is_valid():
+            global page_records
+            page_records = int(form.cleaned_data['page_records'])
+            
+            ctx = {'sklepy': sklepy,'pracownik':pracownik,'ilosc':page_records}
+            url="/profil/{}".format(pracownik.id)
+            return redirect(url, ctx)
+        else:
+            print('Nie jest valid')
+            return TemplateResponse(request,'form_errors.html')
+
+@method_decorator(login_required, name='dispatch')
+class DodajMyUserView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_myuser'
+    model = MyUser
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class DodajPracownikaView(PermissionRequiredMixin,CreateView):
+    permission_required = 'miktel.add_myuser'
+    raise_exception = True
+    permission_denied_message = 'Brak dostępu do tego widoku'
+    model = MyUser
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.set_password(user.password)
+        return super().form_valid(form)
 
 
 @method_decorator(login_required, name='dispatch')
-class TelefonyMagazynView(View):
+class ListaMyUserView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_myuser'
     def get(self, request):
-        telefony = Telefon.objects.filter(dostepny=True).order_by(
+        pracownicy = MyUser.objects.all().order_by('last_name')
+        ctx = {'pracownicy': pracownicy}
+        return render(request, 'lista_pracownikow.html', ctx)
+
+@method_decorator(login_required, name='dispatch')
+class EdycjaMyUserView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_myuser'
+    model = MyUser
+    fields = '__all__'
+    template_name_suffix = ('_update_form')
+    success_url = ('/lista_uzytkownikow/')
+
+
+@method_decorator(login_required, name='dispatch')
+class UstawFotoProfilView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_myuser'
+    def get(self, request, pk):
+        form=UstawFotoForm()
+        ctx = {'form':form}
+        return TemplateResponse(request, "ustaw_foto.html", ctx)
+        # return TemplateResponse(request, "ustaw_foto.html", )
+    def post(self, request, pk):
+        pracownik = request.user
+        sklepy = pracownik.sklep.all()
+        form=UstawFotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            foto = form.cleaned_data['foto']
+            title = form.cleaned_data['title']
+            alt = form.cleaned_data['alt']
+            foto=Foto.objects.create(foto=foto,title=title,alt=alt)
+
+            pracownik.foto=foto
+            pracownik.save()
+
+            url="/profil/{}".format(pracownik.id)
+            return redirect(url)
+        else:
+            print('Nie jest valid')
+            return TemplateResponse(request,'form_errors.html')
+
+@method_decorator(login_required, name='dispatch')
+class UstawHasloView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_myuser'
+    def get(self, request, pk):
+        form=UstawHasloForm()
+        ctx = {'form':form}
+        return TemplateResponse(request, "ustaw_haslo.html", ctx)
+    def post(self, request, pk):
+        pracownik = request.user
+        sklepy = pracownik.sklep.all()
+        form=UstawHasloForm(request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['password']
+            print(password)
+            pracownik.set_password(password)
+            print(pracownik.password)
+            pracownik.save()
+
+            # def form_valid(self, form):
+            #     user = form.save(commit=False)
+            #     user.set_password(user.password)
+            #     return super().form_valid(form)
+
+            url="/profil/{}".format(pracownik.id)
+            return redirect(url)
+        else:
+            print('Nie jest valid')
+            return TemplateResponse(request,'form_errors.html')
+
+#SEKCJA TELEFON
+@method_decorator(login_required, name='dispatch')
+class TelefonCreateView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.add_telefon'
+    def get(self, request):
+        form = TelefonCreateForm
+        ctx = {'form': form}
+        return render(request, 'phone_create.html', ctx)
+
+    def post(self, request):
+        form = TelefonCreateForm(request.POST)
+        if form.is_valid():
+            stan = form.cleaned_data['stan']
+            kategoria = form.cleaned_data['kategoria']
+            marka = form.cleaned_data['marka']
+            nazwa = form.cleaned_data['nazwa']
+            imei = form.cleaned_data['imei']
+            cena_zak = form.cleaned_data['cena_zak']
+            cena_sprzed = form.cleaned_data['cena_sprzed']
+
+            pracownik = request.user
+            shop_buying = pracownik.sklep_dzisiaj
+
+            Telefon.objects.create(marka=marka,
+                                    stan=stan,
+                                   nazwa=nazwa,
+                                   sklep=shop_buying,
+                                   imei=imei,
+                                   kategoria=kategoria,
+                                   cena_zak=cena_zak,
+                                   cena_sprzed=cena_sprzed,
+                                   pracownik_zak=pracownik,
+                                   data_wprow=datetime.now(),
+                                   magazyn_aktualny=shop_buying)
+
+            return HttpResponseRedirect('/telefony_magazyn/')
+        else:
+            print('Nie jest valid')
+            return HttpResponseRedirect('/')
+
+@method_decorator(login_required, name='dispatch')
+class TelefonyMagazynView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_telefon'
+    def get(self, request):
+        telefony = Telefon.objects.filter(dostepny=True).filter(zawieszony=False).order_by(
             'marka', 'nazwa', 'cena_sprzed')
         faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
         umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
-
+        global page_records
         page = request.GET.get('page')
         paginator = Paginator(telefony, page_records)
         telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
 
         ctx = {
+            'shops':shops,
             'telefony': telefony_pagi,
             'faktury': faktury,
             'umowy': umowy,
-            'paginator': paginator
+            'paginator': paginator,
+            'page_records':page_records
         }
         return TemplateResponse(request, "telefony_magazyn.html", ctx)
-
     def post(self, request):
         szukaj = request.POST.get('szukaj')
 
@@ -73,27 +328,235 @@ class TelefonyMagazynView(View):
 
         faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
         umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
-        print(faktury)
+        # print(faktury)
         page = request.GET.get('page')
+        global page_records
         paginator = Paginator(telefony, page_records)
         telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
 
         ctx = {
+            'shops':shops,
             'telefony': telefony_pagi,
             'faktury': faktury,
             'umowy': umowy,
-            'paginator': paginator
+            'page_records':page_records
+            
         }
         return TemplateResponse(request, "telefony_magazyn.html", ctx)
 
+@method_decorator(login_required, name='dispatch')
+class TelefonyMagazynFilterView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_telefon'
+    def get(self, request,pk):
+        telefony = Telefon.objects.filter(magazyn_aktualny=pk).filter(dostepny=True).filter(zawieszony=False).order_by(
+            'marka', 'nazwa', 'cena_sprzed')
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        global page_records
+        page = request.GET.get('page')
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {
+            'shops':shops,
+            'telefony': telefony_pagi,
+            'faktury': faktury,
+            'umowy': umowy,
+            'paginator': paginator,
+            'page_records':page_records
+        }
+        return TemplateResponse(request, "telefony_magazyn.html", ctx)
+    def post(self, request,pk):
+        szukaj = request.POST.get('szukaj')
+
+        telefony = Telefon.objects.filter(magazyn_aktualny=pk).filter(dostepny=True).filter(zawieszony=False).order_by(
+            'marka', 'nazwa', 'cena_sprzed')
+        telefony = telefony.filter(
+            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
+            | Q(kategoria__nazwa__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        # print(faktury)
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {
+            'shops':shops,
+            'telefony': telefony_pagi,
+            'faktury': faktury,
+            'umowy': umowy,
+            'page_records':page_records
+            
+        }
+        return TemplateResponse(request, "telefony_magazyn.html", ctx)
 
 @method_decorator(login_required, name='dispatch')
-class SellPhonesView(View):
+class TelefonyZawieszoneView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_telefon'
+    def get(self, request):
+        telefony = Telefon.objects.filter(zawieszony=True).order_by(
+            'marka', 'nazwa', 'cena_sprzed')
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        global page_records
+        page = request.GET.get('page')
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {
+            'shops':shops,
+            'telefony': telefony_pagi,
+            'faktury': faktury,
+            'umowy': umowy,
+            'paginator': paginator,
+            'page_records':page_records
+        }
+        return TemplateResponse(request, "telefony_zawieszone.html", ctx)
+
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        telefony = Telefon.objects.filter(zawieszony=True)
+        telefony = telefony.filter(
+            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
+            | Q(kategoria__nazwa__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        # print(faktury)
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {
+            'shops':shops,
+            'telefony': telefony_pagi,
+            'faktury': faktury,
+            'umowy': umowy,
+            'page_records':page_records
+            
+        }
+        return TemplateResponse(request, "telefony_magazyn.html", ctx)
+
+@method_decorator(login_required, name='dispatch')
+class TelefonyReklamacjaView(PermissionRequiredMixin,UpdateView):
+    permission_required = 'miktel.change_telefon'
+    model = Telefon
+    fields = ['info','zawieszony','data_zmiany']
+    template_name_suffix = ('_update_form')
+    success_url = ('/telefony_zawieszone/')  
+
+@method_decorator(login_required, name='dispatch')
+class TelefonyMagazynChangeView(PermissionRequiredMixin,UpdateView):
+    permission_required = 'miktel.change_telefon'
+    model = Telefon
+    fields = ['magazyn_aktualny']
+    template_name_suffix = ('_update_form')
+    success_url = ('/telefony_magazyn/')  
+
+@method_decorator(login_required, name='dispatch')
+class TelefonyMagazynInfoView(PermissionRequiredMixin,UpdateView):
+    permission_required = 'miktel.change_telefon'
+    model = Telefon
+    fields = ['info','zawieszony']
+    template_name_suffix = ('_update_form')
+    success_url = ('/telefony_magazyn/')
+
+
+@method_decorator(login_required, name='dispatch')
+class TelefonySprzedaneView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_telefon'
+    def get(self, request):
+        telefony = Telefon.objects.filter(dostepny=False).order_by('-data_sprzed',
+            'marka', 'nazwa', 'cena_sprzed')
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {'shops':shops,'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy,'page_records':page_records}
+        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
+
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        Telefony_dostepne = Telefon.objects.filter(dostepny=False).order_by('-data_sprzed',
+            'marka', 'nazwa', 'cena_sprzed')
+        telefony = Telefony_dostepne.filter(
+            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
+            | Q(kategoria__nazwa__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {'shops':shops,'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy,'page_records':page_records}
+        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
+
+@method_decorator(login_required, name='dispatch')
+class TelefonySprzedaneMagazynFilterView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_telefon'
+    def get(self, request,pk):
+        telefony = Telefon.objects.filter(magazyn_aktualny=pk).filter(dostepny=False).order_by('-data_sprzed',
+            'marka', 'nazwa', 'cena_sprzed')
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {'shops':shops,'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy,'page_records':page_records}
+        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
+
+    def post(self, request,pk):
+        szukaj = request.POST.get('szukaj')
+
+        Telefony_dostepne = Telefon.objects.filter(magazyn_aktualny=pk).filter(dostepny=False).order_by('-data_sprzed',
+            'marka', 'nazwa', 'cena_sprzed')
+        telefony = Telefony_dostepne.filter(
+            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
+            | Q(kategoria__nazwa__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
+        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(telefony, page_records)
+        telefony_pagi = paginator.get_page(page)
+        shops=Sklep.objects.filter(serwis_zew=False)
+
+        ctx = {'shops':shops,'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy,'page_records':page_records}
+        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
+
+
+@method_decorator(login_required, name='dispatch')
+class SellPhonesView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_telefon'
     def get(self, request, pk):
         telefon = Telefon.objects.get(pk=pk)
         faktura = FakturaZakupu.objects.all()
         umowa = UmowaKomisowaNew.objects.filter(phones=pk)
-        print(len(umowa))
+        
         numer_faktury = "Brak dokumentu zakupu"
         if len(umowa) == 0:
             for el in faktura:
@@ -116,6 +579,7 @@ class SellPhonesView(View):
         telefon.dostepny = False
         telefon.pracownik_sprzed = request.user
         telefon.sklep_sprzed = request.user.sklep_dzisiaj
+        telefon.data_sprzed=datetime.now()
         telefon.save()
 
         usluga_inst = Usluga.objects.get(sprzedaz=True)
@@ -160,137 +624,30 @@ class SellPhonesView(View):
             else:
                 return HttpResponseRedirect('/telefony_sprzedane/')
 
-
 @method_decorator(login_required, name='dispatch')
-class TelefonySprzedaneView(View):
-    def get(self, request):
-        telefony = Telefon.objects.filter(dostepny=False).order_by(
-            'marka', 'nazwa', 'cena_sprzed')
-        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
-        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
-        page = request.GET.get('page')
-        paginator = Paginator(telefony, page_records)
-        telefony_pagi = paginator.get_page(page)
-
-        ctx = {'telefony': telefony_pagi, 'faktury': faktury, 'umowy': umowy}
-        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
-
-    def post(self, request):
-        szukaj = request.POST.get('szukaj')
-
-        Telefony_dostepne = Telefon.objects.filter(dostepny=False)
-        telefony = Telefony_dostepne.filter(
-            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
-            | Q(kategoria__nazwa__icontains=szukaj)
-            | Q(imei__icontains=szukaj))
-        faktury = FakturaZakupu.objects.filter(telefon__in=telefony)
-        umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
-        print(faktury)
-        ctx = {'telefony': telefony, 'faktury': faktury, 'umowy': umowy}
-        return TemplateResponse(request, "telefony_sprzedane.html", ctx)
-
-
-class UserLoginView(View):
-    def get(self, request):
-        form = LoginForm()
-        # send(50602998, 'Zalogowano')
-        return render(request, "user_login.html", context={'form': form})
-
-    def post(self, request):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username, password = form.cleaned_data.values()
-            user = authenticate(username=username, password=password)
-            # user = MyUser.objects.get(username=username, password=password)
-            if user is not None:
-                login(request, user)
-
-                # print(request.session['sklep_sesja'])
-                # send('506029980', 'Zalogowano')
-                # print(send)
-                return redirect('/')
-            else:
-                return HttpResponse('Użytkownik {username} niepoprawny')
-        return render(request, "/user_login.html", context={'form': form})
-
-
-@login_required
-def User_Logout(request):
-    logout(request)
-
-    return redirect('/')
-
-
-# @method_decorator(login_required, name='dispatch')
-
-@method_decorator(login_required, name='dispatch')
-class AddShopView(CreateView):
-    model = Sklep
-    fields = '__all__'
-    success_url = reverse_lazy("widok_klienta")
-
-@method_decorator(login_required, name='dispatch')
-class DodajMyUserView(CreateView):
-    model = MyUser
-    fields = '__all__'
-    success_url = reverse_lazy("widok_klienta")
-
-@method_decorator(login_required, name='dispatch')
-class AddTypeItemView(CreateView):
-    model = Typ
-    fields = '__all__'
-    success_url = reverse_lazy("widok_klienta")
-
-@method_decorator(login_required, name='dispatch')
-class AddCompanyView(CreateView):
-    model = Marka
-    fields = '__all__'
-    success_url = reverse_lazy("widok_klienta")
+class WystawTelefonView(PermissionRequiredMixin,UpdateView):
+    permission_required = 'miktel.change_telefon'
+    model = Telefon
+    fields = ['kategoria', 'stan', 'cena_sprzed', 'zdjecia']
+    template_name_suffix = ('_update_form')
+    success_url = ('/')
 
 
 @method_decorator(login_required, name='dispatch')
-class ListaMyUserView(View):
-    def get(self, request):
-        pracownicy = MyUser.objects.all().order_by('last_name')
-        ctx = {'pracownicy': pracownicy}
-        return render(request, 'lista_pracownikow.html', ctx)
-
-
-@method_decorator(login_required, name='dispatch')
-class EdycjaMyUserView(UpdateView):
-    model = MyUser
+class SzczegolyTelefonuView(PermissionRequiredMixin,UpdateView):
+    permission_required = 'miktel.change_telefon'
+    model = Telefon
     fields = '__all__'
     template_name_suffix = ('_update_form')
-    success_url = ('/lista_uzytkownikow/')
+    success_url = ('/')
 
 
+
+
+#SEKCJA UMOWA KOMISOWA
 @method_decorator(login_required, name='dispatch')
-class ProfilView(View):
-    def get(self, request, pk):
-        pracownik = request.user
-        sklepy = pracownik.sklep.all()
-        # print(sklepy)
-        ctx = {'sklepy': sklepy}
-        return TemplateResponse(request, "profil_user.html", ctx)
-
-    def post(self, request, pk):
-        pracownik = request.user
-        sklepy = pracownik.sklep.all()
-
-        sklep_sesja = request.POST.get('sklep_sesja')
-        if sklep_sesja != "":
-            sklep_instancja = Sklep.objects.get(pk=sklep_sesja)
-            user = MyUser.objects.get(pk=pracownik.id)
-            user.sklep_dzisiaj = sklep_instancja
-            user.save()
-            request.user.sklep_dzisiaj = sklep_instancja
-
-        ctx = {'sklepy': sklepy}
-        return TemplateResponse(request, "profil_user.html", ctx)
-
-
-@method_decorator(login_required, name='dispatch')
-class UmowaKomisowaView(View):
+class UmowaKomisowaView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.add_umowakomisowanew'
     def get(self, request):
         form = UmowaKomisowaForm()
         return render(request, 'invoice_form.html', {'form': form})
@@ -319,15 +676,42 @@ class UmowaKomisowaView(View):
                 phones=phones)
             telefon_instancja = Telefon.objects.get(pk=phones.id)
             telefon_instancja.dokument = True
+            telefon_instancja.nr_doc = number 
             telefon_instancja.save()
             return HttpResponseRedirect('/checking_document/')
         else:
             print('Nie jest valid')
-        return HttpResponseRedirect('/checking_document/')
-
+            return HttpResponseRedirect('/checking_document/')
 
 @method_decorator(login_required, name='dispatch')
-class CheckingDocumentView(View):
+class ListaUmowView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.view_umowakomisowanew'
+    def get(self, request):
+        umowy = UmowaKomisowaNew.objects.all().order_by('-id')
+        telefon = Telefon.objects.all().last()
+
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(umowy, page_records)
+        umowy_pagi = paginator.get_page(page)
+        ctx = {'umowy': umowy_pagi,'page_records':page_records}
+        return render(request, 'lista_umow.html', ctx)
+
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        umowa = UmowaKomisowaNew.objects.filter(
+            Q(number__icontains=szukaj) | Q(komitent__icontains=szukaj)
+            | Q(phones__nazwa__icontains=szukaj)
+            | Q(phones__marka__nazwa__icontains=szukaj)
+            | Q(phones__imei__icontains=szukaj))
+
+        ctx = {'umowy': umowa,'page_records':page_records}
+        return TemplateResponse(request, "lista_umow.html", ctx)
+
+@method_decorator(login_required, name='dispatch')
+class CheckingDocumentView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.add_umowakomisowanew'
     def get(self, request):
         pracownik = request.user
         sklepy = pracownik.sklep.all()
@@ -363,14 +747,19 @@ class CheckingDocumentView(View):
                                      pracownik=request.user,
                                      usluga=usluga,
                                      model=model)
-
+            subject = "Zakupiono telefon na Umowe w {} przez {}".format(
+                    umowa.request.user.sklep_dzisiaj, umowa.pracownik_zak)
+            text = "{} kupil {} {} za {} ".format(umowa.pracownik_zak,
+                                                      umowa.phones.marka,
+                                                      umowa.phones.nazwa,
+                                                      umowa.phones.cena_zak)
+            send_email(subject, text)
             return HttpResponseRedirect('/lista_umow/')
 
+            
         else:
             if int(premia.check) != int(tele_id):
-                print("rozne id")
-                print(premia.check)
-                print(tele_id)
+               
                 PremiaJob.objects.create(check=tele_id,
                                          sklep=request.user.sklep_dzisiaj,
                                          pracownik=request.user,
@@ -383,22 +772,30 @@ class CheckingDocumentView(View):
                                                       umowa.phones.marka,
                                                       umowa.phones.nazwa,
                                                       umowa.phones.cena_zak)
-                # send_email(subject, text)
+                send_email(subject, text)
                 return HttpResponseRedirect('/lista_umow/')
             else:
                 return HttpResponseRedirect('/lista_umow/')
 
-
 @method_decorator(login_required, name='dispatch')
-class EdycjaUmowyView(UpdateView):
+class EdycjaUmowyView(PermissionRequiredMixin,UpdateView):
+    permission_required = 'miktel.change_umowakomisowanew'
     model = UmowaKomisowaNew
     fields = '__all__'
     template_name_suffix = ('_update_form')
     success_url = ('/lista_umow/')
 
+@method_decorator(login_required, name='dispatch')
+class UmowaIdView(PermissionRequiredMixin,View):
+    permission_required = 'miktel.change_umowakomisowanew'
+    model = UmowaKomisowaNew
+    fields = '__all__'
+    template_name_suffix = ('_update_form')
+    success_url = ('/lista_umow/')
 
 @method_decorator(login_required, name='dispatch')
-class DeleteDocumentView(View):
+class DeleteDocumentView(PermissionRequiredMixin,View):
+    permission_required='miktel.delete_umowakomisowanew'
     def get(self, request, pk):
         umowa = UmowaKomisowaNew.objects.get(pk=pk)
         phones = Telefon.objects.get(pk=umowa.phones.id)
@@ -408,17 +805,25 @@ class DeleteDocumentView(View):
 
         return redirect('umowa_komisowa')
 
-
 @method_decorator(login_required, name='dispatch')
-class UmowaIdView(View):
+class DeleteFakturaZakupuView(PermissionRequiredMixin,View):
+    permission_required='miktel.delete_fakturazakupu'
     def get(self, request, pk):
-        umowa = UmowaKomisowaNew.objects.get(phones=pk)
-        ctx = {'umowa': umowa}
-        return render(request, 'umowa_id.html', ctx)
+        faktura = FakturaZakupu.objects.get(pk=pk)
+        phones = Telefon.objects.filter(nr_doc=faktura.numer)
+        for el in phones:
+            el.dokument = False
+            el.nr_doc=""
+            el.save()
+        faktura.delete()
+
+        return redirect('telefony_magazyn')
 
 
+#SEKCJA FAKTURA ZAKUPU
 @method_decorator(login_required, name='dispatch')
-class FakturaZakupuView(View):
+class FakturaZakupuView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_fakturazakupu'
     def get(self, request):
         form = FakturaZakupuForm()
         return render(request, 'invoice_form.html', {'form': form})
@@ -446,6 +851,7 @@ class FakturaZakupuView(View):
                 telefon = Telefon.objects.get(pk=el.id)
                 telefon.dokument = True
                 telefon.dostepny = True
+                telefon.nr_doc=numer
                 telefon.save()
                 faktura.save()
 
@@ -456,7 +862,8 @@ class FakturaZakupuView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class CheckingInvoiceView(View):
+class CheckingInvoiceView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_fakturazakupu'
     def get(self, request):
         pracownik = request.user
         sklepy = pracownik.sklep.all()
@@ -503,97 +910,24 @@ class CheckingInvoiceView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class FakturaIdView(View):
+class FakturaIdView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_fakturazakupu'
     def get(self, request, pk):
         umowa = FakturaZakupu.objects.get(telefon=pk)
         ctx = {'umowa': umowa}
         return render(request, 'faktura_id.html', ctx)
 
 
-# @method_decorator(login_required, name='dispatch')
-# class TelefonView(CreateView):
-#     model = Telefon
-#     form_class = TelefonCreateForm
-#     success_url = reverse_lazy("telefony_magazyn")
-
-# def form_valid(self, form):
-#     pracownik = self.request.user
-#     Telefon = form.save(commit=False)
-#     Telefon.sklep = Sklep.objects.get(pk=1)
-#     return super().form_valid(form)
-
-
 @method_decorator(login_required, name='dispatch')
-class TelefonCreateView(View):
-    def get(self, request):
-        form = TelefonCreateForm
-        ctx = {'form': form}
-        return render(request, 'phone_create.html', ctx)
-
-    def post(self, request):
-        form = TelefonCreateForm(request.POST)
-        if form.is_valid():
-            stan = form.cleaned_data['stan']
-            kategoria = form.cleaned_data['kategoria']
-            marka = form.cleaned_data['marka']
-            nazwa = form.cleaned_data['nazwa']
-            imei = form.cleaned_data['imei']
-            cena_zak = form.cleaned_data['cena_zak']
-            cena_sprzed = form.cleaned_data['cena_sprzed']
-
-            pracownik = request.user
-            shop_buying = pracownik.sklep_dzisiaj
-
-            Telefon.objects.create(marka=marka,
-                                    stan=stan,
-                                   nazwa=nazwa,
-                                   sklep=shop_buying,
-                                   imei=imei,
-                                   kategoria=kategoria,
-                                   cena_zak=cena_zak,
-                                   cena_sprzed=cena_sprzed,
-                                   pracownik_zak=pracownik)
-
-            return HttpResponseRedirect('/telefony_magazyn/')
-        else:
-            print('Nie jest valid')
-            return HttpResponseRedirect('/')
-
-
-@method_decorator(login_required, name='dispatch')
-class ListaUmowView(View):
-    def get(self, request):
-        umowy = UmowaKomisowaNew.objects.all().order_by('-id')
-        telefon = Telefon.objects.all().last()
-
-        page = request.GET.get('page')
-        paginator = Paginator(umowy, page_records)
-        umowy_pagi = paginator.get_page(page)
-        ctx = {'umowy': umowy_pagi}
-        return render(request, 'lista_umow.html', ctx)
-
-    def post(self, request):
-        szukaj = request.POST.get('szukaj')
-
-        umowa = UmowaKomisowaNew.objects.filter(
-            Q(number__icontains=szukaj) | Q(komitent__icontains=szukaj)
-            | Q(phones__nazwa__icontains=szukaj)
-            | Q(phones__marka__nazwa__icontains=szukaj)
-            | Q(phones__imei__icontains=szukaj))
-
-        # faktury = FakturaZakupu.objects.filter(telefon__in=telefony)?
-        # umowy = UmowaKomisowaNew.objects.filter(phones__in=telefony)
-        ctx = {'umowy': umowa}
-        return TemplateResponse(request, "lista_umow.html", ctx)
-
-
-@method_decorator(login_required, name='dispatch')
-class ListaFakturView(View):
+class ListaFakturView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_fakturazakupu'
     def get(self, request):
         faktury = FakturaZakupu.objects.all().order_by('-id')
         page = request.GET.get('page')
+        global page_records
         paginator = Paginator(faktury, page_records)
         faktury_pagi = paginator.get_page(page)
+        
         ctx = {'faktury': faktury_pagi}
         return render(request, 'lista_faktur.html', ctx)
 
@@ -605,21 +939,37 @@ class ListaFakturView(View):
             | Q(telefon__imei__icontains=szukaj)
             | Q(telefon__nazwa__icontains=szukaj)
             | Q(telefon__marka__nazwa__icontains=szukaj))
-        page = request.GET.get('page')
-        paginator = Paginator(faktury, page_records)
-        faktury_pagi = paginator.get_page(page)
-        ctx = {'faktury': faktury_pagi}
+        
+        ctx = {'faktury': faktury}
         return render(request, 'lista_faktur.html', ctx)
 
 
 @method_decorator(login_required, name='dispatch')
-class EdycjaFakturyView(UpdateView):
+class EdycjaFakturyView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_fakturazakupu'
     model = FakturaZakupu
     fields = '__all__'
     template_name_suffix = ('_update_form')
     success_url = ('/lista_faktur/')
 
+@method_decorator(login_required, name='dispatch')
+class DeleteFakturaZakupuView(PermissionRequiredMixin,View):
+    permission_required='miktel.delete_fakturazakupu'
+    def get(self, request, pk):
+        faktura = FakturaZakupu.objects.get(pk=pk)
+        phones = Telefon.objects.filter(nr_doc=faktura.numer)
+        for el in phones:
+            el.dokument = False
+            el.nr_doc=""
+            el.save()
+        faktura.delete()
 
+        return redirect('telefony_magazyn')
+
+
+
+
+#SEKCJA GENEROWANIA PDF
 @method_decorator(login_required, name='dispatch')
 class GenerujPdfView(View):
     def get(self, request, pk, *args, **kwargs):
@@ -640,54 +990,904 @@ class GenerujPdfView(View):
                 'Content-Disposition'] = 'attachment; filename="umowa_pdf.pdf"'
         return response
 
-
 @method_decorator(login_required, name='dispatch')
-class WystawTelefonView(UpdateView):
-    model = Telefon
-    fields = ['kategoria', 'stan', 'cena_sprzed', 'zdjecia']
-    template_name_suffix = ('_update_form')
-    success_url = ('/')
+class DodajPDFSerwisView(View):
+    def get(self, request, pk, *args, **kwargs):
+        pk = pk
+        serwis = DodajSerwis.objects.get(pk=pk)
+        context = {
+            'serwis': serwis,
+        }
+        html_string = render_to_string('serwis_pdf.html', context)
+
+        html = HTML(string=html_string)
+        html.write_pdf(target='/tmp/serwispdf.pdf')
+
+        fs = FileSystemStorage('/tmp')
+        with fs.open('serwispdf.pdf') as pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response[
+                'Content-Disposition'] = 'attachment; filename="serwis_pdf.pdf"'
+        return response
 
 
+
+#SEKCJA SERWISY GSM
 @method_decorator(login_required, name='dispatch')
-class SzczegolyTelefonuView(UpdateView):
-    model = Telefon
-    fields = '__all__'
-    template_name_suffix = ('_update_form')
-    success_url = ('/')
-
-
-@method_decorator(login_required, name='dispatch')
-class DodajUslugaView(CreateView):
-    model = Usluga
-    fields = '__all__'
-    success_url = reverse_lazy("lista_uslug")
-
-
-@method_decorator(login_required, name='dispatch')
-class EdycjaUslugiView(UpdateView):
-    model = Usluga
-    fields = '__all__'
-    template_name_suffix = ('_update_form')
-    success_url = ('/lista_uslug/')
-
-
-@method_decorator(login_required, name='dispatch')
-class ListaUslugView(View):
+class DodajSerwisView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_dodajserwis'
     def get(self, request):
-        usluga = Usluga.objects.all().order_by('-id')
-        sklep = Sklep.objects.all().order_by('nazwa')
+        form = GetServiceForm
 
-        uslugi_unique = []
-        for el in usluga:
-            if el not in uslugi_unique:
-                uslugi_unique.append(el)
-        ctx = {'usluga': uslugi_unique, 'sklepy': sklep}
-        return render(request, 'lista_uslug.html', ctx)
+        ctx = {'form': form}
+        return render(request, 'miktel/dodajserwis_form.html', ctx)
+
+    def post(self, request):
+        form = GetServiceForm(request.POST)
+        if form.is_valid():
+            usluga = form.cleaned_data['usluga']
+            marka = form.cleaned_data['marka']
+            model = form.cleaned_data['model']
+            imei = form.cleaned_data['imei']
+            cena_zgoda = form.cleaned_data['cena_zgoda']
+            numer_telefonu = form.cleaned_data['numer_telefonu']
+            imie_nazwisko = form.cleaned_data['imie_nazwisko']
+            info = form.cleaned_data['info']
+
+            # usluga_inst = Usluga.objects.get(pk=usluga)
+
+            pracownik = request.user
+
+            DodajSerwis.objects.create(pracownik=pracownik,
+                                       sklep=pracownik.sklep_dzisiaj,
+                                       marka=marka,
+                                       usluga=usluga,
+                                       model=model,
+                                       imei=imei,
+                                       cena_zgoda=cena_zgoda,
+                                       numer_telefonu=numer_telefonu,
+                                       imie_nazwisko=imie_nazwisko,info=info)
+
+            return HttpResponseRedirect('/lista_serwisow/')
+        else:
+            print('Nie jest valid')
+            return HttpResponseRedirect('/')
+
+
 
 
 @method_decorator(login_required, name='dispatch')
-class DodajPremiaJobView(View):
+class ListaSerwisowMagazynView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request):
+        lokal=request.user.sklep_dzisiaj.id
+        serwisy = DodajSerwis.objects.filter(naprawa=True).filter(sklep=lokal).order_by('-id')
+        # serwisy = DodajSerwis.objects.all().order_by('-id')
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        lokal=request.user.sklep_dzisiaj.id
+        lokale=Sklep.objects.all()
+        
+        ctx = {'serwisy': serwisy_pagi,'lokal':lokal,'lokale':lokale}
+        return render(request, 'serwisy.html', ctx)
+    
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi}
+        return render(request, 'serwisy.html', ctx)
+
+@method_decorator(login_required, name='dispatch')
+class ListaSerwisowFilterMagazynView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request,pk):
+        lokal=pk
+        serwisy = DodajSerwis.objects.filter(naprawa=True).filter(sklep=lokal).order_by('-id')
+        # serwisy = DodajSerwis.objects.all().order_by('-id')
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        lokale=Sklep.objects.all()
+        
+        ctx = {'serwisy': serwisy_pagi,'lokal':lokal,'lokale':lokale}
+        return render(request, 'serwisy_filter.html', ctx)
+    
+    def post(self, request,pk):
+        szukaj = request.POST.get('szukaj')
+        
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi}
+        return render(request, 'serwisy_filter.html', ctx)
+
+    
+@method_decorator(login_required, name='dispatch')
+class ListaSerwisowGotowychMagazynView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request):
+        lokal=request.user.sklep_dzisiaj.id
+        serwisy = DodajSerwis.objects.filter(status="4").filter(sklep=lokal).order_by('-id')
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi,'lokal':lokal}
+        return render(request, 'serwisy_gotowe.html', ctx)
+    
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False).filter(status=4)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        global page_records
+        page = request.GET.get('page')
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi}
+        
+        return TemplateResponse(request, 'serwisy_gotowe.html', ctx)
+
+@method_decorator(login_required, name='dispatch')
+class ListaSerwisowGotowychFilterMagazynView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request,pk):
+        lokal=pk
+        serwisy = DodajSerwis.objects.filter(status="4").filter(sklep=lokal).order_by('-id')
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi,'lokal':lokal}
+        return render(request, 'serwisy_gotowe.html', ctx)
+    
+    def post(self, request,pk):
+        szukaj = request.POST.get('szukaj')
+
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False).filter(status=4)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        global page_records
+        page = request.GET.get('page')
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi}
+        
+        return TemplateResponse(request, 'serwisy_gotowe.html', ctx)
+
+
+@method_decorator(login_required, name='dispatch')
+class SzczegolySerwisuView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_dodajserwis'
+    model = DodajSerwis
+    fields = '__all__'
+    template_name_suffix = ('_update_form')
+    success_url = ('/lista_serwisow/')
+
+
+@method_decorator(login_required, name='dispatch')
+class GotowySerwisView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request, pk):
+        serwis = DodajSerwis.objects.get(pk=pk)
+        saldo = saldo_sms()
+        ctx = {'serwis': serwis, 'saldo': saldo}
+        return render(request, 'checking_service.html', ctx)
+
+
+@method_decorator(login_required, name='dispatch')
+class ServiceReadyView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request, pk):
+       
+        service = DodajSerwis.objects.get(pk=pk)
+        cena_zgoda = request.GET['cena']
+        koszt = request.GET['koszt']
+        info = request.GET['info']
+        serwis_wlasny = request.GET['serwis_wlasny']
+        premia = PremiaJob.objects.filter()
+        pracownik=request.user
+        
+        if serwis_wlasny == "1":
+            usluga = Usluga.objects.filter(czesci=True)
+            premia = PremiaJob.objects.filter(usluga__in=usluga).filter(pracownik=request.user).last()
+            if premia:
+                if premia.check != service.id:
+                    service.serwisant = pracownik
+                    service.cena_zgoda = cena_zgoda
+                    service.koszt = koszt
+                    service.info = info
+                    service.status = "4"
+                    service.data_wydania=datetime.now()
+                    service.naprawa = False
+                    service.save()
+            
+                    PremiaJob.objects.create(check=service.id,
+                                         model=service.model,
+                                         sklep=request.user.sklep_dzisiaj,
+                                         pracownik=request.user,
+                                         usluga=service.usluga,
+                                         cena_klient=cena_zgoda,
+                                         koszt=koszt)
+                
+                    zysk = int(service.cena_zgoda) - int(service.koszt)
+                    subject = "Pracownicy premiuja. Wykonano serwis wlasny w {}".format(
+                    request.user.sklep_dzisiaj)
+                    text = "{} {} zysk {}".format(service.usluga, service.model,
+                                              zysk)
+                    send_email(subject, text)
+                    message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
+                    cena_zgoda, service.sklep)
+
+                    if 'sms' in request.GET:
+                        sms = request.GET['sms']
+                        send(service.numer_telefonu, message)
+                    else:
+                        sms = False
+
+                    return HttpResponseRedirect('/lista_serwisow/')
+                else:
+                    service.serwisant = pracownik
+                    service.cena_zgoda = cena_zgoda
+                    service.koszt = koszt
+                    service.info = info
+                    service.status = "4"
+                    service.data_wydania=datetime.now()
+                    service.naprawa = False
+                    service.save()
+                    if 'sms' in request.GET:
+                        sms = request.GET['sms']
+                        message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
+                        cena_zgoda, service.sklep)
+                        send(service.numer_telefonu, message)
+                    else:
+                        sms = False
+                    return HttpResponseRedirect('/lista_serwisow/')
+
+            else:
+                PremiaJob.objects.create(check=service.id,
+                                         model=service.model,
+                                         sklep=request.user.sklep_dzisiaj,
+                                         pracownik=request.user,
+                                         usluga=service.usluga,
+                                         cena_klient=cena_zgoda,
+                                         koszt=koszt)
+                service.serwisant = pracownik
+                service.cena_zgoda = cena_zgoda
+                service.koszt = koszt
+                service.info = info
+                service.status = "4"
+                service.data_wydania=datetime.now()
+                service.naprawa = False
+                service.save()
+                
+                zysk = int(service.cena_zgoda) - int(service.koszt)
+                subject = "Pracownicy premiuja. Wykonano serwis wlasny w {}".format(
+                request.user.sklep_dzisiaj)
+                text = "{} {} zysk {}".format(service.usluga, service.model,
+                                              zysk)
+                send_email(subject, text)
+                message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
+                cena_zgoda, service.sklep)
+
+                if 'sms' in request.GET:
+                    sms = request.GET['sms']
+                    send(service.numer_telefonu, message)
+                else:
+                    sms = False
+
+                    # send(service.numer_telefonu, message)
+                return HttpResponseRedirect('/lista_serwisow/')
+
+        else:
+            service.serwisant = MyUser.objects.get(status_osoby=2)
+            service.cena_zgoda = cena_zgoda
+            service.koszt = koszt
+            service.info = info
+            service.status = "4"
+            service.data_wydania=datetime.now()
+            service.naprawa = False
+            service.save()
+
+            message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
+                cena_zgoda, service.sklep)
+            if 'sms' in request.GET:
+                sms = request.GET['sms']
+                send(service.numer_telefonu, message)
+            else:
+                sms = False
+
+                # send(service.numer_telefonu, message)
+                # send_email(subject, text):
+            return HttpResponseRedirect('/lista_serwisow/')
+
+
+@method_decorator(login_required, name='dispatch')
+class WydajSerwisView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request, pk):
+        serwis = DodajSerwis.objects.get(pk=pk)
+        ctx = {'serwis': serwis}
+        return render(request, 'checking2_service.html', ctx)
+
+    def post(self, request, pk):
+        service_id = request.POST['serwis_id']
+        cena = request.POST['cena']
+        premia=PremiaJob.objects.filter(check=service_id).first()
+        service = DodajSerwis.objects.get(pk=service_id)
+        
+        if cena!=service.cena_zgoda:
+            if premia!=None:
+                premia.cena_klient=cena
+                premia.save()
+        service.cena_zgoda = cena
+        service.status = "5"
+        service.data_wydania = datetime.now()
+        service.archiwum = True
+
+        service.save()
+        
+
+        return redirect('/lista_serwisow_gotowych/')
+
+
+@method_decorator(login_required, name='dispatch')
+class ArchiwumSerwisView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request):
+        serwisy = DodajSerwis.objects.filter(archiwum=True).order_by('-id')
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(serwisy, page_records)
+        serwisy_pagi = paginator.get_page(page)
+        ctx = {'serwisy': serwisy_pagi,'page_records':page_records}
+        return render(request, 'serwisy_archiwum.html', ctx)
+    
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=True)
+        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
+            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
+            | Q(imei__icontains=szukaj))
+        
+        ctx = {'serwisy': serwisy}
+        return TemplateResponse(request, 'serwisy_archiwum.html', ctx)
+
+
+@method_decorator(login_required, name='dispatch')
+class ReklamacjaSerwisView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_dodajserwis'
+    def get(self, request, pk):
+        serwis = DodajSerwis.objects.get(pk=pk)
+        serwis.archiwum = False
+        serwis.data = datetime.now()
+        serwis.status = "7"
+        serwis.naprawa = True
+        serwis.save()
+        serwisy = DodajSerwis.objects.filter(archiwum=False)
+        ctx = {'serwisy': serwisy}
+        return redirect('/lista_serwisow/')
+
+
+
+#SEKCJA CZEŚCI GSM
+@method_decorator(login_required, name='dispatch')
+class CzesciCreateView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_czesc'
+    def get(self, request):
+        form = CzescCreateForm()
+        ctx = {'form': form}
+        return render(request, 'czesc_form.html', ctx)
+
+    def post(self, request):
+        form = CzescCreateForm(request.POST)
+        if form.is_valid():
+            foto = form.cleaned_data['foto']
+            typ = form.cleaned_data['typ']
+            marka = form.cleaned_data['marka']
+            stan = form.cleaned_data['stan']
+            kolor = form.cleaned_data['kolor']
+            nazwa = form.cleaned_data['nazwa']
+            cena_zak = form.cleaned_data['cena_zak']
+            cena_sprzed = form.cleaned_data['cena_sprzed']
+            ilosc = form.cleaned_data['ilosc']
+            opis = form.cleaned_data['opis']
+
+            pracownik = request.user
+
+            czesc = Czesc.objects.create(pracownik=pracownik,
+                                         sklep=pracownik.sklep_dzisiaj,
+                                         typ=typ,
+                                         marka=marka,
+                                         kolor=kolor,
+                                         nazwa=nazwa,
+                                         cena_zak=cena_zak,
+                                         cena_sprzed=cena_sprzed,
+                                         ilosc=ilosc,
+                                         opis=opis)
+            for el in foto:
+                foto = Foto.objects.get(pk=el.id)
+                foto.used=True
+                czesc.foto.add(foto)
+                czesc.save()
+                foto.save()
+
+            return HttpResponseRedirect('/lista_czesci/')
+        else:
+            print('Nie jest valid')
+            return HttpResponseRedirect('')
+
+@method_decorator(login_required, name='dispatch')
+class ListaCzesciView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_czesc'
+    def get(self, request):
+        czesc = Czesc.objects.all()
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(czesc, page_records)
+        czesc_pagi = paginator.get_page(page)
+        ctx = {"czesc": czesc_pagi}
+        return render(request, 'lista_czesci.html', ctx)
+
+    def post(self, request):
+        szukaj = request.POST.get('szukaj')
+
+        czesc = Czesc.objects.filter(
+            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
+            | Q(typ__nazwa__icontains=szukaj)
+            | Q(sklep__nazwa__icontains=szukaj))
+
+        page = request.GET.get('page')
+        global page_records
+        paginator = Paginator(czesc, page_records)
+        czesc_pagi = paginator.get_page(page)
+        ctx = {"czesc": czesc_pagi, 'paginator': paginator}
+        return render(request, 'lista_czesci.html', ctx)
+
+
+@method_decorator(login_required, name='dispatch')
+class AddMoreItemsView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_czesc'
+    def get(self, request, pk):
+        czesc = Czesc.objects.get(pk=pk)
+        form = DodajWiecejCzesci()
+        ctx = {'czesc': czesc, 'form': form}
+        return render(request, 'dodaj_wiecej_czesci.html', ctx)
+    
+    def post(self, request, pk):
+        form = DodajWiecejCzesci(request.POST)
+        if form.is_valid():
+            ilosc = form.cleaned_data['ilosc']
+
+            czesc = Czesc.objects.get(pk=pk)
+            czesc.dostepny=True
+            quantity=czesc.ilosc
+            czesc.ilosc=quantity+ilosc
+            czesc.save()
+
+            # page = request.GET.get('page')
+            # paginator = Paginator(czesc, page_records)
+            # czesc_pagi = paginator.get_page(page)
+            # ctx = {"czesc": czesc_pagi}
+            return HttpResponseRedirect('/lista_czesci/')
+
+@method_decorator(login_required, name='dispatch')
+class AddMoreItemsSimiliarView(PermissionRequiredMixin,View):
+    permission_required='miktel.add_czesc'
+    def get(self,request,pk):
+        czesc = Czesc.objects.get(pk=pk)
+        form = DodajWiecejCzesci_podbne()
+        ctx = {'czesc': czesc, 'form': form}
+        return render(request, 'dodaj_wiecej_czesci_podobnych.html', ctx)
+    
+    def post(self, request,pk):
+        form = DodajWiecejCzesci_podbne(request.POST)
+        if form.is_valid():
+            czesc=Czesc.objects.get(pk=pk)
+            foto = czesc.foto.all()
+            marka=czesc.marka
+            typ=czesc.typ
+            nazwa=czesc.nazwa
+
+            stan = form.cleaned_data['stan']
+            kolor = form.cleaned_data['kolor']
+            cena_zak = form.cleaned_data['cena_zak']
+            cena_sprzed = form.cleaned_data['cena_sprzed']
+            ilosc = form.cleaned_data['ilosc']
+            opis = form.cleaned_data['opis']
+
+            pracownik = request.user
+
+            czesc = Czesc.objects.create(pracownik=pracownik,
+                                         sklep=pracownik.sklep_dzisiaj,
+                                         typ=typ,
+                                         marka=marka,
+                                         kolor=kolor,
+                                         nazwa=nazwa,
+                                         cena_zak=cena_zak,
+                                         cena_sprzed=cena_sprzed,
+                                         ilosc=ilosc,
+                                         opis=opis)
+            for el in foto:
+                foto = Foto.objects.get(pk=el.id)
+                czesc.foto.add(foto)
+                czesc.save()
+
+            return HttpResponseRedirect('/lista_czesci/')
+        else:
+            return render(request, "form_errors.html", context={'form': form})
+
+
+@method_decorator(login_required, name='dispatch')
+class RemoveMoreItemsView(PermissionRequiredMixin,View):
+    permission_required='miktel.delete_czesc'
+    def get(self, request, pk):
+        czesc = Czesc.objects.get(pk=pk)
+        form = UsunWiecejCzesci()
+        ctx = {'czesc': czesc, 'form': form}
+        return render(request, 'dodaj_wiecej_czesci.html', ctx)
+    
+    def post(self, request, pk):
+        form = UsunWiecejCzesci(request.POST)
+        if form.is_valid():
+            ilosc = form.cleaned_data['ilosc']
+
+            czesc = Czesc.objects.get(pk=pk)
+            czesc.dostepny=True
+            quantity=czesc.ilosc
+            if quantity>ilosc:
+                czesc.ilosc=quantity-ilosc
+            else:
+                czesc.ilosc=0
+            czesc.save()
+
+            # page = request.GET.get('page')
+            # paginator = Paginator(czesc, page_records)
+            # czesc_pagi = paginator.get_page(page)
+            # ctx = {"czesc": czesc_pagi}
+            return HttpResponseRedirect('/lista_czesci/')
+        else:
+            return render(request, "form_errors.html", context={'form': form})
+
+@method_decorator(login_required, name='dispatch')
+class SzczegolyCzesciView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_czesc'
+    model = Czesc
+    fields = '__all__'
+    template_name_suffix = ('_update_form')
+    success_url = ('/lista_czesci/')
+
+
+@method_decorator(login_required, name='dispatch')
+class UzyjCzesciWieleView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_czesc'
+    def post(self, request):
+        form = CenaKlientForm()
+        czesci_lista = request.POST.getlist('checks')
+        query_list = []
+        total_koszt = []
+        
+        if len(czesci_lista)>0:
+            for el in czesci_lista:
+                czesc = Czesc.objects.get(pk=el)
+                marka_czesci = czesc.marka.id
+                query_list.append(czesc)
+                total_koszt.append(czesc.cena_zak)
+            total = sum(total_koszt)
+            saldo = saldo_sms()
+            marka=Marka.objects.get(pk=marka_czesci)
+            usluga = Usluga.objects.filter(czesci=True)
+            serwisy = DodajSerwis.objects.filter(usluga__in=usluga).filter(
+            naprawa=True).filter(marka=marka)
+            ctx = {
+            'form': form,
+            'query_list': query_list,
+            'total': total,
+            'marka': marka,
+            'serwisy': serwisy,
+            'saldo': saldo,
+            'czesci_lista': czesci_lista
+             }
+            return render(request, 'wydaj_serwis_czesci.html', ctx)
+        else:    
+            czesc = Czesc.objects.all()
+            page = request.GET.get('page')
+            paginator = Paginator(czesc, page_records)
+            czesc_pagi = paginator.get_page(page)
+            ctx = {"czesc": czesc_pagi}
+            return render(request, 'lista_czesci2.html', ctx)
+
+
+@method_decorator(login_required, name='dispatch')
+class WydajSerwisCzesciView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_czesc'
+    def post(self, request):
+        czesci_lista = request.POST.getlist('checks')
+        koszt = request.POST.get('koszt')
+        serwis_id = request.POST.get('serwis_id')
+        print(serwis_id)
+        cena_zgoda = request.POST.get('cena_klient')
+
+        total_koszt = []
+        query_list = []
+
+        usluga = Usluga.objects.filter(czesci=True)
+        premia = PremiaJob.objects.filter(usluga__in=usluga).filter(pracownik=request.user).last()
+        # print(premia.check)
+
+        if serwis_id != "":
+            serwis = DodajSerwis.objects.get(pk=serwis_id)
+            if not premia:
+                premia = PremiaJob.objects.create(
+                    check=serwis_id,
+                    sklep=request.user.sklep_dzisiaj,
+                    pracownik=request.user,
+                    usluga=serwis.usluga,
+                    model=serwis.model,
+                    cena_klient=cena_zgoda,
+                    koszt=koszt)
+                
+                if len(czesci_lista) > 0:
+                    for el in czesci_lista:
+                        czesc = Czesc.objects.get(pk=el)
+                        query_list.append(czesc)
+                        total_koszt.append(czesc.cena_zak)
+                        if czesc.ilosc > 0:
+                            czesc.ilosc -= 1
+
+                        marka = czesc.marka
+                        czesc.save()
+                        koszt = sum(total_koszt)
+                else:
+                    koszt = 0
+                
+                serwis.status = "4"
+                serwis.data_wydania=datetime.now()
+                serwis.naprawa = False
+                serwis.serwisant = request.user
+                serwis.save()
+                zysk = int(cena_zgoda) - koszt
+
+                subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
+                    premia.sklep, premia.pracownik)
+                text = "{} wykonał {} w {} za {} zysk {}".format(
+                    premia.pracownik, premia.usluga, premia.model,
+                    premia.cena_klient, zysk)
+                send_email(subject, text)
+
+            else:
+                if int(premia.check) != int(serwis_id):
+                    print("jestem tutuaj")
+                    print(premia.check)
+                    print(serwis_id)
+                    premia = PremiaJob.objects.create(
+                        check=serwis_id,
+                        sklep=request.user.sklep_dzisiaj,
+                        pracownik=request.user,
+                        usluga=serwis.usluga,
+                        model=serwis.model,
+                        cena_klient=cena_zgoda,
+                        koszt=koszt)
+                    serwis.status="4"
+                    serwis.data_wydania=datetime.now()
+                    serwis.save()
+                    if len(czesci_lista) > 0:
+                        for el in czesci_lista:
+                            czesc = Czesc.objects.get(pk=el)
+                            query_list.append(czesc)
+                            total_koszt.append(czesc.cena_zak)
+                            if czesc.ilosc > 0:
+                                czesc.ilosc -= 1
+
+                            marka = czesc.marka
+                            czesc.save()
+                            koszt = sum(total_koszt)
+                    else:
+                        koszt = 0
+                    serwis.status = "4"
+                    serwis.data_wydania=datetime.now()
+                    serwis.naprawa = False
+                    serwis.serwisant = request.user
+                    serwis.save()
+
+            zysk = int(cena_zgoda) - int(koszt)
+
+            message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
+            cena_zgoda, serwis.sklep)
+
+            if 'sms' in request.POST:
+                sms = request.POST['sms']
+                send(serwis.numer_telefonu, message)
+                print('Jesy sms')
+            else:
+                sms = False
+                print('nie ma smsma')
+
+            subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
+                premia.sklep, premia.pracownik)
+            text = "{} wykonał {} w {} za {} zysk {}".format(
+                premia.pracownik, premia.usluga, premia.model,
+                premia.cena_klient, zysk)
+            send_email(subject, text)
+            return HttpResponseRedirect('/lista_serwisow/')
+
+        return HttpResponseRedirect('/RETURNERRORS/')
+
+@method_decorator(login_required, name='dispatch')
+class WydajSerwisCzesci2View(PermissionRequiredMixin,View):
+    permission_required='miktel.view_czesc'
+    def post(self, request):
+        czesci_lista = request.POST.getlist('checks')
+        koszt = request.POST.get('koszt')
+        serwis_id = request.POST.get('serwis_id')
+        print(serwis_id)
+        cena_zgoda = request.POST.get('cena_klient')
+
+        total_koszt = []
+        query_list = []
+
+        usluga = Usluga.objects.filter(czesci=True)
+        premia = PremiaJob.objects.filter(usluga__in=usluga).last()
+        # print(premia.check)
+
+        if serwis_id != "":
+            serwis = DodajSerwis.objects.get(pk=serwis_id)
+            if not premia:
+                # print("not")
+                premia = PremiaJob.objects.create(
+                    check=serwis_id,
+                    sklep=request.user.sklep_dzisiaj,
+                    pracownik=request.user,
+                    usluga=serwis.usluga,
+                    model=serwis.model,
+                    cena_klient=cena_zgoda,
+                    koszt=koszt)
+                if len(czesci_lista) > 0:
+                    for el in czesci_lista:
+                        czesc = Czesc.objects.get(pk=el)
+                        query_list.append(czesc)
+                        total_koszt.append(czesc.cena_zak)
+                        if czesc.ilosc > 0:
+                            czesc.ilosc -= 1
+
+                        marka = czesc.marka
+                        czesc.save()
+                        koszt = sum(total_koszt)
+                else:
+                    koszt = 0
+                serwis.status = "4"
+                serwis.data_wydania=datetime.now()
+                serwis.naprawa = False
+                serwis.serwisant = request.user
+                serwis.save()
+                zysk = int(cena_zgoda) - koszt
+
+                subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
+                    premia.sklep, premia.pracownik)
+                text = "{} wykonał {} w {} za {} zysk {}".format(
+                    premia.pracownik, premia.usluga, premia.model,
+                    premia.cena_klient, zysk)
+                send_email(subject, text)
+
+            else:
+                if int(premia.check) != int(serwis_id):
+                    print("jestem tutuaj")
+                    print(premia.check)
+                    print(serwis_id)
+                    premia = PremiaJob.objects.create(
+                        check=serwis_id,
+                        sklep=request.user.sklep_dzisiaj,
+                        pracownik=request.user,
+                        usluga=serwis.usluga,
+                        model=serwis.model,
+                        cena_klient=cena_zgoda,
+                        koszt=koszt)
+
+                    if len(czesci_lista) > 0:
+                        for el in czesci_lista:
+                            czesc = Czesc.objects.get(pk=el)
+                            query_list.append(czesc)
+                            total_koszt.append(czesc.cena_zak)
+                            if czesc.ilosc > 0:
+                                czesc.ilosc -= 1
+
+                            marka = czesc.marka
+                            czesc.save()
+                            koszt = sum(total_koszt)
+                    else:
+                        koszt = 0
+                    serwis.status = "4"
+                    serwis.data_wydania=datetime.now()
+                    serwis.naprawa = False
+                    serwis.serwisant = request.user
+                    serwis.save()
+
+                    zysk = int(cena_zgoda) - koszt
+
+                    subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
+                        premia.sklep, premia.pracownik)
+                    text = "{} wykonał {} w {} za {} zysk {}".format(
+                        premia.pracownik, premia.usluga, premia.model,
+                        premia.cena_klient, zysk)
+                    send_email(subject, text)
+            return HttpResponseRedirect('/lista_serwisow/')
+
+        return HttpResponseRedirect('/RETURNERRORS/')
+
+
+@method_decorator(login_required, name='dispatch')
+class GetServiceForItems(PermissionRequiredMixin,View):
+    permission_required='miktel.view_czesc'
+    def get(self, request, pk):
+        service = DodajSerwis.objects.get(pk=pk)
+        marka = service.marka
+        items = Czesc.objects.filter(marka=marka)
+        page = request.GET.get('page')
+        paginator = Paginator(items, page_records)
+        items_pagi = paginator.get_page(page)
+        ctx = {'serwis': service,"czesc": items_pagi}
+        return render(request, 'lista_czesci_serwis.html', ctx)
+
+@method_decorator(login_required, name='dispatch')
+class UzyjCzesciSerwisView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_czesc'
+    def post(self, request):
+        form = CenaKlientForm()
+        czesci_lista = request.POST.getlist('checks')
+        serwis_id = request.POST.get('serwis_id')
+        serwis=DodajSerwis.objects.get(pk=serwis_id)
+
+        query_list = []
+        total_koszt = []
+        for el in czesci_lista:
+            czesc = Czesc.objects.get(pk=el)
+            marka_czesci = czesc.marka.id
+            query_list.append(czesc)
+            total_koszt.append(czesc.cena_zak)
+        total = sum(total_koszt)
+        saldo = saldo_sms()
+        marka = Marka.objects.get(pk=marka_czesci)
+        # print(marka)
+        usluga = Usluga.objects.filter(czesci=True)
+        serwisy = DodajSerwis.objects.filter(usluga__in=usluga).filter(
+            naprawa=True).filter(marka=marka)
+        ctx = {
+            'form': form,
+            'query_list': query_list,
+            'total': total,
+            'marka': marka,
+            'serwis': serwis,
+            'saldo': saldo,
+            'czesci_lista': czesci_lista
+        }
+        return render(request, 'wydaj_serwis_czesci2.html', ctx)
+
+
+
+#SEKCJA PREMIOWANIE
+@method_decorator(login_required, name='dispatch')
+class DodajPremiaJobView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_premiajob'
     def get(self, request):
         form=AddJobForm()
         pracownik = request.user
@@ -738,7 +1938,8 @@ class DodajPremiaJobView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class DodajInnePraceView(View):
+class DodajInnePraceView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_innepracepremiowane'
     def get(self, request):
         form=InnePraceForm()
         return TemplateResponse(request, "add_usluga_inne.html", {'form':form})
@@ -758,44 +1959,8 @@ class DodajInnePraceView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class DashboardView(View):
-    def get(self, request):
-        miesiace = MIESIACE
-        rok = ROK
-        sklepy = Sklep.objects.all()
-        ctx = {'miesiace': miesiace, 'rok': ROK, 'sklepy': sklepy}
-        return TemplateResponse(request, "filtruj_wg_daty.html", ctx)
-
-    def post(self, request):
-        miesiac = request.POST.get('miesiac')
-        rok = request.POST.get('rok')
-        sklep = request.POST.get('sklep')
-        sklep_instacja = Sklep.objects.get(id=sklep)
-
-        uslugi = PremiaJob.objects.filter(
-            data__year=rok, data__month=miesiac).filter(sklep=sklep)
-
-        pracownicy = MyUser.objects.filter(sklep=sklep)
-        typ_uslugi = Usluga.objects.filter(sklep=sklep)
-        counter = PremiaJob.objects.filter(data__year=rok,
-                                           data__month=miesiac).count
-
-        for pracownik in pracownicy:
-            pracownik.licznik(uslugi)
-
-        ctx = {
-            'sklep': sklep_instacja,
-            'uslugi': uslugi,
-            'pracownicy': pracownicy,
-            'miesiac': miesiac,
-            'rok': rok,
-            'typ': typ_uslugi
-        }
-        return TemplateResponse(request, "dashboard_sklepow.html", ctx)
-
-
-@method_decorator(login_required, name='dispatch')
-class TwojePremieJobView(View):
+class TwojePremieJobView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_premiajob'
     def get(self, request):
         pracownik = request.user
         data = MIESIACE[miesiac - 1][1]
@@ -850,9 +2015,9 @@ class TwojePremieJobView(View):
               
                 
 
-        suma_zysk = sum(zysk)
-        premia_result = sum(premia)
-        zysk_netto = suma_zysk - premia_result
+        suma_zysk = round(sum(zysk,2))
+        premia_result = round(sum(premia), 2)
+        zysk_netto = round((suma_zysk - premia_result),2)
         
         miesiace = MIESIACE
         rok_lista = ROK
@@ -869,8 +2034,8 @@ class TwojePremieJobView(View):
             'rok': rok,
             'rok_lista':rok_lista,
             'zysk': suma_zysk,
-            'premia': premia_result,
-            'zysk_netto': zysk_netto
+            'premia': format(premia_result, '.2f'),
+            'zysk_netto': format(zysk_netto, '.2f'),
         }
         return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",
                                 ctx)
@@ -946,13 +2111,14 @@ class TwojePremieJobView(View):
             'rok': rok,
             'rok_lista':rok_lista,
             'zysk': suma_zysk,
-            'premia': premia_result,
-            'zysk_netto': zysk_netto
+            'premia':format(premia_result, '.2f'),
+            'zysk_netto': format(zysk_netto, '.2f'),
         }
         return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",ctx)
 
 @method_decorator(login_required, name='dispatch')
-class DodajAkcesoriaView(View):
+class DodajAkcesoriaView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_usluga'
     def get(self, request):
         form=DodajAkcesoriaForm()
         ctx = {'form':form,
@@ -989,14 +2155,113 @@ class DodajAkcesoriaView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class EdycjaPremiaJobView(UpdateView):
+class EdycjaPremiaJobView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_premiajob'
     model = PremiaJob
     fields = '__all__'
     template_name_suffix = ('_update_form')
     success_url = ('/dashboard_sklepow/')
 
+
+
 @method_decorator(login_required, name='dispatch')
-class SzczegolySerwisySerwisantaView(View):
+class DashboardView(PermissionRequiredMixin,View):
+    permission_required='miktel.change_premiajob'
+    def get(self, request):
+        miesiace = MIESIACE
+        rok = ROK
+        sklepy = Sklep.objects.all()
+        ctx = {'miesiace': miesiace, 'rok': ROK, 'sklepy': sklepy}
+        return TemplateResponse(request, "filtruj_wg_daty.html", ctx)
+
+    def post(self, request):
+        miesiac = request.POST.get('miesiac')
+        rok = request.POST.get('rok')
+        sklep = request.POST.get('sklep')
+        sklep_instacja = Sklep.objects.get(id=sklep)
+
+        uslugi = PremiaJob.objects.filter(
+            data__year=rok, data__month=miesiac).filter(sklep=sklep)
+
+        pracownicy = MyUser.objects.filter(sklep=sklep)
+        typ_uslugi = Usluga.objects.filter(sklep=sklep)
+        counter = PremiaJob.objects.filter(data__year=rok,
+                                           data__month=miesiac).count
+        
+        serwisy_wydane=DodajSerwis.objects.filter(sklep=sklep).filter(status="5").filter(data_wydania__year=rok,
+                                           data_wydania__month=miesiac)
+        
+        serwisy_wydane_licznik=serwisy_wydane.count
+        serwisy_wydane_zysk=0
+        for el in serwisy_wydane:
+            serwisy_wydane_zysk+=el.cena_zgoda-el.koszt
+        
+        umowy_komisowe=UmowaKomisowaNew.objects.filter(sklep_zak=sklep).filter(data_zak__year=rok,
+                                           data_zak__month=miesiac).count
+        telefony_sprzedane=Telefon.objects.filter(sklep_sprzed=sklep).filter(data_sprzed__year=rok,
+                                           data_sprzed__month=miesiac).count
+        telefony_sprzedane_zysk=Telefon.objects.filter(sklep_sprzed=sklep).filter(data_sprzed__year=rok,
+                                           data_sprzed__month=miesiac)
+        usługi=PremiaJob.objects.filter(sklep=sklep).filter(data__year=rok,
+                                           data__month=miesiac)
+        usługi_licznik=uslugi.count
+        telefony_zysk=0
+        for el in telefony_sprzedane_zysk:
+            telefony_zysk+=el.cena_sprzed-el.cena_zak
+        
+        premia_jobs_suma=uslugi
+        suma_premia_jobs = 0
+        for el in premia_jobs_suma:
+            if el.usluga.typ == 0:
+                suma_premia_jobs += (el.cena_klient - el.koszt) * (
+                    (el.usluga.kwota)) / 100
+            else:
+                suma_premia_jobs += el.usluga.kwota
+
+        zysk_z_premia_jobs=0
+        for el in premia_jobs_suma:
+            if el.cena_klient > el.koszt:
+                zysk_z_premia_jobs += el.cena_klient - el.koszt
+        
+        zysk_z_premia_jobs_serwis=0
+        usluga_serwis=Usluga.objects.filter(czesci=True)
+        for el in premia_jobs_suma:
+            if el.usluga in usluga_serwis:
+                zysk_z_premia_jobs_serwis += el.cena_klient - el.koszt
+        
+        zysk_z_premia_jobs_grawer=0
+        usluga_grawer=Usluga.objects.filter(grawer=True)
+        for el in premia_jobs_suma:
+            if el.usluga in usluga_grawer:
+                zysk_z_premia_jobs_grawer += el.cena_klient - el.koszt
+
+
+        for pracownik in pracownicy:
+            pracownik.licznik(uslugi)
+
+        ctx = {
+            'serwisy_wydane_licznik':serwisy_wydane_licznik,
+            'serwisy_wydane_zysk':round(serwisy_wydane_zysk,2),
+            'umowy_komisowe':umowy_komisowe,
+            'telefony_sprzedane':telefony_sprzedane,
+            'telefony_zysk':telefony_zysk,
+            'usługi_licznik':usługi_licznik,
+            'suma_premia_jobs':round(suma_premia_jobs,2),
+            'zysk_z_premia_jobs':round(zysk_z_premia_jobs,2),
+            'zysk_z_premia_jobs_serwis':round(zysk_z_premia_jobs_serwis,2),
+            'zysk_z_premia_jobs_grawer':round(zysk_z_premia_jobs_grawer,2),
+            'sklep': sklep_instacja,
+            'uslugi': uslugi,
+            'pracownicy': pracownicy,
+            'miesiac': miesiac,
+            'rok': rok,
+            'typ': typ_uslugi
+        }
+        return TemplateResponse(request, "dashboard_sklepow.html", ctx)
+
+@method_decorator(login_required, name='dispatch')
+class SzczegolySerwisySerwisantaView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_premiajob'
     def get(self, request,pk,miesiac,rok):
         pracownik = MyUser.objects.get(pk=pk)
         miesiac=miesiac
@@ -1072,8 +2337,8 @@ class SzczegolySerwisySerwisantaView(View):
             'rok': rok,
             'rok_lista':rok_lista,
             'zysk': suma_zysk,
-            'premia': premia_result,
-            'zysk_netto': zysk_netto
+            'premia': format(premia_result, '.2f'),
+            'zysk_netto': format(zysk_netto, '.2f'),
         }
         return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",
                                 ctx)
@@ -1150,807 +2415,179 @@ class SzczegolySerwisySerwisantaView(View):
             'rok': rok,
             'rok_lista':rok_lista,
             'zysk': suma_zysk,
-            'premia': premia_result,
-            'zysk_netto': zysk_netto
+            'premia': format(premia_result, '.2f'),
+            'zysk_netto': format(zysk_netto, '.2f'),
         }
         return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",ctx)
-    # def get(self, request,pk,rok,miesiac):
 
-    #     pracownik = MyUser.objects.get(pk=pk)
-    #     miesiac=miesiac
-    #     rok=rok
-    #     data = MIESIACE[miesiac - 1][1]
-    #     uslugi = PremiaJob.objects.filter(
-    #         data__year=rok,
-    #         data__month=miesiac).filter(pracownik=pracownik).order_by('-id')
 
-    #     zysk = []
-    #     premia = []
-    #     for el in uslugi:
-    #         if el.cena_klient is not None and el.koszt is not None:
-    #             if el.cena_klient >= el.koszt:
-    #                 zysk.append(el.cena_klient - el.koszt)
-    #                 if el.usluga == 0:
-    #                     premia.append(((el.cena_klient - el.koszt) *
-    #                                (el.usluga.kwota)) / 100)
-    #                     premia(print)
-    #                 else:
-    #                     premia.append(el.usluga.kwota)
-    #                 print(premia)
-    #             else:
-    #                 premia.append(0)
-    #     for el in premia:
-    #         print(el)
-    #     suma_zysk = sum(zysk)
-    #     premia_result = sum(premia)
-    #     zysk_netto = suma_zysk - premia_result
 
-    #     ctx = {
-    #         'uslugi': uslugi,
-    #         'pracownik': pracownik,
-    #         'miesiac': miesiac,
-    #         'data': data,
-    #         'rok': rok,
-    #         'zysk': suma_zysk,
-    #         'premia': premia_result,
-    #         'zysk_netto': zysk_netto
-    #     }
-    #     return TemplateResponse(request, "szczegoly_serwisow_serwisanta.html",
-    #                             ctx)
-    
+  
 
+
+#SECKJA ADMINISTRACJI 
 @method_decorator(login_required, name='dispatch')
-class DodajSerwisView(View):
-    def get(self, request):
-        form = GetServiceForm
-
-        ctx = {'form': form}
-        return render(request, 'miktel/dodajserwis_form.html', ctx)
-
-    def post(self, request):
-        form = GetServiceForm(request.POST)
-        if form.is_valid():
-            usluga = form.cleaned_data['usluga']
-            marka = form.cleaned_data['marka']
-            model = form.cleaned_data['model']
-            imei = form.cleaned_data['imei']
-            cena_zgoda = form.cleaned_data['cena_zgoda']
-            numer_telefonu = form.cleaned_data['numer_telefonu']
-            imie_nazwisko = form.cleaned_data['imie_nazwisko']
-
-            # usluga_inst = Usluga.objects.get(pk=usluga)
-
-            pracownik = request.user
-
-            DodajSerwis.objects.create(pracownik=pracownik,
-                                       sklep=pracownik.sklep_dzisiaj,
-                                       marka=marka,
-                                       usluga=usluga,
-                                       model=model,
-                                       imei=imei,
-                                       cena_zgoda=cena_zgoda,
-                                       numer_telefonu=numer_telefonu,
-                                       imie_nazwisko=imei)
-
-            return HttpResponseRedirect('/lista_serwisow/')
-        else:
-            print('Nie jest valid')
-            return HttpResponseRedirect('/')
+class DodajUslugaView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_usluga'
+    model = Usluga
+    fields = '__all__'
+    success_url = reverse_lazy("lista_uslug")
 
 
 @method_decorator(login_required, name='dispatch')
-class ListaSerwisowMagazynView(View):
-    def get(self, request):
-        serwisy = DodajSerwis.objects.filter(naprawa=True).order_by('-id')
-        # serwisy = DodajSerwis.objects.all().order_by('-id')
-        page = request.GET.get('page')
-        paginator = Paginator(serwisy, page_records)
-        serwisy_pagi = paginator.get_page(page)
-        ctx = {'serwisy': serwisy_pagi}
-        return render(request, 'serwisy.html', ctx)
+class DodajFotoView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_foto'
+    model = Foto
+    fields = '__all__'
+    success_url = reverse_lazy("lista_uslug")
     
-    def post(self, request):
-        szukaj = request.POST.get('szukaj')
-
-        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False)
-        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
-            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
-            | Q(imei__icontains=szukaj))
-        page = request.GET.get('page')
-        paginator = Paginator(serwisy, page_records)
-        serwisy_pagi = paginator.get_page(page)
-        ctx = {'serwisy': serwisy_pagi}
-        return render(request, 'serwisy.html', ctx)
-        
-    
-    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        fotos = Foto.objects.all()
+        context['fotos'] = fotos
+        return context
 
 @method_decorator(login_required, name='dispatch')
-class ListaSerwisowGotowychMagazynView(View):
-    def get(self, request):
-        serwisy = DodajSerwis.objects.filter(status="4").order_by('-id')
-        ctx = {'serwisy': serwisy}
-        return render(request, 'serwisy_gotowe.html', ctx)
-    
-    def post(self, request):
-        szukaj = request.POST.get('szukaj')
-
-        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=False).filter(status=4)
-        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
-            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
-            | Q(imei__icontains=szukaj))
-        
-        ctx = {'serwisy': serwisy}
-        return TemplateResponse(request, 'serwisy_gotowe.html', ctx)
-
-
-@method_decorator(login_required, name='dispatch')
-class SzczegolySerwisuView(UpdateView):
-    model = DodajSerwis
+class EdycjaUslugiView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_usluga'
+    model = Usluga
     fields = '__all__'
     template_name_suffix = ('_update_form')
-    success_url = ('/lista_serwisow/')
-
-
-@method_decorator(login_required, name='dispatch')
-class GotowySerwisView(View):
-    def get(self, request, pk):
-        serwis = DodajSerwis.objects.get(pk=pk)
-        saldo = saldo_sms()
-        ctx = {'serwis': serwis, 'saldo': saldo}
-        return render(request, 'checking_service.html', ctx)
-
+    success_url = ('/lista_uslug/')
 
 @method_decorator(login_required, name='dispatch')
-class ServiceReadyView(View):
-    def get(self, request, pk):
-        service = DodajSerwis.objects.get(pk=pk)
-        cena_zgoda = request.GET['cena']
-        koszt = request.GET['koszt']
-        info = request.GET['info']
-        serwis_wlasny = request.GET['serwis_wlasny']
-        premia = PremiaJob.objects.filter()
-        # print(serwis_wlasny)
-        if serwis_wlasny == "1":
-            usluga = Usluga.objects.filter(czesci=True)
-            premia = PremiaJob.objects.filter(usluga__in=usluga).last()
-            if premia:
-                if premia.check != service.id:
-                    service.serwisant = request.user
-                    service.cena_zgoda = cena_zgoda
-                    service.koszt = koszt
-                    service.info = info
-                    service.status = "4"
-                    service.naprawa = False
-                    service.save()
-            
-                    PremiaJob.objects.create(check=service.id,
-                                         model=service.model,
-                                         sklep=request.user.sklep_dzisiaj,
-                                         pracownik=request.user,
-                                         usluga=service.usluga,
-                                         cena_klient=cena_zgoda,
-                                         koszt=koszt)
-                
-                    zysk = int(service.cena_zgoda) - int(service.koszt)
-                    subject = "Pracownicy premiuja. Wykonano serwis wlasny w {}".format(
-                    request.user.sklep_dzisiaj)
-                    text = "{} {} zysk {}".format(service.usluga, service.model,
-                                              zysk)
-                    send_email(subject, text)
-                    message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
-                    cena_zgoda, service.sklep)
-
-                    if 'sms' in request.GET:
-                        sms = request.GET['sms']
-                        send(service.numer_telefonu, message)
-                    else:
-                        sms = False
-
-                    # send(service.numer_telefonu, message)
-                    return HttpResponseRedirect('/lista_serwisow/')
-                else:
-                    return HttpResponseRedirect('/lista_serwisow/')
-
-            else:
-                PremiaJob.objects.create(check=service.id,
-                                         model=service.model,
-                                         sklep=request.user.sklep_dzisiaj,
-                                         pracownik=request.user,
-                                         usluga=service.usluga,
-                                         cena_klient=cena_zgoda,
-                                         koszt=koszt)
-                zysk = int(service.cena_zgoda) - int(service.koszt)
-                subject = "Pracownicy premiuja. Wykonano serwis wlasny w {}".format(
-                request.user.sklep_dzisiaj)
-                text = "{} {} zysk {}".format(service.usluga, service.model,
-                                              zysk)
-                send_email(subject, text)
-                message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
-                cena_zgoda, service.sklep)
-
-                if 'sms' in request.GET:
-                    sms = request.GET['sms']
-                    # send(service.numer_telefonu, message)
-                else:
-                    sms = False
-
-                    # send(service.numer_telefonu, message)
-                return HttpResponseRedirect('/lista_serwisow/')
-
-        else:
-            service.serwisant = MyUser.objects.get(status_osoby=2)
-            service.cena_zgoda = cena_zgoda
-            service.koszt = koszt
-            service.info = info
-            service.status = "4"
-            service.naprawa = False
-            service.save()
-
-            message = "Serwis gotowy do odbioru. Cena za naprawe to {}. Zapraszamy do punktu {}".format(
-                cena_zgoda, service.sklep)
-            if 'sms' in request.GET:
-                sms = request.GET['sms']
-                send(service.numer_telefonu, message)
-            else:
-                sms = False
-
-                # send(service.numer_telefonu, message)
-                # send_email(subject, text):
-            return HttpResponseRedirect('/lista_serwisow/')
-
-
-@method_decorator(login_required, name='dispatch')
-class WydajSerwisView(View):
-    def get(self, request, pk):
-        serwis = DodajSerwis.objects.get(pk=pk)
-        ctx = {'serwis': serwis}
-        return render(request, 'checking2_service.html', ctx)
-
-    def post(self, request, pk):
-        service_id = request.POST['serwis_id']
-        cena = request.POST['cena']
-        premia=PremiaJob.objects.get(check=service_id)
-        service = DodajSerwis.objects.get(pk=service_id)
-        if cena!=service.cena_zgoda:
-            premia.cena_klient=cena
-            premia.save()
-            service.cena_zgoda = cena
-        service.status = "5"
-        service.data_wydania = datetime.now()
-        service.archiwum = True
-
-        service.save()
-        
-
-        return redirect('/archiwum_serwisow/')
-
-
-# @method_decorator(login_required, name='dispatch')
-# class ServiceSentView(View):
-#     pass
-
-
-#     def post(self, request):
-#         service_id = request.POST['serwis_id']
-#         service = DodajSerwis.objects.get(pk=service_id)
-#         service.status = "5"
-#         service.data_wydania = datetime.now()
-#         service.archiwum = True
-
-#         service.save()
-
-#         return redirect('/archiwum_serwisow/')
-
-
-@method_decorator(login_required, name='dispatch')
-class ArchiwumSerwisView(View):
+class ListaSklepowView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_sklep'
     def get(self, request):
-        serwisy = DodajSerwis.objects.filter(archiwum=True).order_by('-id')
-        page = request.GET.get('page')
-        paginator = Paginator(serwisy, page_records)
-        serwisy_pagi = paginator.get_page(page)
-        ctx = {'serwisy': serwisy_pagi}
-        return render(request, 'serwisy_archiwum.html', ctx)
-    
-    def post(self, request):
-        szukaj = request.POST.get('szukaj')
-
-        serwisy_dostepne = DodajSerwis.objects.filter(archiwum=True)
-        serwisy = serwisy_dostepne.filter(Q(id__icontains=szukaj) |
-            Q(marka__nazwa__icontains=szukaj) | Q(model__icontains=szukaj)
-            | Q(imei__icontains=szukaj))
+        sklep=Sklep.objects.all()
+        ctx={'sklepy':sklep}
         
-        ctx = {'serwisy': serwisy}
-        return TemplateResponse(request, 'serwisy_archiwum.html', ctx)
+        return TemplateResponse(request, "lista_sklepow.html", ctx)
+        return render(request, '', ctx)
 
 
 @method_decorator(login_required, name='dispatch')
-class ReklamacjaSerwisView(View):
-    def get(self, request, pk):
-        serwis = DodajSerwis.objects.get(pk=pk)
-        serwis.archiwum = False
-        serwis.data = datetime.now()
-        serwis.status = "7"
-        serwis.naprawa = True
-        serwis.save()
-        serwisy = DodajSerwis.objects.filter(archiwum=False)
-        ctx = {'serwisy': serwisy}
-        return redirect('/lista_serwisow/')
+class EdycjaSklepuView(PermissionRequiredMixin,UpdateView):
+    permission_required='miktel.change_sklep'
+    model = Sklep
+    fields = '__all__'
+    template_name_suffix = ('_update_form')
+    success_url = ('/lista_sklepow/')
+
+@method_decorator(login_required, name='dispatch')
+class DeleteUslugaView(PermissionRequiredMixin,DeleteView):
+    permission_required='miktel.delete_usluga'
+    model = Usluga
+    fields = '__all__'
+    template_name_suffix = ('_update_form')
+    success_url = ('/lista_uslug/')
+
+@method_decorator(login_required, name='dispatch')
+class ListaUslugView(PermissionRequiredMixin,View):
+    permission_required='miktel.view_usluga'
+    def get(self, request):
+        usluga = Usluga.objects.all().order_by('-id')
+        sklep = Sklep.objects.all().order_by('nazwa')
+
+        uslugi_unique = []
+        for el in usluga:
+            if el not in uslugi_unique:
+                uslugi_unique.append(el)
+        ctx = {'usluga': uslugi_unique, 'sklepy': sklep}
+        return render(request, 'lista_uslug.html', ctx)
+
+@method_decorator(login_required, name='dispatch')
+class AddShopView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_sklep'
+    model = Sklep
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class AddTypeItemView(PermissionRequiredMixin,CreateView):
+    permission_required = 'miktel.add_typ'
+    raise_exception = True
+    permission_denied_message = 'Permission Denied'
+    
+    model = Typ
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class AddCompanyView(PermissionRequiredMixin,CreateView):
+    permission_required = 'miktel.add_marka'
+    raise_exception = True
+    permission_denied_message = 'Permission Denied'
+    model = Marka
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class AddCategoryView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_kategoria'
+    model = Kategoria
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+    
+@method_decorator(login_required, name='dispatch')
+class AddAdresView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_adres'
+    model = Adres
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
+
+@method_decorator(login_required, name='dispatch')
+class AddHurtowniaView(PermissionRequiredMixin,CreateView):
+    permission_required='miktel.add_hurtownia'
+    model = Hurtownia
+    fields = '__all__'
+    success_url = reverse_lazy("widok_klienta")
 
 
 @method_decorator(login_required, name='dispatch')
-class DodajTypView(CreateView):
+class DodajTypView(PermissionRequiredMixin,CreateView):
     model = Typ
     fields = '__all__'
     success_url = reverse_lazy("lista_typ")
 
 
 @method_decorator(login_required, name='dispatch')
-class TypView(CreateView):
+class TypView(PermissionRequiredMixin,CreateView):
     def get(self, request):
         typ = Typ.objects.all()
         ctx = {"typ": typ}
         return render(request, 'lista_typ.html', ctx)
 
 
-@method_decorator(login_required, name='dispatch')
-class CzesciCreateView(View):
-    def get(self, request):
-        form = CzescCreateForm()
-        ctx = {'form': form}
-        return render(request, 'czesc_form.html', ctx)
-
-    def post(self, request):
-        form = CzescCreateForm(request.POST)
-        if form.is_valid():
-            foto = form.cleaned_data['foto']
-            typ = form.cleaned_data['typ']
-            marka = form.cleaned_data['marka']
-            stan = form.cleaned_data['stan']
-            kolor = form.cleaned_data['kolor']
-            nazwa = form.cleaned_data['nazwa']
-            cena_zak = form.cleaned_data['cena_zak']
-            cena_sprzed = form.cleaned_data['cena_sprzed']
-            ilosc = form.cleaned_data['ilosc']
-            opis = form.cleaned_data['opis']
-
-            pracownik = request.user
-
-            czesc = Czesc.objects.create(pracownik=pracownik,
-                                         sklep=pracownik.sklep_dzisiaj,
-                                         typ=typ,
-                                         marka=marka,
-                                         kolor=kolor,
-                                         nazwa=nazwa,
-                                         cena_zak=cena_zak,
-                                         cena_sprzed=cena_sprzed,
-                                         ilosc=ilosc,
-                                         opis=opis)
-            for el in foto:
-                foto = Foto.objects.get(pk=el.id)
-                czesc.foto.add(foto)
-                czesc.save()
-
-            return HttpResponseRedirect('/lista_czesci/')
-        else:
-            print('Nie jest valid')
-            return HttpResponseRedirect('')
 
 
-@method_decorator(login_required, name='dispatch')
-class TypView(View):
-    def get(self, request):
-        typ = Typ.objects.all()
-        ctx = {"typ": typ}
-        return render(request, 'lista_typ.html', ctx)
 
 
-@method_decorator(login_required, name='dispatch')
-class ListaCzesciView(View):
-    def get(self, request):
-        czesc = Czesc.objects.all()
-        page = request.GET.get('page')
-        paginator = Paginator(czesc, page_records)
-        czesc_pagi = paginator.get_page(page)
-        ctx = {"czesc": czesc_pagi}
-        return render(request, 'lista_czesci.html', ctx)
-
-    def post(self, request):
-        szukaj = request.POST.get('szukaj')
-
-        czesc = Czesc.objects.filter(
-            Q(marka__nazwa__icontains=szukaj) | Q(nazwa__icontains=szukaj)
-            | Q(typ__nazwa__icontains=szukaj)
-            | Q(sklep__nazwa__icontains=szukaj))
-
-        page = request.GET.get('page')
-        paginator = Paginator(czesc, page_records)
-        czesc_pagi = paginator.get_page(page)
-        ctx = {"czesc": czesc_pagi, 'paginator': paginator}
-        return render(request, 'lista_czesci.html', ctx)
 
 
-@method_decorator(login_required, name='dispatch')
-class AddMoreItemsView(View):
-    def get(self, request, pk):
-        czesc = Czesc.objects.get(pk=pk)
-        form = DodajWiecejCzesci()
-        ctx = {'czesc': czesc, 'form': form}
-        return render(request, 'dodaj_wiecej_czesci.html', ctx)
-    
-    def post(self, request, pk):
-        form = DodajWiecejCzesci(request.POST)
-        if form.is_valid():
-            ilosc = form.cleaned_data['ilosc']
-
-            czesc = Czesc.objects.get(pk=pk)
-            czesc.dostepny=True
-            quantity=czesc.ilosc
-            czesc.ilosc=quantity+ilosc
-            czesc.save()
-
-            # page = request.GET.get('page')
-            # paginator = Paginator(czesc, page_records)
-            # czesc_pagi = paginator.get_page(page)
-            # ctx = {"czesc": czesc_pagi}
-            return HttpResponseRedirect('/lista_czesci/')
-
-@method_decorator(login_required, name='dispatch')
-class AddMoreItemsSimiliarView(View):
-    def get(self,request,pk):
-        czesc = Czesc.objects.get(pk=pk)
-        form = DodajWiecejCzesci_podbne()
-        ctx = {'czesc': czesc, 'form': form}
-        return render(request, 'dodaj_wiecej_czesci_podobnych.html', ctx)
-    
-    def post(self, request,pk):
-        form = DodajWiecejCzesci_podbne(request.POST)
-        if form.is_valid():
-            czesc=Czesc.objects.get(pk=pk)
-            foto = czesc.foto.all()
-            marka=czesc.marka
-            typ=czesc.typ
-            nazwa=czesc.nazwa
-
-            stan = form.cleaned_data['stan']
-            kolor = form.cleaned_data['kolor']
-            cena_zak = form.cleaned_data['cena_zak']
-            cena_sprzed = form.cleaned_data['cena_sprzed']
-            ilosc = form.cleaned_data['ilosc']
-            opis = form.cleaned_data['opis']
-
-            pracownik = request.user
-
-            czesc = Czesc.objects.create(pracownik=pracownik,
-                                         sklep=pracownik.sklep_dzisiaj,
-                                         typ=typ,
-                                         marka=marka,
-                                         kolor=kolor,
-                                         nazwa=nazwa,
-                                         cena_zak=cena_zak,
-                                         cena_sprzed=cena_sprzed,
-                                         ilosc=ilosc,
-                                         opis=opis)
-            for el in foto:
-                foto = Foto.objects.get(pk=el.id)
-                czesc.foto.add(foto)
-                czesc.save()
-
-            return HttpResponseRedirect('/lista_czesci/')
-        else:
-            return render(request, "form_errors.html", context={'form': form})
 
 
-@method_decorator(login_required, name='dispatch')
-class RemoveMoreItemsView(View):
-    def get(self, request, pk):
-        czesc = Czesc.objects.get(pk=pk)
-        form = UsunWiecejCzesci()
-        ctx = {'czesc': czesc, 'form': form}
-        return render(request, 'dodaj_wiecej_czesci.html', ctx)
-    
-    def post(self, request, pk):
-        form = UsunWiecejCzesci(request.POST)
-        if form.is_valid():
-            ilosc = form.cleaned_data['ilosc']
-
-            czesc = Czesc.objects.get(pk=pk)
-            czesc.dostepny=True
-            quantity=czesc.ilosc
-            if quantity>ilosc:
-                czesc.ilosc=quantity-ilosc
-            else:
-                czesc.ilosc=0
-            czesc.save()
-
-            # page = request.GET.get('page')
-            # paginator = Paginator(czesc, page_records)
-            # czesc_pagi = paginator.get_page(page)
-            # ctx = {"czesc": czesc_pagi}
-            return HttpResponseRedirect('/lista_czesci/')
-        else:
-            return render(request, "form_errors.html", context={'form': form})
-
-@method_decorator(login_required, name='dispatch')
-class SzczegolyCzesciView(UpdateView):
-    model = Czesc
-    fields = '__all__'
-    template_name_suffix = ('_update_form')
-    success_url = ('/lista_czesci/')
 
 
-@method_decorator(login_required, name='dispatch')
-class UzyjCzesciView(View):
-    def post(self, request):
-        form = CenaKlientForm()
-        czesci_lista = request.POST.getlist('checks')
-        # print(czesci_lista)
-
-        query_list = []
-        total_koszt = []
-        for el in czesci_lista:
-            czesc = Czesc.objects.get(pk=el)
-            marka_czesci = czesc.marka.id
-            query_list.append(czesc)
-            total_koszt.append(czesc.cena_zak)
-        total = sum(total_koszt)
-        saldo = saldo_sms()
-        marka = Marka.objects.get(pk=marka_czesci)
-        # print(marka)
-        usluga = Usluga.objects.filter(czesci=True)
-        serwisy = DodajSerwis.objects.filter(usluga__in=usluga).filter(
-            naprawa=True).filter(marka=marka)
-        ctx = {
-            'form': form,
-            'query_list': query_list,
-            'total': total,
-            'marka': marka,
-            'serwisy': serwisy,
-            'saldo': saldo,
-            'czesci_lista': czesci_lista
-        }
-        return render(request, 'wydaj_serwis_czesci.html', ctx)
 
 
-@method_decorator(login_required, name='dispatch')
-class WydajSerwisCzesciView(View):
-    def post(self, request):
-        czesci_lista = request.POST.getlist('checks')
-        koszt = request.POST.get('koszt')
-        serwis_id = request.POST.get('serwis_id')
-        print(serwis_id)
-        cena_zgoda = request.POST.get('cena_klient')
-
-        total_koszt = []
-        query_list = []
-
-        usluga = Usluga.objects.filter(czesci=True)
-        premia = PremiaJob.objects.filter(usluga__in=usluga).last()
-        # print(premia.check)
-
-        if serwis_id != "":
-            serwis = DodajSerwis.objects.get(pk=serwis_id)
-            if not premia:
-                # print("not")
-                premia = PremiaJob.objects.create(
-                    check=serwis_id,
-                    sklep=request.user.sklep_dzisiaj,
-                    pracownik=request.user,
-                    usluga=serwis.usluga,
-                    model=serwis.model,
-                    cena_klient=cena_zgoda,
-                    koszt=koszt)
-                if len(czesci_lista) > 0:
-                    for el in czesci_lista:
-                        czesc = Czesc.objects.get(pk=el)
-                        query_list.append(czesc)
-                        total_koszt.append(czesc.cena_zak)
-                        if czesc.ilosc > 0:
-                            czesc.ilosc -= 1
-
-                        marka = czesc.marka
-                        czesc.save()
-                        koszt = sum(total_koszt)
-                else:
-                    koszt = 0
-                serwis.status = "4"
-                serwis.naprawa = False
-                serwis.serwisant = request.user
-                serwis.save()
-                zysk = int(cena_zgoda) - koszt
-
-                subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
-                    premia.sklep, premia.pracownik)
-                text = "{} wykonał {} w {} za {} zysk {}".format(
-                    premia.pracownik, premia.usluga, premia.model,
-                    premia.cena_klient, zysk)
-                send_email(subject, text)
-
-            else:
-                if int(premia.check) != int(serwis_id):
-                    print("jestem tutuaj")
-                    print(premia.check)
-                    print(serwis_id)
-                    premia = PremiaJob.objects.create(
-                        check=serwis_id,
-                        sklep=request.user.sklep_dzisiaj,
-                        pracownik=request.user,
-                        usluga=serwis.usluga,
-                        model=serwis.model,
-                        cena_klient=cena_zgoda,
-                        koszt=koszt)
-
-                    if len(czesci_lista) > 0:
-                        for el in czesci_lista:
-                            czesc = Czesc.objects.get(pk=el)
-                            query_list.append(czesc)
-                            total_koszt.append(czesc.cena_zak)
-                            if czesc.ilosc > 0:
-                                czesc.ilosc -= 1
-
-                            marka = czesc.marka
-                            czesc.save()
-                            koszt = sum(total_koszt)
-                    else:
-                        koszt = 0
-                    serwis.status = "4"
-                    serwis.naprawa = False
-                    serwis.serwisant = request.user
-                    serwis.save()
-
-                    zysk = int(cena_zgoda) - koszt
-
-                    subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
-                        premia.sklep, premia.pracownik)
-                    text = "{} wykonał {} w {} za {} zysk {}".format(
-                        premia.pracownik, premia.usluga, premia.model,
-                        premia.cena_klient, zysk)
-                    send_email(subject, text)
-            return HttpResponseRedirect('/lista_serwisow_gotowych/')
-
-        return HttpResponseRedirect('/RETURNERRORS/')
-
-@method_decorator(login_required, name='dispatch')
-class WydajSerwisCzesci2View(View):
-    def post(self, request):
-        czesci_lista = request.POST.getlist('checks')
-        koszt = request.POST.get('koszt')
-        serwis_id = request.POST.get('serwis_id')
-        print(serwis_id)
-        cena_zgoda = request.POST.get('cena_klient')
-
-        total_koszt = []
-        query_list = []
-
-        usluga = Usluga.objects.filter(czesci=True)
-        premia = PremiaJob.objects.filter(usluga__in=usluga).last()
-        # print(premia.check)
-
-        if serwis_id != "":
-            serwis = DodajSerwis.objects.get(pk=serwis_id)
-            if not premia:
-                # print("not")
-                premia = PremiaJob.objects.create(
-                    check=serwis_id,
-                    sklep=request.user.sklep_dzisiaj,
-                    pracownik=request.user,
-                    usluga=serwis.usluga,
-                    model=serwis.model,
-                    cena_klient=cena_zgoda,
-                    koszt=koszt)
-                if len(czesci_lista) > 0:
-                    for el in czesci_lista:
-                        czesc = Czesc.objects.get(pk=el)
-                        query_list.append(czesc)
-                        total_koszt.append(czesc.cena_zak)
-                        if czesc.ilosc > 0:
-                            czesc.ilosc -= 1
-
-                        marka = czesc.marka
-                        czesc.save()
-                        koszt = sum(total_koszt)
-                else:
-                    koszt = 0
-                serwis.status = "4"
-                serwis.naprawa = False
-                serwis.serwisant = request.user
-                serwis.save()
-                zysk = int(cena_zgoda) - koszt
-
-                subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
-                    premia.sklep, premia.pracownik)
-                text = "{} wykonał {} w {} za {} zysk {}".format(
-                    premia.pracownik, premia.usluga, premia.model,
-                    premia.cena_klient, zysk)
-                send_email(subject, text)
-
-            else:
-                if int(premia.check) != int(serwis_id):
-                    print("jestem tutuaj")
-                    print(premia.check)
-                    print(serwis_id)
-                    premia = PremiaJob.objects.create(
-                        check=serwis_id,
-                        sklep=request.user.sklep_dzisiaj,
-                        pracownik=request.user,
-                        usluga=serwis.usluga,
-                        model=serwis.model,
-                        cena_klient=cena_zgoda,
-                        koszt=koszt)
-
-                    if len(czesci_lista) > 0:
-                        for el in czesci_lista:
-                            czesc = Czesc.objects.get(pk=el)
-                            query_list.append(czesc)
-                            total_koszt.append(czesc.cena_zak)
-                            if czesc.ilosc > 0:
-                                czesc.ilosc -= 1
-
-                            marka = czesc.marka
-                            czesc.save()
-                            koszt = sum(total_koszt)
-                    else:
-                        koszt = 0
-                    serwis.status = "4"
-                    serwis.naprawa = False
-                    serwis.serwisant = request.user
-                    serwis.save()
-
-                    zysk = int(cena_zgoda) - koszt
-
-                    subject = "Wykonano serwis i uzyto czesci w {} przez {}".format(
-                        premia.sklep, premia.pracownik)
-                    text = "{} wykonał {} w {} za {} zysk {}".format(
-                        premia.pracownik, premia.usluga, premia.model,
-                        premia.cena_klient, zysk)
-                    send_email(subject, text)
-            return HttpResponseRedirect('/lista_serwisow_gotowych/')
-
-        return HttpResponseRedirect('/RETURNERRORS/')
 
 
-@method_decorator(login_required, name='dispatch')
-class GetServiceForItems(View):
-    def get(self, request, pk):
-        service = DodajSerwis.objects.get(pk=pk)
-        marka = service.marka
-        items = Czesc.objects.filter(marka=marka)
-        page = request.GET.get('page')
-        paginator = Paginator(items, page_records)
-        items_pagi = paginator.get_page(page)
-        ctx = {'serwis': service,"czesc": items_pagi}
-        return render(request, 'lista_czesci_serwis.html', ctx)
 
-@method_decorator(login_required, name='dispatch')
-class UzyjCzesciSerwisView(View):
-    def post(self, request):
-        form = CenaKlientForm()
-        czesci_lista = request.POST.getlist('checks')
-        serwis_id = request.POST.get('serwis_id')
-        serwis=DodajSerwis.objects.get(pk=serwis_id)
 
-        query_list = []
-        total_koszt = []
-        for el in czesci_lista:
-            czesc = Czesc.objects.get(pk=el)
-            marka_czesci = czesc.marka.id
-            query_list.append(czesc)
-            total_koszt.append(czesc.cena_zak)
-        total = sum(total_koszt)
-        saldo = saldo_sms()
-        marka = Marka.objects.get(pk=marka_czesci)
-        # print(marka)
-        usluga = Usluga.objects.filter(czesci=True)
-        serwisy = DodajSerwis.objects.filter(usluga__in=usluga).filter(
-            naprawa=True).filter(marka=marka)
-        ctx = {
-            'form': form,
-            'query_list': query_list,
-            'total': total,
-            'marka': marka,
-            'serwis': serwis,
-            'saldo': saldo,
-            'czesci_lista': czesci_lista
-        }
-        return render(request, 'wydaj_serwis_czesci2.html', ctx)
+
+
+
+
+
+# @method_decorator(login_required, name='dispatch')
+# class TelefonView(CreateView):
+#     model = Telefon
+#     form_class = TelefonCreateForm
+#     success_url = reverse_lazy("telefony_magazyn")
+
+# def form_valid(self, form):
+#     pracownik = self.request.user
+#     Telefon = form.save(commit=False)
+#     Telefon.sklep = Sklep.objects.get(pk=1)
+#     return super().form_valid(form)

@@ -23,8 +23,10 @@
                 {% for pracownik in pracownicy %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
+                    <!-- <td><img class="img-fluid img-thumbnail pracownik"
+                            src="{{MEDIA_URL}}/static/media/{{pracownik.photo}}"></td> -->
                     <td><img class="img-fluid img-thumbnail pracownik"
-                            src="{{MEDIA_URL}}/static/media/{{pracownik.photo}}"></td>
+                            src="https://miktelpremium.s3.eu-north-1.amazonaws.com/media/{{pracownik.photo}}"></td>
                     <td>{{pracownik.username}}</td>
                     <td>{{pracownik.first_name}}</td>
                     <td>{{pracownik.last_name}}</td>

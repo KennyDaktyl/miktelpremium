@@ -3,7 +3,8 @@ import smtplib
 from googlevoice.util import input
 from googlevoice import Voice
 from smsapi.client import SmsApiPlClient
-from miktel.models import UmowaKomisowaNew
+from smsapi.exception import SmsApiException
+from .models import UmowaKomisowaNew
 
 from datetime import datetime
 
@@ -38,11 +39,11 @@ def numer_umowy():
             print("jestem w else if")
     number = (str(number_indx), "/", str(miesiac), "/", str(rok))
     if number_indx < 10:
-        number_format = f"00{number_indx} / {miesiac} / {rok}"
+        number_format = f"00{number_indx}/{miesiac}/{rok}"
     if 100 > number_indx > 9:
-        number_format = f"0{number_indx} / {miesiac} / {rok}"
+        number_format = f"0{number_indx}/{miesiac}/{rok}"
     if number_indx > 99:
-        number_format = f"{number_indx} / {miesiac} / {rok}"
+        number_format = f"{number_indx}/{miesiac}/{rok}"
     print(number_format)
     return number_format
 
@@ -55,8 +56,13 @@ def send(to, message):
     send_results = client.sms.send(to=to, message=message)
 
     for result in send_results:
-        print(result.id, result.status, result.points, result.error)
-    return send_results
+        print(result.id, result.points, result.error)
+    # try:
+    #     contact = client.sms.send(to=to)
+    # except SmsApiException as e:
+    #     print(e.message, e.code)
+
+    # return send_results
 
 
 def saldo_sms():
@@ -75,7 +81,7 @@ def send_email(subject, text):
     user = gmail_user
     password = gmail_password
     FROM = 'miktelgsm@miktelgsm.pl'
-    TO = ['kennydak@interia.pl']
+    TO = ['miktelgsm@miktelgsm.pl', 'kennydak@interia.pl']
     SUBJECT = strip_non_ascii(subject)
     TEXT = strip_non_ascii(text)
 

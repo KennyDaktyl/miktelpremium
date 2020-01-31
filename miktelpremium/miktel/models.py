@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from miktel.choices_field import *
+from django.db.models import Count
 
 # from miktel2.function import numer_umowy
-
+from datetime import datetime
 from django.db.models import Count
 
 # Create your models here.
+miesiac = datetime.now().month
+rok = datetime.now().year
 
 
 class MyUser(AbstractUser):
@@ -61,7 +64,7 @@ class Foto(models.Model):
     used = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.title)
+        return str(self.foto)
 
 
 class Sklep(models.Model):
@@ -71,13 +74,113 @@ class Sklep(models.Model):
                              null=True,
                              blank=True)
     adres = models.ForeignKey("Adres", on_delete=models.CASCADE)
+    serwis_zew = models.BooleanField(default=False)
 
     class Meta:
         ordering = ("nazwa", )
 
+    def telefony_mag(self):
+        telefony = Telefon.objects.filter(dostepny=True).filter(
+            zawieszony=False).filter(magazyn_aktualny=self).count()
+        telefony_mag = telefony
+        return telefony_mag
+
+    def phones_price_sum(self):
+        phones_price_sum = 0
+        phones = Telefon.objects.filter(magazyn_aktualny=self).filter(
+            dostepny=True).filter(zawieszony=False)
+        for el in phones:
+            phones_price_sum += el.cena_zak
+        return round(phones_price_sum, 2)
+
+    def telefony_mag_zaw(self):
+        telefony = Telefon.objects.filter(dostepny=True).filter(
+            zawieszony=True).filter(magazyn_aktualny=self).count()
+        telefony_mag_zaw = telefony
+        return telefony_mag_zaw
+
+    def telefony_buy(self):
+        telefony = PremiaJob.objects.filter(usluga__zakup=True).filter(
+            sklep=self).filter(data__month=miesiac, data__year=rok).count()
+        telefony_buy = telefony
+        return telefony_buy
+
+    def telefony_sell(self):
+        telefony = PremiaJob.objects.filter(usluga__sprzedaz=True).filter(
+            sklep=self).filter(data__month=miesiac, data__year=rok).count()
+        telefony_sell = telefony
+        return telefony_sell
+
+    def czesci_mag(self):
+        czesci = Czesc.objects.filter(dostepny=True).filter(sklep=self)
+        # czesci_mag = czesci
+        tab = []
+        for el in czesci:
+            tab.append(el.ilosc)
+        suma = sum(tab)
+        return suma
+
+    def serwis_mag(self):
+
+        serwis = DodajSerwis.objects.filter(status=1).filter(
+            sklep=self).filter(data__month=miesiac, data__year=rok).count()
+        serwis_mag = serwis
+        return serwis_mag
+
+    def serwis_ready(self):
+        serwis = DodajSerwis.objects.filter(status=4).filter(
+            sklep=self).filter(data_wydania__month=miesiac,
+                               data_wydania__year=rok).count()
+        serwis_ready = serwis
+        return serwis_ready
+
+    def serwis_month(self):
+
+        serwis = DodajSerwis.objects.filter(status=5).filter(
+            sklep=self).filter(data_wydania__month=miesiac,
+                               data_wydania__year=rok).count()
+        serwis_month = serwis
+        return serwis_month
+
+    def serwis_reklamacja(self):
+
+        serwis_reklamacja = DodajSerwis.objects.filter(status=7).filter(
+            sklep=self).filter(data__month=miesiac, data__year=rok).count()
+        reklamacja_seriws = serwis_reklamacja
+        return reklamacja_seriws
+
+    def serwis_zysk(self):
+
+        serwis_zysk = PremiaJob.objects.filter(usluga__czesci=True).filter(
+            sklep=self).filter(data__month=miesiac, data__year=rok)
+        zysk = []
+        if len(serwis_zysk) > 0:
+            for el in serwis_zysk:
+                zysk.append(el.cena_klient - el.koszt)
+                zysk_gsm = sum(zysk)
+        else:
+            zysk = [0]
+            zysk_gsm = sum(zysk)
+        return zysk_gsm
+
+    def serwis_g_zysk(self):
+
+        serwis_zysk = PremiaJob.objects.filter(usluga__grawer=True).filter(
+            sklep=self).filter(data__month=miesiac, data__year=rok)
+        zysk = []
+        if len(serwis_zysk) > 0:
+            for el in serwis_zysk:
+                zysk.append(el.cena_klient - el.koszt)
+                zysk_gsm = sum(zysk)
+        else:
+            zysk = [0]
+            zysk_gsm = sum(zysk)
+        return zysk_gsm
+
+        el.serwis_g_zysk
+
     def __str__(self):
-        return str(self.nazwa) + ", " + str(self.adres.miasto) + ", " + str(
-            self.id)
+        return str(self.nazwa) + ", " + str(self.adres.miasto)
 
 
 # Dokumenty i telefony
@@ -133,9 +236,9 @@ class Telefon(models.Model):
                                choices=StanTelefonu)
     kategoria = models.ForeignKey("Kategoria", on_delete=models.CASCADE)
     nazwa = models.CharField(verbose_name="Model", max_length=64)
-    imei = models.CharField(verbose_name="imei", max_length=14)
+    imei = models.CharField(verbose_name="imei", max_length=15)
     cena_zak = models.FloatField()
-    cena_sprzed = models.IntegerField(blank=True, null=True)
+    cena_sprzed = models.FloatField(blank=True, null=True)
     sklep = models.ForeignKey("Sklep",
                               on_delete=models.CASCADE,
                               blank=True,
@@ -147,6 +250,7 @@ class Telefon(models.Model):
                                      related_name="sklep_sprzadzy")
 
     dostepny = models.BooleanField(default=True)
+    zawieszony = models.BooleanField(default=False)
     dokument = models.BooleanField(default=False)
 
     pracownik_zak = models.ForeignKey(
@@ -163,11 +267,42 @@ class Telefon(models.Model):
         on_delete=models.CASCADE,
         related_name="sprzdawal",
     )
+    data_wprow = models.DateField(
+        null=True,
+        blank=True,
+    )
+    data_sprzed = models.DateField(
+        null=True,
+        blank=True,
+    )
+    data_zmiany = models.DateField(
+        verbose_name="Data zmiany (YYYY-MM-DD)",
+        null=True,
+        blank=True,
+    )
+    nr_doc = models.CharField(
+        verbose_name="Nr dokumentu",
+        max_length=64,
+        blank=True,
+        null=True,
+    )
+    magazyn_aktualny = models.ForeignKey("Sklep",
+                                         verbose_name="Aktualnie dostępny w:",
+                                         on_delete=models.CASCADE,
+                                         blank=True,
+                                         null=True,
+                                         related_name="Sklep_aktualny")
+    info = models.CharField(
+        verbose_name="Informacje",
+        max_length=256,
+        blank=True,
+        null=True,
+    )
 
     # zdjecia = models.ManyToManyField("Foto", blank=True)
 
     class Meta:
-        ordering = ("marka", "nazwa")
+        ordering = ("-id", "marka", "nazwa")
 
     @property
     def zysk(self):
@@ -199,7 +334,8 @@ class Telefon(models.Model):
         return price_tax
 
     def __str__(self):
-        return str(self.marka) + " " + str(self.nazwa) + " " + str(self.imei)
+        return str(self.id) + " " + str(self.marka) + " " + str(
+            self.nazwa) + " " + str(self.imei)
         # return str(self.nazwa) + " " + str(self.imei)
 
 
@@ -231,23 +367,15 @@ class FakturaZakupu(models.Model):
     telefon = models.ManyToManyField("Telefon")
     pracownik_zak = models.ForeignKey("MyUser", on_delete=models.CASCADE)
 
-    # vat = models.BooleanField(default=True)
-
-    # @property
-    # def get_invoice_number2(self):
-    #     telefony = Telefon.objects.all()
-
-    #     for el in telefony:
-    #         print(el)
+    def invoice_sum(self):
+        suma = 0
+        for phone in self.telefon.all():
+            suma += phone.cena_zak
+        suma = round(suma, 2)
+        return suma
 
     def __str__(self):
         return str(self.numer) + " " + str(self.hurtownia.nazwa)
-
-
-# class Magazyn(model.Model):
-#     tele = models.ForeignKey(Telefon, on_delete=models.CASCADE)
-#     umowa = models.ForeignKey(UmowaKomisowaNew, on_delete=models.CASCADE)
-#     faktura = models.ForeignKey(FakturaZakupu, on_delete=models.CASCADE)
 
 
 class Hurtownia(models.Model):
@@ -350,8 +478,8 @@ class PremiaJob(models.Model):
             return diction
 
     def __str__(self):
-        return (str(self.usluga.nazwa) + " " + str(self.usluga) + " " +
-                str(self.pracownik) + " " + str(self.data))
+        return str(self.check) + " " + str(self.data) + " " + str(self.usluga.nazwa) + " " + str(
+            self.usluga) + " " + str(self.pracownik)
 
 
 class InnePracePremiowane(models.Model):
@@ -388,7 +516,7 @@ class DodajSerwis(models.Model):
                               on_delete=models.CASCADE,
                               default=1)
     model = models.CharField(max_length=128, blank=True, null=True)
-    imei = models.CharField(max_length=14, blank=True, null=True)
+    imei = models.CharField(max_length=15, blank=True, null=True)
     cena_zgoda = models.IntegerField(verbose_name="Cena naprawy",
                                      blank=True,
                                      null=True,
@@ -399,7 +527,7 @@ class DodajSerwis(models.Model):
                                 default=0)
     data = models.DateTimeField(auto_now_add=True)
     data_wydania = models.DateTimeField(blank=True, null=True)
-    numer_telefonu = models.CharField(max_length=15, blank=True, null=True)
+    numer_telefonu = models.CharField(max_length=9, blank=True, null=True)
     imie_nazwisko = models.CharField(max_length=64, blank=True, null=True)
     status = models.IntegerField(verbose_name="Status naprawy",
                                  choices=STATUS_NAPRAWY,
@@ -408,8 +536,14 @@ class DodajSerwis(models.Model):
     archiwum = models.BooleanField(default=False)
     naprawa = models.BooleanField(default=True)
 
+    def get_service_zysk(self):
+        zysk = self.cena_zgoda - self.koszt
+        zysk = round(zysk, 2)
+        return zysk
+
     def __str__(self):
-        return str(self.model) + " " + str(self.usluga)
+        return str(self.id) + " " + str(self.data) + " " + str(
+            self.marka) + " " + str(self.model) + " " + str(self.usluga)
 
 
 class Czesc(models.Model):

@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO 200 WYNIKÓW!</label>
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO {{page_records}} wyników!</label>
     </div>
     <div class="row col-8 m-2">
         <select name="szukaj" id="search2">
@@ -35,30 +35,34 @@
                 <th scope="col">imei</th>
                 <th scope="col">Numer telefonu</th>
                 <th scope="col">Zapłacono</th>
+                <th scope="col">Zysk</th>
                 <th scope="col">Naprawiano</th>
                 <th scope="col">Klient</th>
                 <th scope="col">Przyjmujący</th>
                 <th scope="col">Naprawiający</th>
                 <th scope="col">Sklep</th>
+                <th scope="col">Info</th>
             </tr>
         </thead>
         <tbody>
             {% for el in serwisy %}
 
             <tr class="lista">
-                <th scope="row">{{ forloop.counter }}</th>
+                <th scope="row">{{ serwisy.start_index|add:forloop.counter0 }}</th>
                 <td>{{el.id}}</td>
                 <td>{{el.data_wydania}}</td>
                 <td>{{el.model}}</td>
                 <td>{{el.imei}}</td>
                 <td>{{el.numer_telefonu}}</td>
                 <td>{{el.cena_zgoda}}</td>
+                <td>{{el.get_service_zysk}}</td>
                 <td>{{el.usluga.nazwa}}</td>
                 <td>{{el.imie_nazwisko}}</td>
                 <!-- <td>{{el.get_status_display}}</td> -->
                 <td>{{el.pracownik}}</td>
                 <td>{{el.serwisant}}</td>
                 <td>{{el.sklep}}</td>
+                <td>{{el.info}}</td>
                 <td><a href="/reklamacja_serwis/{{el.id}}">Przyjmij reklamację</a><br>
             </tr>
 
@@ -67,7 +71,7 @@
     </table>
 </div>
 
-<div class="col-8 input-group mb-3 mx-auto">
+<div class="col-12 input-group mb-3 mx-auto">
     <div class="col-1"></div>
     <nav aria-label="...">
         {% if serwisy.has_other_pages %}
@@ -109,6 +113,5 @@
         {% endif %}
     </nav>
 </div>
-<div class="col-1"></div>
-</div>
+
 {% endblock %}

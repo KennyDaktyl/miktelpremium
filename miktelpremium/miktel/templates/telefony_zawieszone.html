@@ -4,19 +4,13 @@
 <div class="container-fluid mr-auto">
     <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO {{page_records}} wyników!</label>
     </div>
-    <!-- <div class="row col-8 m-2">
+    <div class="row col-8 m-2">
         <select name="szukaj" id="search2">
             <option value="{{el.nazwa}}">Wybierz sklep</option>
             {% for el in sklepy %}
             <option value="{{el.nazwa}}">{{el.nazwa}}{{el.adres.miasto}}</option>
             {% endfor %}
         </select>
-    </div> -->
-    <div class="row col-sm-12 col-lg-6">
-        {% for el in shops %}
-        <a class="col-sm-3 col-lg-3 m-1 mx-auto" href="/telefony_dostepne_magazyn/{{el.id}}"> <button
-                class="btn-secondary ">{{el.nazwa}}</button></a>
-        {% endfor %}
     </div>
 
     <form method="POST" class="row col-10 m-2">
@@ -47,14 +41,14 @@
 
 </div>
 <div class="row col-12 mt-2 mx-auto">
-    <h1>Telefony dostępne MAGAZYN:</h1>
+    <h1>Telefony ZAWIESZONE:</h1>
     <table class="table table-dark">
         <thead>
             <tr>
                 <th scope="col">L.P.</th>
                 <th scope="col">I.D.</th>
                 <th scope="col">Sprzedaż</th>
-                <th scope="col">Data zak.</th>
+                <th scope="col">Data przyj.</th>
                 <th scope="col">Kategoria</th>
                 <th scope="col">Marka</th>
                 <th scope="col">Nazwa</th>
@@ -63,7 +57,6 @@
                 <th scope="col">Imei</th>
                 <th scope="col">Stan</th>
                 <th scope="col">Miejsce zakupu</th>
-                <th scope="col">Wprowadził</th>
                 <th scope="col">Aktaulnie w:</th>
                 <th scope="col">Dokument</th>
                 <th scope="col">Informacje</th>
@@ -76,9 +69,9 @@
             <tr class="lista">
                 <th scope="row">{{ telefony.start_index|add:forloop.counter0 }}</th>
                 <td>{{el.id}}</td>
-                <td><a href="/sell_phones/{{el.id}}">Sprzedaj</a></td>
+                <td><a href="/reklamacja/{{el.id}}">Przywróć</a></td>
 
-                <td>{{el.data_wprow}}</td>
+                <td>{{el.data_zmiany}}</td>
                 <td>{{el.kategoria.nazwa}}</td>
                 <td>{{el.marka.nazwa}}</td>
                 <td>{{el.nazwa}}</td>
@@ -87,7 +80,6 @@
                 <td>{{el.imei}}</td>
                 <td>{{el.get_stan_display}}</td>
                 <td>{{el.sklep}}</td>
-                <td>{{el.pracownik_zak}}</td>
                 <td>{{el.magazyn_aktualny}}<br><a href="/change_mag/{{el.id}}">Zmień</a></td>
                 </td>
                 {% if el.nr_doc.strip %}
@@ -95,10 +87,11 @@
                 {% else %}
                 <td>Brak dok.</td>
                 {% endif %}
+
                 {% if el.info.strip %}
                 <td>{{el.info}}<br><a href="/add_info/{{el.id}}">Zmiany</a></td>
                 {% else %}
-                <td><a href="/add_info/{{el.id}}">Zmiany</a></td>
+                <td></td>
                 {% endif %}
                 {% endfor %}
         </tbody>

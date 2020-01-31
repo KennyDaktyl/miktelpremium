@@ -1,0 +1,204 @@
+<html lang="pl">
+
+
+<head>
+
+    <title>Title</title>
+    <style type="text/css">
+        body {
+            font-family: 'Arial Unicode MS';
+            font-weight: 200;
+            font-size: 10px;
+        }
+
+        div.box {
+            width: 100%;
+            height: 400px;
+            border: 1px solid;
+        }
+
+        div.box2 {
+            margin-top: 90px;
+        }
+
+        div.naglowek {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .naglowek div {
+            width: 50%;
+        }
+
+        div.prawy {
+            margin: 10px auto;
+        }
+
+        div.linia {
+            border: 1px solid;
+            width: 100%;
+        }
+
+        div.tytul {
+            width: 100%;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        div.model {
+            width: 38%;
+        }
+
+        p.text {
+            font-size: 7px;
+            text-align: left;
+        }
+
+        .naglowek p {
+            margin: 10px 20px 15px 20px;
+        }
+
+        .naglowek span {
+            margin: 10px 20px 15px 20px;
+        }
+
+
+        div.right {
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class='wrapper'>
+        <div class="box">
+            <div class="naglowek">
+                <div>
+                    <p class="left">Miejsce Przyjęcia serwisu</p>
+                    <p class="left"><b>{{serwis.sklep}}</b></p>
+                </div>
+                <div class="right">
+                    <p class="right">Data przyjęcia</p>
+                    <p class="right"><b>{{serwis.data}}</b></p>
+                </div>
+                <div class="tytul">Potwierdzenie przyjęcia produktu do naprawy</div>
+                <div class="tytul">Numer zgłoszenia: {{serwis.id}}</div>
+                <div></div>
+                <div class="prawy">Dane klienta: {{serwis.imie_nazwisko}} Telefon: {{serwis.numer_telefonu}}</div>
+                <div class="linia"></div>
+                <div class="model">
+                    <p>Model: {{serwis.marka}} {{serwis.model}}</p>
+                    <p>Imei: {{serwis.imei}}</p>
+                </div>
+                <div class="usterka">
+                    <p>Czy telefon jest sprawny?: [ ]</p>
+                </div>
+                <div class="linia"></div>
+                <div class="model">
+                    <p>Zgoda na naprawę do kwoty: {{serwis.cena_zgoda}}</p>
+                    <p>Info: {{serwis.info}}</p>
+                </div>
+                <div class="usterka">
+                    <p>Usterka: {{serwis.usluga.nazwa}}</p>
+                </div>
+                <div class="tytul text">
+                    <p class="text">
+                        Towar oddany na naprawę gwarancyjną lub pogwarancyjną zostanie naprawiony w ciągu 21 dni
+                        roboczych,
+                        okres ten może się wydłużyć o czas sprowadzenia części.
+                        Serwis nie odpowiada za utratę: kart pamięci, kart sim, zawieszek, wisiorków jak i danych takich
+                        jak:
+                        smsy, kontakty itp.
+                        W przypadku braku kontaktu i nieodebrania towaru po upływie 60 dni od dostarczenia, towar
+                        traktuje
+                        się
+                        jako wolę wyzbycia co skutkuje uznaniem sprzętu za porzucony
+                        zgodnie z art. 180 K.C. w związku z art. 60 K.C.
+                        Sprzęt zostanie wydany klientowi tylko za okazaniem potwierdzenia przyjęcia produktu do naprawy.
+                        Oddając sprzęt do naprawy klient zgadza się na powyższe warunki.
+                        Gwarancją 3-miesięczną objęta jest cześć będąca przedmiotem usługi serwisowej oraz jej montaż.
+                        Nie
+                        obowiązuje podczas naprawy sprzętu, który miał kontak z
+                        cieczą
+                    </p>
+                </div>
+                <div>
+                    <p></p>
+                    <p></p>
+                    <span>...............................................</span><br>
+                    <span>[*] Wyrażam zgodę na wysłanie wiadomości sms</span>
+                </div>
+
+            </div>
+        </div>
+        <div class="box box2">
+            <div class="naglowek">
+                <div>
+                    <p class="left">Miejsce Przyjęcia serwisu</p>
+                    <p class="left"><b>{{serwis.sklep}}</b></p>
+                </div>
+                <div class="right">
+                    <p class="right">Data przyjęcia</p>
+                    <p class="right"><b>{{serwis.data}}</b></p>
+                </div>
+                <div class="tytul">Potwierdzenie przyjęcia produktu do naprawy</div>
+                <div class="tytul">Numer zgłoszenia: {{serwis.id}}</div>
+                <div></div>
+                <div class="prawy">Dane klienta: {{serwis.imie_nazwisko}} Telefon: {{serwis.numer_telefonu}}</div>
+                <div class="linia"></div>
+                <div class="model">
+                    <p>Model: {{serwis.marka}} {{serwis.model}}</p>
+                    <p>Imei: {{serwis.imei}}</p>
+                </div>
+                <div class="usterka">
+                    <p>Usterka: {{serwis.usluga.nazwa}}</p>
+                </div>
+                <div class="linia"></div>
+                <div class="model">
+                    <p>Zgoda na naprawę do kwoty: {{serwis.cena_zgoda}}</p>
+                    <p>Info: {{serwis.info}}</p>
+                </div>
+                <div class="usterka">
+                    <p>Usterka: {{serwis.usluga.nazwa}}</p>
+                </div>
+                <div class="tytul text">
+                    <p class="text">
+                        Towar oddany na naprawę gwarancyjną lub pogwarancyjną zostanie naprawiony w ciągu 21 dni
+                        roboczych,
+                        okres ten może się wydłużyć o czas sprowadzenia części.
+                        Serwis nie odpowiada za utratę: kart pamięci, kart sim, zawieszek, wisiorków jak i danych takich
+                        jak:
+                        smsy, kontakty itp.
+                        W przypadku braku kontaktu i nieodebrania towaru po upływie 60 dni od dostarczenia, towar
+                        traktuje
+                        się
+                        jako wolę wyzbycia co skutkuje uznaniem sprzętu za porzucony
+                        zgodnie z art. 180 K.C. w związku z art. 60 K.C.
+                        Sprzęt zostanie wydany klientowi tylko za okazaniem potwierdzenia przyjęcia produktu do naprawy.
+                        Oddając sprzęt do naprawy klient zgadza się na powyższe warunki.
+                        Gwarancją 3-miesięczną objęta jest cześć będąca przedmiotem usługi serwisowej oraz jej montaż.
+                        Nie
+                        obowiązuje podczas naprawy sprzętu, który miał kontak z
+                        cieczą
+                    </p>
+                </div>
+                <div>
+                    <p></p>
+                    <p></p>
+                    <span>...............................................</span><br>
+                    <span>[*] Wyrażam zgodę na wysłanie wiadomości sms</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+</body>
+
+</html>

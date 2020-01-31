@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Uploaded at</th>
+            <th>Size</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for foto in fotoss %}
+        <tr>
+            <td><a href="{{ foto.upload.url }}" target="_blank">{{ foto.upload.name }}</a></td>
+            <td>{{ foto.uploaded_at }}</td>
+            <td>{{ foto.upload.size|filesizeformat }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No data.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

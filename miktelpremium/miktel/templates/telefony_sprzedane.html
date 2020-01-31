@@ -2,15 +2,13 @@
 
 {% block content %}
 <div class="container-fluid mr-auto">
-    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO 200 WYNIKÓW!</label>
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO {{page_records}} wyników!</label>
     </div>
-    <div class="row col-8 m-2">
-        <select name="szukaj" id="search2">
-            <option value="{{el.nazwa}}">Wybierz sklep</option>
-            {% for el in sklepy %}
-            <option value="{{el.nazwa}}">{{el.nazwa}}{{el.adres.miasto}}</option>
-            {% endfor %}
-        </select>
+    <div class="row col-sm-12 col-lg-6">
+        {% for el in shops %}
+        <a class="col-sm-3 col-lg-3 m-1 mx-auto" href="/telefony_sprzedane_magazyn/{{el.id}}"> <button
+                class="btn-secondary ">{{el.nazwa}}</button></a>
+        {% endfor %}
     </div>
 
     <form method="POST" class="row col-10 m-2">
@@ -29,6 +27,9 @@
         <thead>
             <tr>
                 <th scope="col">L.P.</th>
+                <th scope="col">I.D.</th>
+                <th scope="col">Data zak.</th>
+                <th scope="col">Data sprzed.</th>
                 <th scope="col">Marka</th>
                 <th scope="col">Nazwa</th>
                 <th scope="col">Cena zak.</th>
@@ -41,6 +42,8 @@
                 <th scope="col">Miejsce sprzedaży</th>
                 <th scope="col">Sprzedał</th>
                 <th scope="col">Dokument</th>
+                <th scope="col">Reklamacja</th>
+                <th scope="col">informacje</th>
             </tr>
         </thead>
         <tbody>
@@ -48,6 +51,9 @@
 
             <tr class="lista">
                 <th scope="row">{{ forloop.counter0|add:telefony.start_index }}</<th>
+                <td>{{el.id}}</td>
+                <td>{{el.data_wprow}}</td>
+                <td>{{el.data_sprzed}}</td>
                 <td>{{el.marka.nazwa}}</td>
                 <td>{{el.nazwa}}</td>
                 <td>{{el.cena_zak}}</td>
@@ -59,13 +65,19 @@
                 <td>{{el.pracownik_zak}}</td>
                 <td>{{el.sklep_sprzed}}</td>
                 <td>{{el.pracownik_sprzed}}</td>
-                {% for umowa in umowy %}
-                {% if el.id == umowa.phones.id %}
-                <td>{{umowa.number}}<br><a href="/umowa_imei/{{el.id}}">Umowa</a></td>
+                {% if el.nr_doc.strip %}
+                <td>{{el.nr_doc}}</td>
+                {% else %}
+                <td>Brak dok.</td>
+                {% endif %}
+                <td><a href="/reklamacja/{{el.id}}">Reklamacja</a></td>
+                {% if el.info.strip %}
+                <td>{{el.info}}<br><a href="/add_info/{{el.id}}">Zmiany</a></td>
+                {% else %}
+                <td><a href="/add_info/{{el.id}}">Zmiany</a></td>
                 {% endif %}
                 {% endfor %}
-                <td></td>
-                {% endfor %}
+
         </tbody>
     </table>
 </div>

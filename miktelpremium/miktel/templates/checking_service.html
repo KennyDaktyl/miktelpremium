@@ -28,6 +28,13 @@
             <li class="list-group-item">Nasze koszta:<input name="koszt" value="0" type="number"
                     class="form-control col-2">
             </li>
+            <li class="list-group-item">telefon:<b>
+                    {% if serwis.numer_telefonu.strip %}
+                    {{serwis.numer_telefonu}} </b>
+                {% else %}
+                Brak nie wysyłaj SMSa!
+                {% endif %}
+            </li>
 
             <label for="exampleFormControlSelect1" class="mt-3">Serwis własny czy zewnętrzy?</label>
             <select name="serwis_wlasny" id="wybierz_serwis" class="form-control col-3 mt-3"

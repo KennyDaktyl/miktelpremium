@@ -17,14 +17,39 @@ from miktel.choices_field import *
 tab_marka = [("1", "Apple"), ("2", "Sony")]
 
 
+class UstawFotoForm(forms.ModelForm):
+    class Meta:
+        model = Foto
+        exclude = ['used']
+
+
+class UstawHasloForm(ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = MyUser
+        fields = ['password']
+
+
+class PageRecordsForm(forms.Form):
+    page_records = forms.ChoiceField(choices=IloscRekordow,
+                                     label="Ustaw ilość rekordów na stronie",
+                                     widget=forms.Select(),
+                                     required=True,
+                                     help_text='*')
+
+
 class UmowaKomisowaForm(forms.Form):
     # marka = forms.ModelChoiceField(queryset=Marka.objects.all())
     phones = forms.ModelChoiceField(
-        label="Telefon", queryset=Telefon.objects.filter(dokument=False))
+        label="Telefon",
+        queryset=Telefon.objects.filter(dokument=False).filter(dostepny=True))
     # nazwa = forms.CharField(label='Nazwa modelu', max_length=64)
     komitent = forms.CharField(label="Imię i nazwisko komitenta",
                                max_length=128)
-    adres_komitenta = forms.CharField(label="Zamieszkały", max_length=128)
+    adres_komitenta = forms.CharField(label="Zamieszkały",
+                                      max_length=128,
+                                      required=False)
     numer_dowodu = forms.CharField(label="Numer dowodu",
                                    min_length=3,
                                    max_length=9)
@@ -33,7 +58,7 @@ class UmowaKomisowaForm(forms.Form):
 class FakturaZakupuForm(forms.Form):
     numer = forms.CharField(label="Numer faktury",
                             min_length=3,
-                            max_length=128)
+                            max_length=64)
     hurtownia = forms.ModelChoiceField(label="Hurtownia",
                                        queryset=Hurtownia.objects.all())
     telefon = forms.ModelMultipleChoiceField(
@@ -45,7 +70,9 @@ class TelefonCreateForm(forms.ModelForm):
     class Meta:
         model = Telefon
         exclude = ("sklep", "dostepny", "dokument", "zdjecia",
-                   "pracownik_sprzed", 'pracownik_zak', 'sklep_sprzed')
+                   "pracownik_sprzed", 'pracownik_zak', 'sklep_sprzed',
+                   'zawieszony', 'data_wprow', 'data_sprzed', 'nr_doc',
+                   'magazyn_aktualny')
         help_texts = {
             "imei": "wpisz minimum 4 ostatnich cyfr",
             "cena_zak": "wpisz cenę Brutto jeśli kupujesz na Vat",
@@ -58,17 +85,22 @@ class GetServiceForm(forms.Form):
         queryset=Usluga.objects.filter(sprzedaz=False).filter(
             zakup=False).filter(grawer=False).filter(akcesoria=False))
     marka = forms.ModelChoiceField(label="Marka", queryset=Marka.objects.all())
-    model = forms.CharField(label="Nazwa modelu", min_length=3, max_length=128)
-    imei = forms.CharField(min_length=4, max_length=14)
+    model = forms.CharField(label="Nazwa modelu",
+                            min_length=2,
+                            max_length=128,
+                            help_text='*')
+    imei = forms.CharField(min_length=4, max_length=15, help_text='*')
     cena_zgoda = forms.IntegerField(label="Wstępna wycena naprawy",
                                     min_value=0,
-                                    max_value=10000)
+                                    max_value=10000,
+                                    help_text='*')
     numer_telefonu = forms.CharField(label="Numer telefonu do klienta",
                                      min_length=9,
-                                     max_length=14)
+                                     max_length=9,
+                                     required=False)
     imie_nazwisko = forms.CharField(label="Dane klienta",
-                                    min_length=5,
-                                    max_length=14)
+                                    required=False,
+                                    max_length=32)
     info = forms.CharField(required=False,
                            label="Dodatkowe informacje",
                            max_length=256)
@@ -77,7 +109,8 @@ class GetServiceForm(forms.Form):
 class ServiceReadyForm(forms.Form):
     cena_zgoda = forms.IntegerField(label="Ostateczna cena za naprawę",
                                     min_value=0,
-                                    max_value=1000)
+                                    max_value=1000,
+                                    help_text='*')
     koszt = forms.IntegerField(required=False,
                                label="Koszty seriwsu",
                                min_value=0,

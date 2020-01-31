@@ -24,10 +24,11 @@
             <li class="list-group-item">Koszt wszystkich czesci: <b>{{total}}</b></li>
             <input type="hidden" name="koszt" value="{{total}}">
             <li class="list-group-item col-12"><b>Podepnij pod przyjęty serwis:</b>
-                <select name="serwis_id" id="wybierz_serwis" class="custom-select m-1 col-2">
+                <select name="serwis_id" id="wybierz_serwis" class="custom-select m-1 col-6">
                     <option value="">Wybierz serwis</option>
                     {% for serwis in serwisy %}
-                    <option value="{{serwis.id}}">{{serwis.model}} <b>Imei: </b>{{serwis.imei}}
+                    <option value="{{serwis.id}}">{{serwis.model}} <b>Imei: </b>{{serwis.imei}} Cena klient:
+                        <b>{{serwis.cena_zgoda}}</b>
                         <b>Telefon do klienta: </b><span id="tele">{{serwis.numer_telefonu}}</span></option>
                     {% endfor %}
                 </select>
@@ -56,13 +57,15 @@
 </div>
 <div class="container mt-2 col-10 mx-auto">
     <div class="row mx-auto">
-        <a class="col-4" href="/lista_czesci/"><button type="button" class="btn btn-danger">Cofnij
-            </button></a>
-        <i class="col-4"></i>
+        <div class=".sm-col-10">
+            <a class=".sm-col-4" href="/lista_czesci/"><button type="button" class="btn btn-danger">Cofnij
+                </button></a>
+            <span class=".sm-col-4 .xl-col-2"></span>
 
-        <button id="ready_button" type="submit" class="btn btn-success">Przejdz do Serwis gotowy do odbioru</button>
+            <button id="ready_button" type="submit" class="btn btn-success .sm-col-4">Przejdz do Serwis gotowy do
+                odbioru</button>
 
+        </div>
     </div>
-</div>
-</form>
-{% endblock %}
+    </form>
+    {% endblock %}

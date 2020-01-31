@@ -11,8 +11,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
+SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
+STATICFILES_DIRS = (os.path.join(SITE_ROOT, 'static/'), )
+
+SETTINGS_PATH = os.path.dirname(os.path.dirname(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -20,13 +26,34 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = 'miktelpremium'
+AWS_S3_CUSTOM_DOMAIN = 's3.eu-north-1'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+STATIC_URL = 'https://miktelpremium/s3.eu-north-1/'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'miktelpremium.storage_backends.MediaStorage'
 
 ACCESS_TOKEN_SMS = os.environ.get('ACCESS_TOKEN_SMS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'miktelpremium.herokuapp.com', 'naprawatelefonu.krakow.pl',
+    'serwisgsm.krakow.pl', 'miktel.krakow.pl', 'localhost'
+]
+
+import socket
+
+if socket.gethostname() == "miktelpremium.herokuapp.com":
+    DEBUG = False
+
+else:
+    DEBUG = True
 
 # Application definition
 
@@ -40,9 +67,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'miktel',
+    'storages',
 ]
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,15 +106,20 @@ WSGI_APPLICATION = 'miktelpremium.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "NAME": "premium03",
-        "ENGINE": "django.db.backends.postgresql",
-        "USER": os.environ.get('DB_USER'),
-        "PASSWORD": os.environ.get('DB_PASSWORD'),
-        "HOST": "localhost",
-    }
-}
+import dj_database_url
+
+PG_URL = os.environ.get("DATABASE_URL")
+DATABASES = {"default": dj_database_url.config(default=PG_URL)}
+
+# DATABASES = {
+#     "default": {
+#         "NAME": "premium03",
+#         "ENGINE": "django.db.backends.postgresql",
+#         "USER": os.environ.get('DB_USER'),
+#         "PASSWORD": os.environ.get('DB_PASSWORD'),
+#         "HOST": "localhost",
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -124,22 +159,34 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = "miktel.MyUser"
 
+# MEDIA_ROOT = os.path.join(BASE_DIR, "static/media/")
+
+# MEDIA_URL = "static/media/images/"
+
+# MEDIA_URL = 'static/media/'
+# MEDIA_URL = "https://{}/{}/".format(AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+MEDIA_URL = 'https://miktelpremium/s3.eu-north-1/media/images/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "static/media/")
 
-MEDIA_URL = "static/media/"
-
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 LOGIN_URL = "/login/"
 
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 3600
 
 DATETIME_FORMAT = "Y-m-d H:M:S"
 USE_L10N = True
 USE_TZ = True
 TIME_ZONE = "Poland"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+django_heroku.settings(locals())

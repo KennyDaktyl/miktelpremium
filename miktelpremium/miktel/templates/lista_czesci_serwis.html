@@ -54,8 +54,8 @@
                     <tr class="lista">
                         <th scope="row">{{ forloop.counter0|add:czesc.start_index }}</th>
                         {% if el.ilosc > 0 %}
-                        <td><input name="checks" class="form-check-input position-static" type="checkbox"
-                                id="blankCheckbox" value="{{el.id}}" aria-label="...">
+                        <td><input name="checks" class="form-check-input form-control-lg position-static"
+                                type="checkbox" id="blankCheckbox" value="{{el.id}}" aria-label="...">
                         </td>
                         {% else %}
                         <td>Brak

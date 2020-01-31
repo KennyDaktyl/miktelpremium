@@ -1,0 +1,1 @@
+web: gunicorn miktelpremium.wsgi --log-file -

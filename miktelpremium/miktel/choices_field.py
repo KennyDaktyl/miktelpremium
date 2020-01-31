@@ -19,25 +19,12 @@ STATUS_NAPRAWY = (
     (7, "Reklamacja"),
 )
 
-StanTelefonu = (
-    (0, "Nowy"),
-    (1, "Używany"),
-    (2, "Bez pudełka")
-)
+StanTelefonu = ((0, "Nowy"), (1, "Używany"), (2, "Bez pudełka"))
 
-StanCzesci = (
-    (0, "Nowy"),
-    (1, "Używany"),
-    (2, "Zamiennik"),
-    (3, "Z demontażu")
-)
-Kolor = (
-    (0, "Czarny"),
-    (1, "Biały"),
-    (2, "Złoty"),
-    (3, "Niebieski"),
-    (4, "Inny")
-)
+StanCzesci = ((0, "Nowy"), (1, "Używany"), (2, "Zamiennik"), (3,
+                                                              "Z demontażu"))
+Kolor = ((0, "Czarny"), (1, "Biały"), (2, "Złoty"), (3, "Niebieski"), (4,
+                                                                       "Inny"))
 
 RODZAJ_PROWIZJI = (
     (0, "Procent"),
@@ -68,14 +55,9 @@ ROK = (
     (5, "2024"),
 )
 
-OD_KOGO = (
-    (0, "Z hurtownii"),
-    (1, "Od klienta")
-)
+OD_KOGO = ((0, "Z hurtownii"), (1, "Od klienta"))
 
-STAN = (
-    (0, "Nowy"),
-    (1, "Używany"),
-    (2, "Refurb"),
-    (3, "Bez pudełka")
-)
+STAN = ((0, "Nowy"), (1, "Używany"), (2, "Refurb"), (3, "Bez pudełka"))
+
+IloscRekordow = ((2, 2), (10, 10), (50, 50), (100, 100), (200, 200), (500,
+                                                                      500))

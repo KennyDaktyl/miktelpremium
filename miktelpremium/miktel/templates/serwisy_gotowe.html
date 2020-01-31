@@ -5,12 +5,17 @@
     <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO 200 WYNIKÓW!</label>
     </div>
     <div class="row col-8 m-2">
-        <select name="szukaj" id="search2">
-            <option value="{{el.nazwa}}">Wybierz sklep</option>
-            {% for el in sklepy %}
-            <option value="{{el.nazwa}}">{{el.nazwa}}{{el.adres.miasto}}</option>
-            {% endfor %}
-        </select>
+        {% for el in sklepy %}
+        {% if el.id != 5  %}
+        {% if el.id == lokal %}
+        <a class="col-3 m-1 ml-2 mr-2 mx-auto" href="/lista_serwisow_gotowych_filter/{{el.id}}"><button
+                class="btn btn-success col-12 mx-auto">{{el}}</button></a>
+        {% else %}
+        <a class="col-3 m-1 ml-2 mr-2 mx-auto" href="/lista_serwisow_gotowych_filter/{{el.id}}"><button
+                class="btn btn-warning col-12 mx-auto">{{el}}</button></a>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
     </div>
 
     <form method="POST" class="row col-10 m-2">
@@ -31,16 +36,20 @@
                 <th scope="col">L.P.</th>
                 <th scope="col">Numer serwisu</th>
                 <th scope="col">Data przyj.</th>
+                <th scope="col">Data naprawy.</th>
                 <th scope="col">Marka</th>
                 <th scope="col">Model</th>
                 <th scope="col">imei</th>
                 <th scope="col">Numer telefonu</th>
                 <th scope="col">Cena ustalona</th>
+                <th scope="col">Koszt</th>
+                <th scope="col">Zysk</th>
                 <th scope="col">Co naprawiamy</th>
                 <th scope="col">Przyjmujący</th>
                 <th scope="col">Naprawiał</th>
                 <th scope="col">Status</th>
-                <th scope="col">Szczegóły</th>
+                <th scope="col">Sklep</th>
+                <th scope="col">Info</th>
             </tr>
         </thead>
         <tbody>
@@ -50,16 +59,20 @@
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>{{el.id}}</td>
                 <td>{{el.data}}</td>
+                <td>{{el.data_wydania}}</td>
                 <td>{{el.marka}}</td>
                 <td>{{el.model}}</td>
                 <td>{{el.imei}}</td>
                 <td>{{el.numer_telefonu}}</td>
                 <td>{{el.cena_zgoda}}</td>
+                <td>{{el.koszt}}</td>
+                <td>{{el.get_service_zysk}}</td>
                 <td>{{el.usluga.nazwa}}</td>
                 <td>{{el.pracownik}}</td>
                 <td>{{el.serwisant}}</td>
                 <td>{{el.get_status_display}}</td>
                 <td>{{el.sklep}}</td>
+                <td>{{el.info}}</td>
                 <!-- <td><a href="{% url 'gotowy_serwis' pk=el.id %}">Gotowy do odbioru</a><a> -->
                 <td><a href="{% url 'wydaj_serwis' pk=el.id %}">Wydaj serwis</a><br>
             </tr>

@@ -23,12 +23,14 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
 
 
 
                 <li class="nav-item dropdown">
+
                     <a class="nav-link dropdown-toggle col-xs-12" href="/zakup_telefonu/" id="navbarDropdown"
                         role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Telefony
@@ -36,9 +38,10 @@
                     <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item col-xs-6" href="/telefony_magazyn/">Telefony na stanie</a>
                         <a class="dropdown-item" href="/telefony_sprzedane/">Telefony sprzedane</a>
+                        <a class="dropdown-item" href="/telefony_zawieszone/">Telefony zawieszone</a>
                         <a class="dropdown-item" href="/umowa_komisowa/">Umowa komisowa</a>
-                        <a class="dropdown-item" href="/faktura_zakupu/">Faktura Vat</a>
                         <a class="dropdown-item" href="/lista_umow/">Lista Umów komisowych</a>
+                        <a class="dropdown-item" href="/faktura_zakupu/">Faktura Vat</a>
                         <a class="dropdown-item" href="/lista_faktur/">Lista Faktura Vat</a>
                         <a class="dropdown-item" href="/dodaj_telefon/">Dodaj telefon</a>
                     </div>
@@ -51,13 +54,12 @@
                         Serwisy
                     </a>
                     <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/dodaj_serwis/">Przyjmij sprzęt do naprawy</a>
                         <a class="dropdown-item" href="/lista_serwisow/">Lista przyjętych serwisów</a>
                         <a class="dropdown-item" href="/lista_serwisow_gotowych/">Lista gotowych serwisów</a>
                         <a class="dropdown-item" href="/archiwum_serwisow/">Archiwum napraw</a>
-                        <a class="dropdown-item" href="/dodaj_czesc/">Dodaj część</a>
                         <a class="dropdown-item" href="/lista_czesci/">Lista części</a>
-
+                        <a class="dropdown-item" href="/dodaj_czesc/">Dodaj część</a>
+                        <a class="dropdown-item" href="/dodaj_serwis/">Przyjmij sprzęt do naprawy</a>
                     </div>
                 </li>
 
@@ -69,7 +71,7 @@
                     <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/dodaj_premiaJob/">Wykonaj usługę premiowaną</a>
                         <a class="dropdown-item" href="/dodaj_inne/">Wykonaj inne prace</a>
-                        <a class="dropdown-item" href="/akcesoria_gsm_miesiąc/">Dodaj miesięczna sumę sprzedaży
+                        <a class="dropdown-item" href="/akcesoria_gsm_miesiąc/">Dodaj miesięczna sumę<br> sprzedaży
                             akcesoriów GSM</a>
                         <a class="dropdown-item" href="/twoje_premie/">Twoje premie bieżący miesiąc</a>
 
@@ -85,7 +87,6 @@
                     </a>
                     <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/dashboard_sklepow/">Usługi premiowane w sklepach</a>
-                        <!-- <a class="dropdown-item" href="/dashboard_sklepow/">Szukaj wg daty</a> -->
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -95,11 +96,16 @@
                     </a>
                     <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="/dodaj_uzytkownika/">Dodaj użytkownika</a>
+                        <a class="dropdown-item" href="/dodaj_foto/">Dodaj foto</a>
+                        <a class="dropdown-item" href="/lista_sklepow/">Lista sklepow</a>
                         <a class="dropdown-item" href="/lista_uzytkownikow/">Lista pracownikow</a>
                         <a class="dropdown-item" href="/dodaj_sklep/">Dodaj sklep/magazyn</a>
                         <a class="dropdown-item" href="/dodaj_usluge/">Dodaj usługę</a>
                         <a class="dropdown-item" href="/dodaj_marke/">Dodaj markę</a>
-                        <a class="dropdown-item" href="/dodaj typ/">Dodaj typ części</a>
+                        <a class="dropdown-item" href="/dodaj_kategorie/">Dodaj kategorię</a>
+                        <a class="dropdown-item" href="/dodaj_typ/">Dodaj typ części</a>
+                        <a class="dropdown-item" href="/dodaj_hurtownie/">Dodaj hurtownię</a>
+                        <a class="dropdown-item" href="/dodaj_adres/">Dodaj adres</a>
 
                     </div>
                 </li>
@@ -139,8 +145,13 @@
     </nav>
 
     <div class="container-fluid mr-auto">
-        <div class="col-12 mt-2 mr-auto">{% block content %}
+        <div class="col-12 mt-2 mx-auto">{% block content %}
             {% endblock %}
+            <div class="container text-center">
+                <footer class="footer col-12 mx-auto">
+                    <span class="copyright col-12 mx-auto">Copyright &copy; Miktel Premium 2019</span>
+                </footer>
+            </div>
         </div>
     </div>
 
@@ -149,8 +160,7 @@
 
 
 
-    </div>
-    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
