@@ -1,0 +1,192 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='W stałej ofercie duży wybór telefonów komórkowych nowych i używanych. Zobacz cennik telefonów dostępnych w naszych sklepach w Krakowie i Puławach'>
+<link rel="canonical" href="https://www.miktel.krakow.pl/serwis-telefonow-komorkowych-oferta-cennik/">
+<link rel="stylesheet" href="{% static "store/style_main.css" %}">
+<!-- <script src="jquery-3.4.1.min.js"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+{% endblock %}
+
+{% block title %}
+
+Serwis telefonów komórkowych. Naprawy wyświetlaczy. Cennik.
+
+{% endblock %}
+
+{% block content %}
+<div class="d-none d-lg-block col-lg-12 mr-auto row text-left link p-0 ml-0 mr-0 fixed-top">
+    <a class="text-white text-left" href="/"><span>Strona główna</span></a><span class="text-white">-</span><a
+        class="text-white" href="/telefony-serwis-akcesoria/"><span>Oferta GSM, promocje</span></a><span
+        class="text-white">-</span><a class="text-white"
+        href="/akcesoria-gsm-do-telefonow-komorkowych-oferta-cennik/"><span>Oferta akcesoria GSM - kategorie</span></a>
+</div>
+<div class="bcg-main col-12  ml-0 mr-0  mx-auto">
+    <h1 class="col-lg-12 mx-auto text-white text-left">SERWIS GSM, NAPRAWY TELEFONÓW. CENNIK</h1></a>
+
+    <div class="col-12 mx-auto text-white text-center text-wrap row xl-mt-5 info_box">
+        <p class="mx-auto col-6 col-lg-3 h5 mt-5 text-white">Aktualnie w naszych serwisie posiadamy:<br><br>
+            <strong>{{products_counter}} szt.</strong><br>
+            cześci do telefonów komórkowych.</p>
+        <p class="mx-auto col-6 col-lg-3 h5 mt-5 text-white">Ilość realizacji w naszym serwisie: <br><br>
+            <span>
+                <strong>{{services_arch_count}}</strong>szt.</span><br>
+        </p>
+        <p class="mx-auto col-6 col-lg-3 h5 mt-5 text-white">Najwięcej częsci do telefonów to marki:<br><br>
+            {% for el in most_mark %}
+            <strong>{{el.marka}} : {{el.total}} </strong><br>
+            {% endfor %}
+            ....
+        </p>
+        <p class="mx-auto col-6 col-lg-3 h5 mt-5 text-white">Kategorie części:<br><br>
+            {% for el in most_cats %}
+            <strong>{{el.cat}} : {{el.total}} </strong><br>
+            {% endfor %}
+            ....
+        </p>
+
+    </div>
+    <form class="form-inline mx-auto col-lg-6 row mt-3 pb-3 search_link mb-3" method="POST">
+        {% csrf_token %}
+        <label class="text-white col-12 mb-3" for="">Wyszukaj informacji o twoim modelu</label>
+        <div class="col-12 mx-auto row">
+            <input name="search" id="input" class="text-center form-control mr-sm-2 mx-auto col-8" type="text"
+                placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-light my-2 my-sm-0 col-3 mx-auto bg-secendary" type="submit">Search</button>
+        </div>
+        <!-- <input name="search" id="input" class="text-center form-control mr-sm-2 mx-auto col-8" type="text"
+            placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-light my-2 my-sm-0 col-3 mx-auto bg-secendary " type="submit">Search</button> -->
+
+    </form>
+    <div id="div_link" class="col-10 col-lg-6 mx-auto bg-white position-absolute search_link border text-center ">
+        <ul class="col-12 link mx-auto text-center row" id="link">
+
+        </ul>
+    </div>
+</div>
+
+<section id="table_products" name="products" class="col-12 mx-auto text-center p-0 m-0 row align-items-start mt-3">
+    <h2 class="col-12 mx-auto mt-2 text-dark">Lista części do napraw telefonów komórkowych - cennik</h2>
+    <div class="col-lg-2 mx-auto p-0 m-0 row form-group">
+
+        <form class="col-lg-12 form mx-auto m-1 text-center align-items-start mt-2 row text-wrap" method="POST"
+            action="{% url 'store_gsm_serwis_main_view' %}">
+            {% csrf_token %}
+            {{ form_filter.as_p }}
+            <button class="col-6 mx-auto btn btn-dark " type="submit" value="Wybierz">Wybierz</button>
+        </form>
+    </div>
+
+    <table class="table col-lg-10 ml-auto phone_list">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Foto</th>
+                <th scope="col">Marka/Model</th>
+                <th scope="col">Stan/Kategoria</th>
+                <th scope="col">Typ częsci</th>
+                <th scope="col">Sklep</th>
+                <th scope="col">Cena</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr class="">
+                <th scope="row">{{ products.start_index|add:forloop.counter0 }}</th>
+                <td>
+                    {% if product.foto_mini.image != None %}
+                    <img class="img_mini" src="{{ MEDIA_URL }}{{product.foto_mini.image}}"
+                        class="img-fluid img-thumbnail img-responsive" alt="{{product.foto_mini.alt}}"
+                        title="{{product.foto_mini.title}}"><br>
+                    {% endif %}
+                </td>
+                <td><strong> {{product.marka}}
+                        {{product.nazwa}}</strong><br>
+                    <i class="mr-auto col-12 text-left">ID: {{product.id}}</i></td>
+                <td>{{product.get_stan_display}}</td>
+                <td> {{product.typ}}</td>
+                <td>{{product.sklep.adres}}<br>
+                    tel. do sklepu: <a class="mt-2 text-dark"
+                        href="tel:{{product.sklep.adres.numerTelefonu}}">{{product.sklep.adres.numerTelefonu}}</a><br>
+
+                </td>
+                <td>{{product.cena_sprzed}} zł<br>
+                    {% if product.cena_promo %}
+                    <strong> <span class="text-danger">{{product.cena_promo}}</span></strong><br>
+                    {% endif %}
+                    Cena części wraz z usługą
+                    <a href="/serwis-telefonow-komorkowych-oferta-cennik/{{product.slug}}/{{product.id}}">
+                        <button class="btn btn-dark ask_for mx-auto text-white">Szczegóły</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+
+<div class="col-12 input-group mb-3 mx-auto text-wrap nav-scroller py-1 mb-2">
+    <div class="col-1"></div>
+    <nav aria-label="..." class="nav d-flex justify-content-start mx-auto">
+        {% if products.has_other_pages %}
+        <ul class="pagination text-dark pagination pagination-sm flex-sm-wrap">
+            {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ products.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ products.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in products.paginator.page_range %}
+            {% if products.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if products.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ products.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ products.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{% static "store/main_serwis.js" %}" type="text/javascript"></script>
+{% endblock %}

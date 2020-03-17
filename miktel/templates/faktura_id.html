@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row col-10 mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Numer faktury</th>
+                    <th scope="col">Data zakupu</th>
+                    <th scope="col">Miejsce zakupu</th>
+                    <th scope="col">Kto przyjmował</th>
+                    <th scope="col">Hurtownia</th>
+                    <th scope="col">Telefony</th>
+                    <th scope="col">Akcja</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{umowa.numer}}</td>
+                    <td>{{umowa.data_zak}}</td>
+                    <td>{{umowa.sklep}}</td>
+                    <td>{{umowa.pracownik_zak.username}}</td>
+                    <td>{{umowa.hurtownia}}</td>
+                    <td>
+                        <ul>
+                            {% for tel in umowa.telefon.all %}
+                            <li>{{tel.nazwa}} Cena brutto: {{tel.cena_zak}}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td><a href="{% url 'edycja_faktury' pk=umowa.id %}">Edycja</a><br>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    {% endblock %}

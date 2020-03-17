@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h3>Premie pracowników przypisanych do sklepu <b>{{sklep.nazwa}}</b></h3>
+    <div class="row mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="row">Szczegóły</th>
+                    <th scope="row">Pracownik</th>
+                    {% for el in typ %}
+                    <th scope="col">{{el.nazwa}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for pracownik in pracownicy %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a
+                            href="{% url 'szczegoly_serwisow_serwisanta' pk=pracownik.id miesiac=miesiac rok=rok %}">Szczegóły</a>
+                    <td scope="col"> {{pracownik.username}}</td>
+                    {% for el in typ %}
+                    <td class="ilosc">
+                        {% for id, ilosc in pracownik.wykonane_uslugi.items %}
+                        {% if el.id == id %}
+                        {{ ilosc }}
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row col-12 mt-2 mx-auto">
+        <h1>Statystyki:</h1>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">Serwisy wydane</th>
+                    <th scope="col">Zysk serwis</th>
+                    <th scope="col">Telefony kupione U.Komis.</th>
+                    <th scope="col">Telefony sprzedane</th>
+                    <th scope="col">Zysk telefony sprz.</th>
+                    <th scope="col">Ilość usł. premiowanych</th>
+                    <th scope="col">Suma premii</th>
+                    <th scope="col">Zysk z usł. premiowanych</th>
+                    <th scope="col">Zysk z usł. serwisowych</th>
+                    <th scope="col">Zysk z usł. grawererskich</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="lista">
+                    <td>{{serwisy_wydane_licznik}}</td>
+                    <td>{{serwisy_wydane_zysk}}</td>
+                    <td>{{umowy_komisowe}}</td>
+                    <td>{{telefony_sprzedane}}</td>
+                    <td>{{telefony_zysk}}</td>
+                    <td>{{usługi_licznik}}</td>
+                    <td>{{suma_premia_jobs}}</td>
+                    <td>{{zysk_z_premia_jobs}}</td>
+                    <td>{{zysk_z_premia_jobs_serwis}}</td>
+                    <td>{{zysk_z_premia_jobs_grawer}}</td>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

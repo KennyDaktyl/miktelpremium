@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group row col-10">
+
+            <div class="active_form col-12" id="pay_rate" data-pay_rate={{user.hour_rate}}>
+                {{ form.as_p }}
+                <div class="form-group row col-4 mt-2">
+                    <button type="submit" class="btn btn-dark">Dodaj wypłate</button>
+
+                </div>
+
+            </div>
+    </form>
+    <div class="col-4">
+        <a href="/miktel/payments/{{user.id}}">
+            <button type="button" class="btn btn-danger">Cofnij</button></a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static "miktel/add_payment.js" %}" type="text/javascript"></script>
+{% endblock %}

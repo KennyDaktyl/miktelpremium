@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140774930-7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-140774930-7');
+    </script>
+
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="{% static "store/style_main.css" %}"> -->
+    <link rel="stylesheet" href="{% static "store/style_main.css" %}">
+    {% block head %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    <div class="col-12 row top p-0 m-0 fixed-top">
+        <div class="text-center row m-0 p-0 ml-auto top align-self-center">
+            <a class="text-white text-center ml-auto p-2"
+                href="https://www.youtube.com/channel/UCvGDJJrET2fRhgeQ0YqkiNg"><i
+                    class="text-white text-center fab fab fa-youtube"></i></a>
+            <a class="text-white text-center mx-auto p-2" href="https://www.instagram.com/miktelgrawer/"
+                title="link-to-instagram-miktel">
+                <i class="text-white text-center fab fab fab fa-instagram"></i></a>
+            <a class="text-white text-center mx-auto p-2" href="https://www.facebook.com/miktelgrawer/"
+                title="link-to-facebook-miktel-grawerowanie">
+                <i class="text-white fab fa-facebook-f"><i class="">Grawer</i></i></a>
+            <a class="text-white text-center mx-auto p-2" href="https://www.facebook.com/miktelgsm/"
+                title="link-to-facebook-miktel-gsm-telefony">
+                <i class="text-white fab fa-facebook-f"><i class="">Gsm</i></i></a>
+            <a class="text-white text-center mx-auto p-2" href="/miktel/login/"><span
+                    class="bg-white border rounded-pill text-dark text-center mx-auto">Dla
+                    pracowników</span></a>
+
+        </div>
+    </div>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark text-light">
+        <a class="navbar-brand text-light" href="/">Miktel Store</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarSupportedContent">
+            <ul class="navbar-nav ml-lg-auto ">
+                <li class="nav-item active mx-auto ml-lg-auto">
+                    <a class="nav-link text-white" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown  ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dział GSM
+                    </a>
+                    <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown">
+                        <a class=" text-center submenu" href="/telefony-serwis-akcesoria/"
+                            title="link-do-glownej-strony-dzalu-gsm-telefony-komorkowe-serwis-akcesoria">Oferta GSM,
+                            promocje</a><br>
+                        <a class=" text-center submenu"
+                            href="/telefony-komorkowe-dostepne-w-sklepach-miktel-krakow-pulawy/"
+                            title="link-do-oferty-telefonow-komorkowych">Telefony
+                            sprzedaż</a><br>
+                        <a class=" text-center submenu" href="/serwis-telefonow-komorkowych-oferta-cennik/"
+                            title="link-do-oferty-serwisu-telefonow-komorkowych">Serwis
+                            telefonów</a><br>
+                        <a class=" text-center submenu" href="/akcesoria-gsm-do-telefonow-komorkowych-oferta-cennik/"
+                            title="link-do-oferty-akcesoriow-do-telefonow-komorkowych">Akcesoria GSM</a><br>
+                    </div>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Grawerowanie
+                    </a>
+                    <div class="dropdown-menu text-center text-wrap" aria-labelledby="navbarDropdown">
+                        <a class="text-center submenu" href="/grawerowanie-laserem-co2-oferta/">Grawerowanie laserem -
+                            Oferta</a><br>
+                        <a class="text-center submenu" href="/grawerowanie-laserem-co2-kategorie/">Grawerowanie</a><br>
+                        <a class="text-center submenu" href="/znakowanie-laserem-co2-kategorie/">Znakowanie w
+                            metalu</a><br>
+                        <a class="text-center submenu " href="#">Cięcie materiału</a><br>
+                    </div>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pieczątki
+                    </a>
+                    <div class="dropdown-menu text-center text-wrap" aria-labelledby="navbarDropdown">
+                        <a class="text-center submenu" href="#">Pieczątki firmowe</a><br>
+                        <a class="text-center submenu" href="#">Pieczątki imienne</a><br>
+                        <a class="text-center submenu" href="#">Pieczątki z logiem</a><br>
+                        <a class="text-center submenu" href="#">Datowniki, numeratory</a><br>
+                    </div>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dorabianie kluczy
+                    </a>
+                    <div class="dropdown-menu text-center text-wrap" aria-labelledby="navbarDropdown">
+                        <a class="text-center submenu" href="#">Klucze mieszkaniowe</a><br>
+                        <a class="text-center submenu" href="#">Klucze numeryczne</a><br>
+                        <a class="text-center submenu" href="#">Klucze samochodowe z immobiliserem</a><br>
+                        <a class="text-center submenu" href="#">Klucze samochodowe z pilotem</a><br>
+                        <a class="text-center submenu" href="#">Kodowanie i naprawa<br> pilotów samochodowych</a><br>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">BLOG</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">KONTAKT</a>
+                </li>
+            </ul>
+            <!-- <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form> -->
+        </div>
+    </nav>
+    <div class="col-12 m-0 p-0 under_nav "></div>
+
+    {% block content %}
+    {% endblock %}
+    <div class="container text-center">
+        <footer class="footer col-12 mx-auto">
+            <span class="copyright col-12 mx-auto">Copyright &copy; Miktel Premium 2020</span>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    {% block script %}
+
+    {% endblock %}
+</body>
+
+</html>

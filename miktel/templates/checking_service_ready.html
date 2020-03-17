@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+
+    <p>Wydajesz serwis nr: <b>{{serwis.id}} </b>Data przyjęcia: <b>{{serwis.data}}</b></p>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Miejsce naprawy: <b>{{serwis.sklep}}</b></li>
+
+
+        <!-- <select name="sklep_sesja" class="custom-select m-1 col-2">
+            <option value="">Zmień sklep</option>
+            {% for sklep in sklepy %}
+            <option value="{{sklep.id}}">{{sklep.nazwa}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-dark m-2 col-2">Ustaw sklep</button> -->
+
+        <li class="list-group-item">Imię i nazwsko klienta: <b>{{serwis.imie_nazwisko}}</b></li>
+        <li class="list-group-item">Model: <b>{{serwis.model}}</b></li>
+        <li class="list-group-item">numer Imei:<b>{{serwis.imei}} </b></li>
+        <form method="GET" action="/miktel/save_service/{{serwis.id}}">
+            {% csrf_token %}
+            <input type="hidden" name="serwis_id" value={{seriws.id}}>
+            <li class="list-group-item">Ostateczna cena
+                dla klienta:
+                <input name="cena" type="number" value={{serwis.cena_zgoda}} class="form-control col-2">
+            </li>
+            <li class="list-group-item">Nasze koszta:<input name="koszt" value="0" type="number"
+                    class="form-control col-2">
+            </li>
+
+            <label for="exampleFormControlSelect1" class="mt-3">Serwis własny czy zewnętrzy?</label>
+            <select name="serwis_wlasny" id="wybierz_serwis" class="form-control col-3 mt-3"
+                id="exampleFormControlSelect1">
+                <option value="">Wybiez z listy</option>
+                <option value="1">Wykonałem osobiście</option>
+                <option value="2">Serwis zewnętrzy</option>
+            </select>
+            <span id="wybierz">nie wybrano!</span>
+            <div class="form-check mt-4">
+                <input name="sms" class="form-check-input" type="checkbox" value="1" id="defaultCheck1">
+                Wyślij sms do klienta
+                <div>
+                    <label for="exampleFormControlSelect1" class="mt-3"><b>Saldo:</b> {{saldo}}zł (sms:0,16zł)</label>
+                </div>
+            </div>
+            <div class="form-group mt-3 col-6">
+                <label for="exampleFormControlTextarea1">Informacje</label>
+                <textarea name="info" value="" class="form-control" id="exampleFormControlTextarea1"
+                    rows="3"></textarea>
+            </div>
+    </ul>
+</div>
+
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/miktel/lista_serwisow/"><button type="button" class="btn btn-danger">Cofnij
+            </button></a>
+        <i class="col-4"></i>
+
+        <button type="submit" class="btn btn-success">Zapisz i
+            przejdź
+            listy serwisów</button>
+
+    </div>
+</div>
+
+</form>
+{% endblock %}

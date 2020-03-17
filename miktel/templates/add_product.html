@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid col-12 m-0 p-0">
+    <div class="col-12 row m-0 p-0">
+        <div class="col-lg-9">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group col-10">
+                    {{ form.as_p }}
+                    <div class="form-group row col-10 mt-2">
+                        <button type="submit" class="btn btn-dark">Dodaj produkt</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <p class="col-12">-</p>
+        <a href="/miktel/add_category/"><button class="col-12 mt-2 btn btn-success">Dodaj kategorię akc</button></a>
+        <a href="/miktel/add_factory/"><button class="col-12 mt-2 btn btn-success">Dodaj producenta</button></a>
+        <a href="/miktel/dodaj_marke/"><button class="col-12 mt-2 btn btn-success">Dodaj markę</button></a>
+    </div>
+</div>
+</div>
+{% endblock %}

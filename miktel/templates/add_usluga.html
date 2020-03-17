@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+
+
+    <!-- {{pracownik.Salon_workers.all|join:", " }} -->
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group row col-12 ml-3">
+
+            <div class="row col-6 mt-2 form-group">
+                <label for="exampleFormControlInput1">Wybierz rodzaj usługi</label>
+            </div>
+            <div class="row col-6 mt-2 form-group"></div>
+            <select name="usluga" class="form-group" id="rodzaj">
+                {% for usluga in uslugi %}
+                <option value="{{usluga.id}}">{{usluga.nazwa}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group row col-6 mt-2 ml-3">
+            <div class="active_form">
+                {{ form.as_p }}
+                <div class="form-group row col-10 mt-2">
+                    <button type="submit" class="btn btn-dark">Dodaj usługę</button>
+                </div>
+            </div>
+    </form>
+
+</div>
+{% endblock %}

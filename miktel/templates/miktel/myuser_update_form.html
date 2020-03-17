@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row col-12 mt-2">
+        <h3>Uwaga - zawsze edycja zmienia hasło na to co jest wpisane w inpucie i zamienia je na haszowane<br>
+            edytujesz usera to wpisz 12345 a pozniej ustaw hasło w menu proful uzytkowanika</h3>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Edytuj">
+        </form>
+    </div>
+    {% endblock %}

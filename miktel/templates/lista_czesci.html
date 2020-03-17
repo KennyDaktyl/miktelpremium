@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO 200 WYNIKÓW!</label>
+    </div>
+    <div class="row col-12 ">
+
+        {% for el in lokale %}
+        {% if el.id != 5  %}
+        {% if el.id == lokal.id %}
+        <a class="col-lg-2 m-1 ml-2 mr-2 mx-auto" href="/miktel/lista_czesci/{{el.id}}"><button
+                class="btn btn-success col-12 mx-auto">{{el}}</button></a>
+        {% else %}
+        <a class="col-lg-2 m-1 ml-2 mr-2 mx-auto" href="/miktel/lista_czesci/{{el.id}}"><button
+                class="btn btn-warning col-12 mx-auto">{{el}}</button></a>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        <a class="col-lg-2 m-1 ml-2 mr-2 mx-auto" href="/miktel/lista_czesci_miktel/"><button
+                class="btn btn-dark col-12 mx-auto">Cały
+                Miktel</button></a>
+    </div>
+
+    <form method="POST" class="row col-12 mx-auto">
+        {% csrf_token %}
+
+        <div class="input-group mt-3 mb-3 col-12 row mx-auto">
+            <div class="input-group-prepend col-xs-2 ">
+                <div class="input-group-text">
+                    <input name="zero" type="checkbox" aria-label="Checkbox for following text input">Pokaż zerowe
+                </div>
+            </div>
+            <input id="search" name="szukaj" maxlength="128" type="text" class="form-control col-xs-8 col-lg-4"
+                aria-label="Text input with checkbox" placeholder="numer umowy, kategoria, nazwa, model, imei">
+            <button type="submit" class="btn btn-dark col-lg-2 col-xl-2"><span>Przeszukaj całą
+                    bazę</span></button>
+        </div>
+    </form>
+
+
+
+    <form class=" col-12 mx-auto" method="POST" action="/miktel/uzyj_czesci/">
+        {% csrf_token %}
+        <div class="row col-xs-6 col-12 mt-2">
+            <button type="submit" class="btn btn-warning col-xs-4 col-lg-4 col-xl-3 m-2"><span>Zaznacz i użyj do
+                    serwisu</span></button>
+
+            <button type="button" class="btn btn-warning col-xs-4 col-lg-1 col-xl-3 m-2"><a class="dodaj"
+                    href="{% url 'dodaj_czesc' %}">Dodaj
+                    czesc</a></button>
+        </div>
+
+
+        <div class="row col-12 mt-2 mx-auto">
+            <table class="table table-dark col-12">
+                <div class="row col-12">
+                    <H1 class="">Lista części</H1>
+
+                </div>
+                <thead>
+                    <tr>
+                        <th scope="col">L.P.</th>
+                        <th scope="col">Użyj części</th>
+                        <th scope="col">Typ</th>
+                        <th scope="col">Marka</th>
+                        <th scope="col">Nazwa</th>
+                        <th scope="col">Cena zak</th>
+                        <th scope="col">Cena sprzed</th>
+                        <th scope="col">Stan</th>
+                        <th scope="col">Kolor</th>
+                        <th scope="col">Sklep</th>
+                        <th scope="col">Wprowadził</th>
+                        <th scope="col">Ilość</th>
+                        <th scope="col">Działania</th>
+                        <th scope="col">Opis</th>
+                        <th scope="col">Szczegóły</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for el in czesc %}
+
+                    <tr class="lista">
+                        <th scope="row">{{ forloop.counter0|add:czesc.start_index }}</th>
+                        {% if el.ilosc > 0 %}
+                        <td><input name="checks" class="form-check-input position-static" type="checkbox" id="{{el.id}}"
+                                value="{{el.id}}" aria-label="...">
+                        </td>
+                        {% else %}
+                        <td>Brak
+                        </td>
+                        {% endif %}
+                        <!-- <td>
+                        {% for el2 in el.foto.all %}
+                        <img class="img-fluid img-thumbnail pracownik"
+                            src="{{MEDIA_URL}}/static/media/{{el2.foto}}"><br>
+                        {% endfor %}
+                    </td> -->
+                        <td>{{el.typ}}</td>
+                        <td>{{el.marka}}</td>
+                        <td>{{el.nazwa}}</td>
+                        <td>{{el.cena_zak}}</td>
+                        <td>{{el.cena_sprzed}}</td>
+                        <td>{{el.get_stan_display}}</td>
+                        <td>{{el.get_kolor_display}}</td>
+                        <td>{{el.sklep}}</td>
+                        <td>{{el.pracownik}}</td>
+                        <td>{{el.ilosc}}</td>
+                        <td><a href="/miktel/dodaj_wiecej_czesci/{{el.id}}">Dodaj</a>
+                            {% if el.ilosc > 0 %}
+                            <a href="/miktel/usun_wiecej_czesci/{{el.id}}">Usuń</a></td>
+                        {% else %}
+                        {% endif %}
+                        <td>{{el.opis}}</td>
+                        <td><a href="/miktel/szczegoly_czesci/{{el.id}}">Szczegóły</a><br>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if czesc.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if czesc.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ czesc.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ czesc.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in czesc.paginator.page_range %}
+            {% if czesc.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if czesc.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ czesc.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ czesc.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
+</div>
+sdsds
+
+{% endblock %}

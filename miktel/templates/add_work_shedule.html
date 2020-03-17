@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+
+    <div class="col-12 m-0 p-0 row">
+        <div class="col-lg-2 m-0 p-0 mr-auto">
+            <form class="col-12 m-0 p-0" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button name="set_schedule" type="submit" class="btn btn-dark">Pokaż grafik</button>
+            </form>
+            <div class="col-lg-12 m-0 p-0 ">
+                {% for k,v in hours_dic.items %}
+                <p class="col-12 m-0 p-0 mr-auto mt-3 mb-3 text-left"><span
+                        class="text-right col-9 mr-auto">{{k}}</span><span class="col-2 ml-auto">{{v}}h</span></p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-lg-10 p-0 m-0 row">
+            <!-- {% if shop == "" %}
+            <h1 class="mx-auto col-12 text-center">Ustaw sklep i datę</h1>
+            {% else %} -->
+            <h1 class="mx-auto col-12 text-center">Sklep {{shop}}, miesiąc {{month_word}}</h1>
+            <!-- {% endif %} -->
+
+
+            {% for week in weeks %}<br>
+            {% for day in day_names %}
+            <div class="d-none d-lg-block day_name border text-center mx-auto p-1 row mt-2">{{day}}</div>
+            {% endfor %}
+            {% for day in week%}
+            <div class="{{day}} day border text-center mx-auto p-1 row mt-2 mb-2 d-flex align-self-strech">
+                <p class="col-12 mx-auto text-center m-0 p-0 align-self-start border p-0 m-0 bg-warning">
+                    <strong>{{day}}</strong></p>
+
+                {% for el in schedule %}
+                {% if el.date.day == day %}
+                <div class="mx-auto row col-12 m-0 p-0 border align-self-start mb-2 mt-2 lista">
+                    <span class="mx-auto text-center col-12 p-0 m-0">{{el.user_id.username}} - <a
+                            class="mx-auto p-0 m-0" href="/miktel/del_work_schedule/{{el.id}}"><i
+                                class="fas fa-trash text-danger"></i></a>
+                        <br>{{el.time_start}}-{{el.time_end}}<br>
+                        Czas:{{el.time_duration|slice:":-3"}}h
+                    </span>
+
+                </div>
+                {% endif %}
+                {% endfor %}
+
+
+                <p class="col-12 mx-auto text-center m-0 p-0 d-flex align-items-end">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-outline-success  align-items-end col-12 mx-auto text-center"
+                        data-toggle="modal" data-target="#exampleModal{{day}}">
+                        Dodaj pracownika
+                    </button>
+
+                    <!-- Modal -->
+                    <div class="modal fade bd-example-modal-lg" id="exampleModal{{day}}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel{{day}}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel{{day}}">Dodaj pracownika</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div>
+                                        {% for em in employes %}
+                                        <form action="" method="POST" class="mx-auto col-12 m-0 p-0 row">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="user" value="{{em.id}}">
+                                            <input type="hidden" name="shop" value="{{shop.id}}">
+                                            <input type="hidden" name="day" value="{{day}}">
+                                            <input type="hidden" name="month" value="{{month}}">
+                                            <input type="hidden" name="year" value="{{year}}">
+                                            <div class="col-12 mt-1 row">
+                                                <button type="button" type="submit" class="btn btn-warning mr-auto">
+                                                    {{em.username}}
+                                                </button>
+                                                {% if shop.id != 1 %}
+                                                <input class="" type="time" name="time_start" min="09:00" max="20:00"
+                                                    value="09:00" required>
+                                                <input class="" type="time" name="time_end" min="09:00" max="20:00"
+                                                    value="20:00" required>
+                                                {% else %}
+                                                <input class="" type="time" name="time_start" min="09:00" max="20:00"
+                                                    value="10:00" required>
+                                                <input class="" type="time" name="time_end" min="09:00" max="20:00"
+                                                    value="18:00" required>
+                                                {% endif %}
+                                                <!-- <input class="mx-auto col-2 text-center" type="number" name="hours"
+                                                    value="0" min="1" max="11"> -->
+                                                <button class="d-inline" name="set_user" type="submit">Ustaw</button>
+                                            </div>
+
+                                        </form>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </p>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static "miktel/schedule.js" %}" type="text/javascript"></script>
+{% endblock %}

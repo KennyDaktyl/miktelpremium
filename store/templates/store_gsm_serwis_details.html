@@ -1,0 +1,164 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Szczegóły czesci {{product.typ}} serwisu gsm do {{product.marka}} {{product.nazwa}} oferowanego w sklepie {{product.sklep}}'>
+<link rel="stylesheet" href="{% static "store/dist/css/lightbox.css" %}" rel="stylesheet" />
+<link rel="stylesheet" href="{% static "store/style_main.css" %}">
+
+{% endblock %}
+
+{% block title %}
+
+Czesc serwisowa do {{product.marka}} {{product.nazwa}} {{product.typ}} cena {{product.cena_sprzed}}zł
+
+{% endblock %}
+
+{% block content %}
+<div class="d-none col-lg-12 mr-auto row text-left link p-0 m-0">
+    <a class="text-white text-left" href="/"><span>Strona główna</span></a><span class="text-white">-</span><a
+        class="text-white" href="/telefony-serwis-akcesoria/"><span>Oferta GSM, promocje</span></a><span
+        class="text-white">-</span><a class="text-white"
+        href="/serwis-telefonow-komorkowych-oferta-cennik/"><span>Oferta czesci serwisu gsm
+            cennik</span></a><span class="text-white">-</span><a class="text-white"
+        href="#"><span>{{product.typ}}-do-{{product.marka}}-{{product.nazwa}}-{{product.sklep}}</span></a>
+</div>
+<div class="col-12 mx-auto row bcg-main">
+    <h1 class="col-lg-12 mx-auto text-white text-left"> Czesc serwisu gsm
+        {{product.typ}} do {{product.marka}}
+        {{product.nazwa}}</h1></a>
+
+    <div class="col-11 row mx-auto bg-white mb-3 align-self-start offer">
+        <div class="col-lg-6 row">
+            <div class="col-4 mr-auto text-left">
+                <img class="img_mini m-2 mx-auto" src="{{ MEDIA_URL }}{{product.foto_mini.image}}">
+
+                <h5>Cena produktu <br> <strong>{{product.cena_sprzed}}</strong> zł</h5>
+                {% if product.cena_promo %}
+                <h5>Cena promocyjna <br><span class="text-danger">{{product.cena_promo}}</span>zł</h5>
+                {% endif %}
+                <p> Zadzwoń do sklepu: <a class="mt-2 text-dark"
+                        href="tel:{{product.sklep.adres.numerTelefonu}}">{{product.sklep.adres.numerTelefonu}}
+                    </a>
+                </p>
+                <button type="button" class="btn ask_for text-white m-2" data-toggle="modal"
+                    data-target="#exampleModal{{product.id}}" data-whatever="@getbootstrap">Wyślij email</button>
+
+                <div class="modal fade" id="exampleModal{{product.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel{{product.id}}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel{{product.id}}">Wyślij email</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="hidden" name="subject"
+                                            value="Pytanie o {{product.marka}} {{product.nazwa}} ID {{product.id}}">
+                                        <label for="recipient-name" class="col-form-label">Podaj email:</label>
+                                        <input name="email" type="email" value="@" class="form-control"
+                                            id="recipient-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Wiadomość:</label>
+                                        <textarea name="text" class="form-control text-left"
+                                            id="message-text text-left">Pytanie dotyczące {{product.marka}} {{product.nazwa}} {{product.typ}} - ID-{{product.id}}"
+                                            </textarea>
+                                    </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">Zamknij</button>
+                                <button name="ask_for" type="submit" class="btn ask_for text-white ">Wyślij
+                                    email</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8 mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Specyfikacja czesci: <strong>{{product.typ.nazwa}}<br> {{product.marka}}
+                            {{product.nazwa}}</strong>
+                    </h5>
+                    <div class="card-text">
+                        <ul>
+                            <span>Id:{{product.id}}</span>
+                            <li>Typ <strong>{{product.typ}}</strong></li>
+                            <li>Stan czesci <strong> {{product.get_stan_display}}</strong></li>
+                            <li>Kolor <strong> {{product.get_kolor_display}}</strong></li>
+                            <li>Znajduje się w <strong> {{product.sklep}}</strong></li>
+                            {% for el in details %}
+                            <li>{% if el.aparat_a %}
+                                Aparat główny: {{el.aparat_a}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.aparat_b %}
+                                Aparat tylni: {{el.aparat_b}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.battery %}
+                                Pojemnośc baterii: {{el.battery}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.info %}
+                                Dodatkowe informacje:<br>{{el.info}}
+                                {% endif %}
+                            </li>
+
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p class="card-text"><small class="text-muted">Data wprowadzenia: {{product.date_add}}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery mb-3 col-lg-6 row text-center mx-auto">
+            {% for k,v in fotos_mix.items %}
+            <a href="{{ MEDIA_URL }}{{v.image}}" data-lightbox="{{product.id}}"
+                data-title="Czesc-serwisu-gsm-{{product.typ.nazwa}}-{{product.marka}}-{{product.nazwa}}"
+                class=" mx-auto text-center">
+                <img class="img_mini_2 m-2 mx-auto text-center m-2 img-thumbnail" src="{{ MEDIA_URL }}{{k.image}}"
+                    alt="{{product.typ}}-do-{{product.marka}}-{{product.nazwa}}"
+                    title="Prezentujemy-zdjecie-{{foto}}-przedstawiajace-produkt-{{product.typ}}-do-{{product.get_stan_display}}-do-telefonu-marki-{{product.marka}}-nazwa-{{phone.nazwa}}-w-cenie-{{product.cena_sprzed}}">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="{% static "store/dist/js/lightbox.js" %}"></script>
+<script>
+    lightbox.option({
+        'albumLabel': "Zdjęcie %1 z %2"
+    })
+</script>
+<!-- <script src="{% static "store/dist/js/lightbox.js" %}"></script> -->
+{% endblock %}

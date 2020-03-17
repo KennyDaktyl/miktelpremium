@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+
+    <p>Wydajesz serwis nr: <b>{{serwis.id}} </b>Data przyjęcia: <b>{{serwis.data}}</b></p>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item">Miejsce naprawy: <b>{{serwis.sklep}}</b></li>
+
+
+        <!-- <select name="sklep_sesja" class="custom-select m-1 col-2">
+            <option value="">Zmień sklep</option>
+            {% for sklep in sklepy %}
+            <option value="{{sklep.id}}">{{sklep.nazwa}}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-dark m-2 col-2">Ustaw sklep</button> -->
+
+        <li class="list-group-item">Imię i nazwsko klienta: <b>{{serwis.imie_nazwisko}}</b></li>
+        <li class="list-group-item">Model: <b>{{serwis.model}}</b></li>
+        <li class="list-group-item">numer Imei:<b>{{serwis.imei}} </b></li>
+        <form method="POST" action="/miktel/wydaj_serwis/{{serwis.id}}">
+            {% csrf_token %}
+            <input type="hidden" name="serwis_id" value={{serwis.id}}>
+            <li class="list-group-item">Ostateczna cena
+                dla klienta:
+                <input name="cena" type="number" value={{serwis.cena_zgoda}} class="form-control col-2">
+            </li>
+
+            <div class="form-group mt-3 col-6">
+                <label for="exampleFormControlTextarea1">Informacje</label>
+                <textarea name="info" value="{{serwis.info}}" class="form-control" id="exampleFormControlTextarea1"
+                    rows="3"></textarea>
+            </div>
+
+
+
+    </ul>
+</div>
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/miktel/lista_serwisow/"><button type="button" class="btn btn-danger">Cofnij
+            </button></a>
+        <i class="col-4"></i>
+
+        <button type="submit" class="btn btn-success">Zapisz i
+            przejdź
+            listy serwisów</button>
+
+    </div>
+</div>
+</form>
+{% endblock %}
