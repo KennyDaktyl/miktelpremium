@@ -1,0 +1,203 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Szczegóły produktu {{product.category_id.name}} {{product.name}} oferowanego w sklepie {{product.shop_id}}.Zapraszamu do naszego sklepu w centrum Nowej Huty w Krakowie'>
+<link rel="stylesheet" href="{% static "store/dist/css/lightbox.css" %}" rel="stylesheet" />
+<link rel="canonical"
+    href="https://www.miktel.krakow.pl/produkt/{{cat.profile_id.slug}}/{{cat.slug}}/{{product.slug}}/{{product.id}}">
+<!-- <link rel="stylesheet" href="{% static "store/style_main.css" %}"> -->
+
+{% endblock %}
+
+{% block title %}
+{{cat.name}} | Szczegóły produktu {{product.name}} cena {{product.price}}zł
+{% endblock %}
+
+{% block content %}
+<div class="col-lg-12 mx-auto row text-left link p-0  fixed-top hidden">
+    <a class="text-white text-left" href="/"><span>Strona główna</span></a><span class="text-white"> >> </span><a
+        class="text-white" href="/grawerowanie-laserem-co2-oferta/"><span>Oferta grawerowania,
+            promocje</span></a><span class="text-white"> >> </span><a class="text-white"
+        href="/produkt/{{cat.profile_id.slug}}/{{cat.slug}}"><span>Oferta {{cat.name}} -
+            kategorie</span></a></a>
+    <span class="text-white"> >> </span><a class="text-white"
+        href="/produkt/{{cat.profile_id.slug}}/{{cat.slug}}/{{product.slug}}/{{product.id}}"><span>{{product.name}}</span></a>
+</div>
+{% if send_email %}
+<div class="col-12 mx-auto text-center fixed-top">
+    <strong class="col-12 mx-auto text-center text-light h2">Wysłano email</strong>
+</div>
+{% endif %}
+<div class="bcg-grav col-12   ml-0 mr-0  mx-auto">
+    <h1 class="col-lg-12 mx-auto text-white text-left">Szczegóły produktu:</h1>
+    <h2 class="col-lg-12 mx-auto text-white text-left h4">{{product.name}}</h2>
+
+    <div class="col-11 row mx-auto bg-white mb-3 align-self-start offer">
+        <div class="col-lg-6 row">
+            <div class="col-4 mr-auto text-left m-0 p-0">
+                <img class="img_mini m-2 mx-auto" src="{{ MEDIA_URL }}{{product.foto_mini.image}}"
+                    alt="{{product.foto_mini.alt}}" title="{{product.foto_mini.title}}">
+
+                <h5><strong>Cena produktu:</strong> <br>{{product.price}}** zł</h5>
+                {% if product.price_promo %}
+                <h5><strong>Cena promocyjna:</strong> <br><span class="text-danger">{{product.price_promo}}** </span>zł
+                </h5>
+                {% endif %}
+                <div class="col-12 m-0 p-0 text-left">
+                    {% if product.qty > 0 %}
+                    <p class="col-12 m-0 p-0 bg-success text-white text-center"><strong>Oferta: dostępna</strong>
+                    </p>
+                    {% else %}
+                    <p class="col-12 m-0 p-0 bg-danger text-white text-center"><strong>Oferta: niedostępna</strong>
+                    </p>
+                    {% endif %}
+                </div>
+                <p> Zadzwoń do sklepu: <a class="mt-2 text-dark"
+                        href="tel:{{product.shop_id.adres.numerTelefonu}}">{{product.shop_id.adres.numerTelefonu}}
+                    </a>
+                </p>
+                <button type="button" class="btn ask_for text-white mt-2 col-12" data-toggle="modal"
+                    data-target="#exampleModal{{product.id}}" data-whatever="@getbootstrap">Wyślij email</button>
+
+                <div class="modal fade" id="exampleModal{{product.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel{{product.id}}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel{{product.id}}">Wyślij email</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="hidden" name="subject"
+                                            value="Pytanie o {{product.mark_id.nazwa}} {{product.name}} ID {{product.id}}">
+                                        <label for="recipient-name" class="col-form-label">Podaj email:</label>
+                                        <input name="email" type="email" value="@" class="form-control"
+                                            id="recipient-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Wiadomość:</label>
+                                        <textarea name="text" class="form-control text-left"
+                                            id="message-text text-left">Pytanie dotyczące {{product.mark_id.nazwa}} {{product.name}} - ID-{{product.id}}"
+                                            </textarea>
+                                    </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">Zamknij</button>
+                                <button name="ask_for" type="submit" class="btn ask_for text-white ">Wyślij
+                                    email</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8 mb-3">
+                <div class="card-body col-12 m-0 p-0">
+                    <h5 class="card-title p-0 m-0"><strong>Szczegóły produktu</strong></h5><br>
+                    <p class="m-0 p-0">Profil:<strong>{{product.category_id.profile_id.name}}</strong></p>
+                    <p class="m-0 p-0">Kategoria:<strong>{{product.category_id.name}}</strong></p>
+                    {% if product.mark_id != None %}
+                    <p class="m-0 p-0">Marka:<strong>{{product.mark_id.nazwa}}</strong></p>
+                    {% endif %}
+                    <h5 class="mt-2 p-0">Nazwa:<strong>{{product.name}}</strong></h5>
+                    <div class="card-text">
+                        <ul>
+                            <span>Id:{{product.id}}</span>
+                            <li>Producent
+                                {% if product.factory_id.nazwa %}
+                                <strong>{{product.factory_id.nazwa}}</strong>
+                                {% else %}
+                                <strong>Brak danych</strong>
+                                {% endif %}
+                                <strong> {{product.factory_id.name}}</strong></li>
+                            <li>Znajduje się w:
+                                <strong>{{product.shop_id.nazwa}}, {{product.shop_id.adres.miasto}}</strong>
+                            </li>
+                            {% for el in details %}
+                            <li>{% if el.aparat_a %}
+                                Aparat główny: {{el.aparat_a}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.aparat_b %}
+                                Aparat tylni: {{el.aparat_b}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.battery %}
+                                Pojemnośc baterii: {{el.battery}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.info %}
+                                Dodatkowe informacje:<br>{{el.info}}
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p class="card-text "><small class="text-muted">Data wprowadzenia: {{product.date}}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery col-lg-6 mb-3 col-6 row text-center mx-auto">
+            <strong class="col-12">Galeria zdjęć - {{foto_count}} szt.</strong>
+            {% for k,v in fotos_mix.items %}
+            <a href="{{ MEDIA_URL }}{{v.image}}" data-lightbox="{{product.id}}"
+                data-title="{{product.category_id.name}} {{product.mark_id.nazwa}} {{product.name}}"
+                class=" text-center">
+                <img class="img_mini_2 m-2  text-center m-2 img-thumbnail" src="{{ MEDIA_URL }}{{k.image}}"
+                    alt="{{product.category_id.name}} {{product.mark_id.nazwa}} {{product.name}}"
+                    title="Prezentujemy zdjęcie {{foto}} przedstawiajace produkt {{product.get_stan_display}} {{product.category_id.name}} marki {{product.mark_id.nazwa}}, nazwa {{product.name}} w cenie {{product.price}}">
+            </a>
+            {% endfor %}
+            <p class="text-center text-dark col-12">{{product.info}}</p>
+        </div>
+        <p class="card-text col-12"><small class="text-muted">**Przedstawiona oferta cenowa ma charakter
+                informacyjny i nie
+                stanowi
+                oferty handlowej w rozumieniu Art.66 par.1
+                Kodeksu Cywilnego.</small></p>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "{{product.category_id.name}} {{product.name}}",
+        "image": "{{ MEDIA_URL }}{{product.foto_mini.image}}",
+        "description": "{{product.info}}",
+        "brand": "{{product.category_id.profile_id.name}}",
+        "offers": {
+            "@type": "Offer",
+            "url": "https://www.miktel.krakow.pl{{product.get_absolute_url}}",
+            "priceCurrency": "PLN",
+            "price": "{{product.price}}",
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        }
+    }
+</script>
+<!-- <script src="{% static "store/dist/js/lightbox.js" %}"></script> -->
+{% endblock %}

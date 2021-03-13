@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h4>Wyniki premiowane dla <strong>{{pracownik}}</strong> miesiąc <strong>{{data}} {{rok}}</strong></h4>
+
+    <div class="row col-12 mx-auto mt-2">
+        <h2>Serwisy GSM </h2>
+
+        <table class="table table-dark mx-auto">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Serwisy GSM</th>
+                    <th scope="col">Serwhisy GRAWERA</th>
+                    <th scope="col">Cena/Koszt</th>
+                    <th scope="col">Zysk</th>
+                    <th scope="col">Szczegóły</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usluga in uslugi %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{usluga.date_make}}</td>
+                    <td>{{usluga.name_serwis}}</td>
+                    <td>{{usluga.usluga}}</td>
+                    <td>{{usluga.cena_klient}} - {{usluga.koszt}}</td>
+                    <td>{{usluga.get_zysk}}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class=m-auto>Zysk z usług {{zysk}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Serwisy GRAWERA</h2>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Serwisy GSM</th>
+                    <th scope="col">Użyte części</th>
+                    <th scope="col">Inne prace</th>
+                    <th scope="col"></th>
+                    <th scope="col">Szczegóły</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for serwis in serwisy %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{serwis.date_make}}</td>
+                    <td>{{serwis.name_serwis}}</td>
+                    <td>{{serwis.czesci.all|join:", "}}</td>
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <h2>Inne Prace</h2>
+
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Serwisy GSM</th>
+                    <th scope="col">Użyte części</th>
+                    <th scope="col">Inne prace</th>
+                    <th scope="col"></th>
+                    <th scope="col">Szczegóły</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prace in inne %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{prace.date_make}}</td>
+                    <td>{{prace.nazwa_czynnosci}}</td>
+                    <td>{{prace.czas_wykonania}}h</td>
+                    <td>{{prace.opis}}</td>
+
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        {% for el in pracownicy %}
+        <h1>{{el}}</h1>
+        {% endfor %}
+
+    </div>
+    {% endblock %}

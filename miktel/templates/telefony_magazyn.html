@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid mr-auto">
+    <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO {{page_records}} wyników!</label>
+    </div>
+    <div class="row col-12 mx-auto">
+
+        {% for el in shops %}
+        {% if el.id != 5  %}
+        {% if el.id == lokal.id %}
+        <a class="col-lg-2 m-1 ml-2 mr-2 mx-auto" href="/miktel/telefony_dostepne_magazyn/{{el.id}}"><button
+                class="btn btn-success col-12 mx-auto">{{el}}</button></a>
+        {% else %}
+        <a class="col-lg-2 m-1 ml-2 mr-2 mx-auto" href="/miktel/telefony_dostepne_magazyn/{{el.id}}"><button
+                class="btn btn-warning col-12 mx-auto">{{el}}</button></a>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        <a class="col-lg-2 m-1 ml-2 mr-2 mx-auto" href="/miktel/telefony_magazyn/"><button
+                class="btn btn-dark col-12 mx-auto">Cały
+                Miktel</button></a>
+    </div>
+
+    <form method="POST" class="row col-12 m-2 mt-2 mx-auto">
+        {% csrf_token %}
+        <input id="search" class="col-xs-8 col-lg-4" name="szukaj" maxlength="128" type="text" class="form-control"
+            placeholder="numer umowy, kategoria, nazwa, model, imei" aria-label="Recipient's username"
+            aria-describedby="basic-addon2">
+
+        <button type="submit" class="btn btn-dark col-lg-2 col-xl-2"><span>Przeszukaj całą bazę</span></button>
+    </form>
+
+
+
+    <button type="button" class="btn btn-warning mb-2 .col-sm-1 .col-lg-3"><a class="dodaj"
+            href="{% url 'dodaj_telefon' %}">Dodaj
+            telefon</a></button>
+
+
+    <button type="button" class="btn btn-warning mb-2 .col-sm-1 .col-lg-3"><a class="dodaj"
+            href="{% url 'umowa_komisowa' %}">Dodaj
+            umowe</a></button>
+
+
+    <button type="button" class="btn btn-warning mb-2 .col-sm-1 .col-lg-3"><a class="dodaj"
+            href="{% url 'faktura_zakupu' %}">Dodaj
+            fakture</a></button>
+</div>
+
+</div>
+<div class="row col-12 mt-2 mx-auto">
+    <h1>Telefony dostępne MAGAZYN:</h1>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">L.P.</th>
+                <th scope="col">I.D.</th>
+                <th scope="col">Sprzedaż</th>
+                <th scope="col">Szczegóły</th>
+                <th scope="col">Data zak.</th>
+                <th scope="col">Kategoria</th>
+                <th scope="col">Marka</th>
+                <th scope="col">Nazwa</th>
+                <th scope="col">Cena zak.</th>
+                <th scope="col">Cena sprz.</th>
+                <th scope="col">Imei</th>
+                <th scope="col">Stan</th>
+                <th scope="col">Miejsce zakupu</th>
+                <th scope="col">Wprowadził</th>
+                <th scope="col">Aktaulnie w:</th>
+                <th scope="col">Dokument</th>
+                <th scope="col">Informacje</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in telefony %}
+
+            <tr class="lista">
+                <th scope="row">{{ telefony.start_index|add:forloop.counter0 }}</th>
+                <td>{{el.id}}</td>
+                <td><a href="/miktel/sell_phones/{{el.id}}">Sprzedaj</a></td>
+                <td><a href="/miktel/phone_update/{{el.id}}"><button class="btn btn-primary">Szeczegóły
+                        </button> </a></td>
+                <td>{{el.data_wprow}}</td>
+                <td>{{el.kategoria.nazwa}}</td>
+                <td>{{el.marka.nazwa}}</td>
+                <td>{{el.nazwa}}</td>
+                <td>{{el.cena_zak}}</td>
+                <td>{{el.cena_sprzed}}</td>
+                <td>{{el.imei}}</td>
+                <td>{{el.get_stan_display}}</td>
+                <td>{{el.sklep}}</td>
+                <td>{{el.pracownik_zak}}</td>
+                <td>{{el.magazyn_aktualny}}<br><a href="/miktel/change_mag/{{el.id}}">Zmień</a></td>
+                </td>
+                {% if el.nr_doc.strip %}
+                <td>{{el.nr_doc}}</td>
+                {% else %}
+                <td>Brak dok.</td>
+                {% endif %}
+                {% if el.info.strip %}
+                <td>{{el.info}}<br><a href="/miktel/add_info/{{el.id}}">Zmiany</a></td>
+                {% else %}
+                <td><a href="/miktel/add_info/{{el.id}}">Zmiany</a></td>
+                {% endif %}
+                <td><a href="/miktel/add_phone_details/{{el.id}}"><button class="btn btn-primary">Dodaj
+                            szeczegóły
+                            <br>na stronę WWW</button> </a></td>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if telefony.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if telefony.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ telefony.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ telefony.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in telefony.paginator.page_range %}
+            {% if telefony.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if telefony.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ telefony.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ telefony.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Pracownik</th>
+                    {% for el in typ %}
+                    <th scope="col">{{el.SerwisType_Name}}</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for pracownik in pracownicy %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <th scope="row">{{ pracownik }}</th>
+                    {% for usluga in uslugi %}
+                    {% if usluga.serwisant.id == pracownik.id and usluga.usluga.id == el.id %}
+                    <td>{{usluga.pokaz_sumeGSM_1}}</td>
+                    {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+                {% endfor%}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br>
+<div class="container-fluid">
+    <div class="row col-10 mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Serwisy GÓWNO</th>
+                    <th scope="col">Serwisy GRAWERA</th>
+                    <th scope="col">Inne prace</th>
+                    <th scope="col"></th>
+                    <th scope="col">Szczegóły</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usluga in uslugi %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{usluga.serwisant}}</td>
+                    <td>{{usluga.pokaz_sumeGSM_1}}</td>
+                    <td>{{usluga.usluga}}</td>
+                    <td>{{serwisy.pokaz_sumeGrawer_1}}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+
+                {% for serwis in serwisy %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{serwis.serwisant}}</td>
+                    <td>{{serwis.pokaz_sumeGSM_1}}</td>
+                    <td>{{serwis.usluga}}</td>
+                    <td>{{serwis.pokaz_sumeGrawer_1}}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,250 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140774930-7"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-140774930-7');
+    </script>
+    <meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+    <meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+    <meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+    <meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+    <meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+    <meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+    <meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+    <meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+    <meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+        integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static "store/style_main.css" %}" />
+    <link rel="stylesheet" href="/static/cookielaw/css/cookielaw.css" />
+    {% block head %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+    <div class="col-12 row top p-0 m-0 fixed-top link hidden">
+        <div class="text-center row m-0 p-0 ml-auto top align-self-center">
+            <a class="text-white text-center ml-auto p-2"
+                href="https://www.youtube.com/channel/UCvGDJJrET2fRhgeQ0YqkiNg"><i
+                    class="text-white text-center fab fab fa-youtube"></i></a>
+            <a class="text-white text-center mx-auto p-2" href="https://www.instagram.com/miktelgrawer/"
+                title="link-to-instagram-miktel">
+                <i class="text-white text-center fab fab fab fa-instagram"></i></a>
+            <a class="text-white text-center mx-auto p-2" href="https://www.facebook.com/miktelgrawer/"
+                title="link-to-facebook-miktel-grawerowanie">
+                <i class="text-white fab fa-facebook-f"><i class="">Grawer</i></i></a>
+            <a class="text-white text-center mx-auto p-2" href="https://www.facebook.com/miktelgsm/"
+                title="link-to-facebook-miktel-gsm-telefony">
+                <i class="text-white fab fa-facebook-f"><i class="">Gsm</i></i></a>
+            <a class="text-white text-center mx-auto p-2" href="/miktel/login/"><i
+                    class="bg-white border rounded-pill text-dark text-center mx-auto">Dla
+                    pracowników</i></a>
+
+        </div>
+    </div>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark text-light ml-0 mr-0">
+        <a class="navbar-brand text-light" href="/">Miktel Store</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse " id="navbarSupportedContent">
+            <ul class="navbar-nav ml-lg-auto ">
+                <li class="nav-item active mx-auto ml-lg-auto">
+                    <a class="nav-link text-white" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown  ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dział GSM
+                    </a>
+                    <div class="dropdown-menu text-center" aria-labelledby="navbarDropdown">
+                        <a class=" text-center submenu" href="/telefony-serwis-akcesoria/"
+                            title="link-do-glownej-strony-dzalu-gsm-telefony-komorkowe-serwis-akcesoria">Oferta GSM,
+                            promocje</a><br>
+                        <a class=" text-center submenu" href="/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel/"
+                            title="link-do-oferty-telefonow-komorkowych">Telefony
+                            sprzedaż</a><br>
+                        <a class=" text-center submenu" href="/produkt/serwis-telefonow-komorkowych-oferta-cennik/"
+                            title="link-do-oferty-serwisu-telefonow-komorkowych">Serwis
+                            telefonów</a><br>
+                        <a class=" text-center submenu" href="/produkt/akcesoria-gsm/"
+                            title="link-do-oferty-akcesoriow-do-telefonow-komorkowych">Akcesoria GSM</a><br>
+                    </div>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Grawerowanie
+                    </a>
+                    <div class="dropdown-menu text-center text-wrap" aria-labelledby="navbarDropdown">
+                        <a class="text-center submenu" href="/grawerowanie-laserem-co2-oferta/">Grawerowanie laserem -
+                            Oferta</a><br>
+                        <a class="text-center submenu" href="/produkt/grawerowanie-laserem-co2/">Grawerowanie
+                            i
+                            cięcie</a><br>
+                        <a class="text-center submenu" href="/produkt/znakowanie-laserem-co2/">Znakowanie w
+                            metalu</a><br>
+                    </div>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Pieczątki
+                    </a>
+                    <div class="dropdown-menu text-center text-wrap" aria-labelledby="navbarDropdown">
+                        <a class="text-center submenu" href="/wyrob-pieczatek-nasza-oferta/">Pieczątki - Oferta</a><br>
+                        <a class="text-center submenu" href="/produkt/pieczatki/pieczatki-firmowe/">Pieczątki
+                            firmowe</a><br>
+                        <a class="text-center submenu" href="/produkt/pieczatki/pieczatki-imienne/">Pieczątki
+                            imienne</a><br>
+                        <a class="text-center submenu" href="/produkt/pieczatki/pieczatki-z-logiem/">Pieczątki z
+                            logiem</a><br>
+                        <a class="text-center submenu" href="/produkt/pieczatki/pieczatki-inne/">Pieczątki okrągłe,
+                            kwadratowe</a><br>
+                        <a class="text-center submenu"
+                            href="/produkt/pieczatki/pieczatki-datowniki-numeratory/">Datowniki,
+                            numeratory</a><br>
+                        <a class="text-center submenu" href="/produkt/pieczatki/pieczatki-szkieletowe/">Pieczątki
+                            szkieletowe</a><br>
+                    </div>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dorabianie kluczy
+                    </a>
+                    <div class="dropdown-menu  text-center text-wrap" aria-labelledby="navbarDropdown">
+                        <div class="text-center submenu border-bottom">
+                            <a class="text-center submenu" href="/dorabianie-kluczy-oferta/">Dorabianie
+                                kluczy
+                                -
+                                Oferta</a><br>
+                        </div>
+                        <div class="text-center submenu border-bottom">
+                            <a class="text-center submenu" href="/produkt/klucze/klucze-mieszkaniowe/">Klucze
+                                mieszkaniowe</a></div>
+                        <div class="text-center submenu border-bottom">
+                            <a class="text-center submenu" href="/produkt/klucze/klucze-numeryczne/">Klucze
+                                numeryczne</a><br>
+                        </div>
+                        <div class="text-center submenu border-bottom">
+                            <a class="text-center submenu"
+                                href="/produkt/klucze-samochodowe-obudowy-pilotow-samochodowych/">Klucze
+                                samochodowe, obudowy pilotów</a><br>
+                        </div>
+                        <div class="text-center submenu border-bottom">
+                            <a class="text-center submenu " href="/produkt/klucze/klucze-samochodowe-z-pilotem/">Klucze
+                                samochodowe
+                                z pilotem</a><br>
+                        </div>
+                        <div class="text-center submenu border-bottom">
+                            <a class="text-center submenu"
+                                href="/produkt/klucze/kodowanie-i-naprawa-pilotow-samochodowych/">Kodowanie i
+                                naprawa<br>
+                                pilotów
+                                samochodowych</a><br>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">BLOG</a>
+                </li>
+                <li class="nav-item dropdown ml-lg-auto">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Kontakt
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-contact text-center text-wrap"
+                        aria-labelledby="navbarDropdown">
+                        <a class="text-center submenu" href="/kontakt-z-nami/wyspa-gsm-ul-lubelska-2-pulawy/">Punkt
+                            WyspaGSM Puławy</a><br>
+                        <a class="text-center submenu" href="/kontakt-z-nami/rybna-serwis-ul-wspolna-2-rybna/">Punkt w
+                            Rybnej</a><br>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- <div class="col-12 m-0 p-0 under_nav "></div>
+    {% if request.COOKIES.cookielaw_accepted  %}
+    {% else %}
+    {% load i18n static %}
+    <div id="CookielawBanner" class="col-10 m-0 p-0 mx-auto text-center">
+        <div class="cookie-content mx-auto text-center  m-0 p-0">
+            <div class="cookie-text mx-auto text-center">
+                {% trans 'Informujemy, iż w celu optymalizacji treści dostępnych w naszym serwisie, dostosowania ich do Państwa indywidualnych potrzeb korzystamy z informacji zapisanych za pomocą plików cookies na urządzeniach końcowych użytkowników. Pliki cookies użytkownik może kontrolować za pomocą ustawień swojej przeglądarki internetowej. Dalsze korzystanie z naszego serwisu internetowego, bez zmiany ustawień przeglądarki internetowej oznacza, iż użytkownik akceptuje stosowanie plików cookies. Czytaj więcej Polityka prywatności Informację cookies strony internetowej zapewnia miktel.krakow.pl' %}
+            </div>
+
+            <div class="cookie-buttons text-center">
+                <a class="btn-blue text-primary" href="/polityka-prywatnosci/">{% trans "Polityka prywatności?" %}</a>
+                <a class="btn-orange text-success"
+                    href="javascript:Cookielaw.createCookielawCookie();">{% trans "Ok, zgadzam się" %}</a>
+            </div>
+            <div class="close-cookies"></div>
+        </div>
+        <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script>
+        {{request.COOKIES.cookielaw_accepted}}
+    </div>
+    {% endif %} -->
+
+    {% block content %}
+    {% endblock %}
+    <div class="container text-center">
+        <footer class="footer col-12 mx-auto row">
+            <a class="col-12 mx-auto text-center text-dark" href="/polityka-prywatnosci/">Polityka prywatności</a>
+            <i class="copyright col-12 mx-auto">Copyright &copy; Miktel Premium 2020</i>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+    </script>
+    <script src="{% static "store/dist/js/lightbox.js" %}"></script>
+    <script>
+        lightbox.option({
+            'albumLabel': "Zdjęcie %1 z %2"
+        })
+    </script>
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $('.close-cookies').click(function () {
+                $(this).parent().hide();
+            });
+        });
+    </script>
+    <!-- <script src="{% static 'cookielaw/js/cookielaw.js' %}"></script> -->
+    <script src="{% static 'store/front_style.js' %}" type="text/javascript"></script>
+    {% block script %}
+
+    {% endblock %}
+</body>
+
+</html>

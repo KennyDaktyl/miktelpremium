@@ -1,0 +1,171 @@
+{% extends 'base_store.html' %}
+{% load static %}
+{% load cache %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Posiadamy wiele telefonów nowych i używanch. Prowadzimy serwis i naprawy gsm. Posiadamy duży wybór akcesoriów do telefonów. U nas również sprzedaż telefon'>
+<link rel="canonical" href="https://www.miktel.krakow.pl/kontakt-z-nami/{{shop.slug}}/">
+<link rel="stylesheet" href="{% static "store/style_main.css" %}">
+{% endblock %}
+
+{% block title %}
+Miktel {{shop.nazwa}} | Kontakt {{shop.adres}} tel:{{shop.adres.numerTelefonu}}.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="col-lg-12 mx-auto row text-left link p-0  fixed-top  hidden">
+    <a class="text-white text-left" href="/"><i class="text-light">Strona główna</i></a>
+    {% if messages %}
+    <ul class="messages col-12 mx-auto text-center">
+        {% for message in messages %}
+        <li class="{{ message.tags }} col-12 mx-auto text-center text-white">
+            {{ message|safe }}
+            <a href="" class="close">x</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% if shop.slug != "rybna-serwis-ul-wspolna-2-rybna" %}
+<div class="col-12  m-0 mb-3 mx-auto row contact">
+    {% else %}
+    <div class="col-12  m-0 mb-3 mx-auto row contact-rybna ">
+        {% endif %}
+
+        <div class="m-0 p-0 col-lg-6 mt-3 d-flex align-items-center flex-wrap">
+
+            <h1 class="col-12 text-center mx-auto ">Kontakt z nami</h1>
+
+            <p class="col-12 text-center mx-auto" style="font-size: 15px;">Jesteśmy do Twojej dyspozycji. W
+                czym
+                możemy pomóc?
+            </p>
+            <form class="col-10 mx-auto text-center" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="exampleFormControlInput1" class="">Email adres</label>
+                    <input name="email" type="email" requider class="s_email form-control rounded-pill"
+                        id="exampleFormControlInput1" placeholder="name@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1" class="">Wybierz dział</label>
+                    <select name="subject" class="s_email form-control rounded-pill" id="exampleFormControlSelect1">
+                        <option value="-1">--wybierz profil--</option>
+                        {% for el in profiles %}
+                        <option value="{{el.id}}">{{el.name}}</option>
+                        {% endfor %}
+                        <option value="-2">Inne</option>
+                    </select>
+                </div>
+
+                <div class="s_email form-group">
+                    <label for="exampleFormControlTextarea1" class="">Wiadomość</label>
+                    <textarea name="text" class="s_email form-control rounded-pill text-center" id=""
+                        rows="3"></textarea>
+                </div>
+                <div class="captcha form-group text-center">
+                    {{ reCapForm.as_p }}
+                </div>
+                <button name="ask_for" class="btn col-10 rounded-pill text-center" type="submit">Wyślij email</button>
+            </form>
+        </div>
+        <div class=" m-0 p-0 pr-2 pl-2 col-lg-6 mt-3 mb-1" height="100%">
+            {{shop.adres.google_maps|safe}}
+        </div>
+        <div class="col-12 p-0 m-0 mb-3 mx-auto row mt-3">
+            <div class="m-0 p-0 col-lg-6 mt-3 text-center d-flex align-items-center flex-wrap row">
+                <h2 class="col-12 mx-auto text-center "><strong class="">Dane tele-adresowe</strong>
+                </h2>
+                <p class=" col-12 mx-auto text-center "><svg class="bi bi-phone" width="1em" height="1em"
+                        viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M11 1H5a1 1 0 00-1 1v12a1 1 0 001 1h6a1 1 0 001-1V2a1 1 0 00-1-1zM5 0a2 2 0 00-2 2v12a2 2 0 002 2h6a2 2 0 002-2V2a2 2 0 00-2-2H5z"
+                            clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M8 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                    </svg></p>
+                <p class="col-12 mx-auto text-center"><a href="tel:+48{{shop.adres.numerTelefonu}}"><span
+                            class="text-light">{{shop.adres.numerTelefonu}}</span></a></p>
+                <p class=" col-12 mx-auto text-center text-light"><span class="text-light">{{shop.adres}}</span> </p>
+                <div class="col-12 m-0 p-0 mx-auto text-center">
+                    <img class="img-thumbnail mx-auto" width="350" height="200" src="{{ MEDIA_URL }}{{shop.foto}}"
+                        alt="Siedziba firmy {{shop.nazwa}} - {{shop.adres}}"
+                        title="Wejście do sklepu Miktel w {{shop.adres}}">
+                </div>
+            </div>
+            <div class="m-0 p-0 col-lg-6 mt-3 d-flex align-items-center flex-wrap">
+                <h2 class="col-12 m-0 p-0 text-center text-light">
+                    <strong class="text-light">Godziny otwarcia sklepu</strong>
+                </h2>
+                <p class=" text-center mx-auto text-light mt-3 col-12"><span class="text-light">Pn 10-18</span></p>
+                <p class="text-center mx-auto text-light col-12"><span class="text-light">Wt 10-18</span></p>
+                <p class="text-center mx-auto text-light col-12"><span class="text-light">Śr 10-18</span></p>
+                <p class="text-center mx-auto text-light col-12"><span class="text-light">Cz 10-18</span></p>
+                <p class="text-center mx-auto text-light col-12"><span class="text-light">Pt 10-18</span></p>
+                <p class="text-center mx-auto text-light col-12"><span class="text-light">Sb-Nd 10-18</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Miktel Store {{shop.nazwa}}",
+        "description": "Miktel Store firma usługowo-handlowa. Zajmujemy się sprzedażą i naprawą telefonów komórkowych. W naszej ofercie również produkty wykonywane laserem CO2, takie jak pieczątki, tabliczki informacyjne, ozdabianie prezentów, grawer i cięcie materiałów grawerskich",
+        "image": "https://www.miktel.krakow.pl/{{ MEDIA_URL }}{{shop.foto}}",
+        "@id": "",
+        "url": "https://www.miktel.krakow.pl",
+        "telephone": "+48{{shop.adres.numerTelefonu}}",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "{{shop.adres.ulica}}",
+            "addressLocality": "{{shop.adres.miasto}}",
+            "postalCode": "{{shop.adres.kod}}",
+            "addressCountry": "PL"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "{{shop.adres.latitude}}",
+            "longitude": "{{shop.adres.longitude}}"
+        },
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+            ],
+            "opens": "10:00",
+            "closes": "18:00"
+        },
+        "sameAs": [
+            "https://www.facebook.com/miktelgsm/",
+            "https://www.instagram.com/miktelgrawer/",
+            "https://www.youtube.com/channel/UCvGDJJrET2fRhgeQ0YqkiNg"
+        ]
+    }
+</script>
+{% endblock %}

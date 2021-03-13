@@ -1,0 +1,183 @@
+@media (min-width: 995px) {
+    body {
+        min-height: 110vh;
+        background-color: beige;
+    }
+}
+
+.dodaj {
+    color: green;
+}
+
+.na_skroty {
+    font-size: 12px;
+    text-align: left;
+}
+
+img {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+img.img_list {
+    width: 75px;
+    height: 75px;
+}
+
+.carousel-item img {
+    /* max-width: 150px; */
+    height: 280px;
+}
+
+td,
+th {
+    text-align: center;
+    /* color: brown; */
+}
+
+table {
+    overflow-x: auto;
+    display: block;
+}
+
+
+
+.big {
+    color: blue;
+}
+
+.plusminus {
+    width: 50px;
+    height: 50px;
+}
+
+.ilosc_sztuk {
+    font-weight: 600;
+    width: 70;
+    height: 70;
+    font-size: 1.5rem;
+}
+
+
+div.day {
+    display: block;
+    width: 14%;
+    min-height: 250px;
+
+}
+
+div.day_name {
+    display: block;
+    width: 14%;
+    min-height: 25px;
+    background-color: brown;
+    color: white;
+    font-weight: 600;
+}
+
+.day div.lista:first-of-type {
+    background-color: greenyellow;
+}
+
+@media (max-width: 995px) {
+    * {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .navbar-dark li,
+    a,
+    button {
+        font-size: 1.6rem;
+    }
+
+    .btn a {
+        font-size: 1.1rem;
+    }
+
+    .navbar-nav a {
+        font-size: 1.8rem;
+    }
+
+    .table th,
+    td,
+    a,
+    b {
+        font-size: 0.6rem;
+
+    }
+
+    h3 {
+        font-size: 0.5rem;
+    }
+
+    body {
+        background-color: beige;
+        max-width: 100vw;
+
+    }
+
+    button {
+        font-size: 1.9rem;
+    }
+
+    .dropdown a {
+        border-bottom: 1px solid gray;
+    }
+
+    .form-check-input {
+        transform: scale(2);
+        -webkit-transform: scale(2);
+    }
+
+    select {
+        min-width: 40%;
+        text-align: center;
+    }
+
+    input {
+        background-color: aqua;
+        font-size: 1.8;
+    }
+
+    table {
+        overflow-x: auto;
+        display: block;
+    }
+
+
+    /* td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+    } */
+
+    p {
+        font-size: 1.4rem
+    }
+
+    h3,
+    b {
+        font-size: 1rem
+    }
+
+    option {
+        font-size: 1rem
+    }
+
+    img.img_shops {
+        min-width: 150px;
+        min-height: 150px;
+    }
+
+    div.day {
+        display: block;
+        width: 50%;
+        border: 2px solid black;
+    }
+
+    img.img_list {
+        width: 75px;
+        height: 75px;
+    }
+}

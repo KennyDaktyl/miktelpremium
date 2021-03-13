@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input name="tel_id" value="{{telefon.id}}" type="hidden">
+        <input name="numer_doc" value="{{numer_faktury}}" type="hidden">
+        <li class="list-group-item">Srzedajesz telefon nr: <b>{{telefon.marka}} {{telefon.nazwa}}</b> </li>
+        <li class="list-group-item">Kupiony za: <b>{{telefon.cena_zak}}</b></li>
+        <li class="list-group-item">Numer imei: <b>{{telefon.imei}} </b></li>
+        <li class="list-group-item">dokument zakupu: <b>{{numer_faktury}}</b></li>
+        <li class="list-group-item">Cena klient: <b><input name="cena_sprz" class="col-3" type="number" value="0"
+                    class="form-control">
+            </b></li>
+        <li class="list-group-item"><a href="/miktel/gwarancja_pdf/{{telefon.id}}"><button type="button"
+                    class="btn btn-warning">Drukuj
+                    gwarancję
+                    PDF</button></a></li>
+
+        </ul>
+</div>
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/miktel/telefony_magazyn/"><button type="button" class="btn btn-danger">Cofnij
+                wprowadzanie</button></a>
+        <i class="col-4"></i>
+        <a class="col-4" href="#"><button type="submit" class="btn btn-success">Zapisz i
+                przejdź
+                do listy umów</button></a>
+    </div>
+</div>
+</form>
+</div>
+{% endblock %}

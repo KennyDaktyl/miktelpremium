@@ -1,0 +1,535 @@
+* {
+    font-family: 'Open Sans', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+div.under_nav {
+    height: 100px;
+    background-color: #2D354A;
+    z-index: -2;
+}
+
+
+
+div.top {
+    /* padding: 5px 1px; */
+    background-color: #2D354A;
+    box-sizing: border-box;
+    height: 37px;
+}
+
+.top a:hover {
+    border-bottom: 1px solid white;
+    margin: 0;
+    padding: 0;
+    height: 35px;
+}
+
+
+nav.navbar {
+    background-color: #2D354A;
+    height: 65px;
+    margin-top: 37px;
+    z-index: 2;
+}
+
+.navbar a:hover {
+    border-bottom: 1px solid white;
+    padding: 5px 1px;
+}
+
+div.dropdown-menu {
+    min-width: 220px;
+    color: white;
+    z-index: 2;
+    padding-top: 20px;
+
+}
+
+.dropdown-menu a {
+    color: #2D354A;
+    margin: 15px 1px;
+    line-height: 40px;
+    font-size: 15px;
+    /* border-bottom: 1px solid #2D354A; */
+}
+
+.navbar-nav a {
+    /* padding: 8px 10px; */
+    text-align: center;
+    height: 45px;
+}
+
+/* .dropdown-menu a:hover {
+    background-color: antiquewhite;
+} */
+
+div.link {
+    background-color: #2D354A;
+    margin-top: 100px;
+    padding-top: 8px;
+    height: 20px;
+    z-index: 1;
+}
+
+.link a {
+    font-size: 15px;
+    color: white;
+}
+
+
+/* div.bg-main {
+    background-color: #2D354A;
+    color: white;
+    /* min-height: 101vh;} */
+
+
+
+img.img_mini {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+img.img_mini_2 {
+    max-width: 220px;
+    max-height: 220px;
+}
+
+button.ask_for {
+    /* background-color: #2D354A;
+     */
+    background-color: aliceblue;
+}
+
+div.gallery {
+    background-color: white;
+    text-align: center;
+}
+
+
+button.ask_for {
+    background-color: #2D354A;
+    color: white;
+}
+
+div.search_link {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+
+.search_link a {
+    font-size: 18px;
+    text-align: center;
+    margin: auto;
+    width: 100%;
+}
+
+.search_link input,
+button {
+    font-size: 18px;
+    min-height: 45px;
+}
+
+span.bgc-light {
+    background-color: #2D354A;
+}
+
+
+div.bcg-main {
+    background-image: url(/static/media/images/bcg-miktel-gsm-main.webp);
+    /* background-image: url(https://miktelpremium.s3.eu-north-1.amazonaws.com/media/images/iphone_naprawy_serwis.jpg); */
+    margin: 0;
+    padding: 0;
+    padding-top: 100px;
+    background-size: cover;
+    background-color: #E8DFDA;
+    background-position-y: -200px;
+    /* min-height: 100vh; */
+    background-repeat: repeat;
+    min-height: 100vh;
+
+}
+
+div.bcg-grav {
+    background-image: url(/static/media/images/bcg-laser-.webp);
+    /* background-image: url(https://miktelpremium.s3.eu-north-1.amazonaws.com/media/images/iphone_naprawy_serwis.jpg); */
+    margin: 0;
+    padding: 0;
+    padding-top: 100px;
+    background-size: cover;
+    background-color: #E8DFDA;
+    /* background-position-y: -200px; */
+    /* min-height: 100vh; */
+    background-repeat: repeat;
+    min-height: 100vh;
+}
+
+div.bcg-stamp {
+    background-image: url(/static/media/images/bcg-stamp.webp);
+    /* background-image: url(https://miktelpremium.s3.eu-north-1.amazonaws.com/media/images/iphone_naprawy_serwis.jpg); */
+    margin: 0;
+    padding: 0;
+    padding-top: 100px;
+    background-size: cover;
+    background-color: #E8DFDA;
+    /* background-position-y: -200px; */
+    /* min-height: 100vh; */
+    background-repeat: repeat;
+    min-height: 100vh;
+}
+
+div.wraper {
+    background-color: black;
+}
+
+
+
+div.bcg-keys {
+    background-image: url(/static/media/images/bcg-keys.webp);
+    /* background-image: url(https://miktelpremium.s3.eu-north-1.amazonaws.com/media/images/iphone_naprawy_serwis.jpg); */
+    margin: 0;
+    padding: 0;
+    padding-top: 100px;
+    background-size: cover;
+    background-color: #E8DFDA;
+    /* background-position-y: -50px; */
+    /* min-height: 100vh; */
+    background-repeat: repeat;
+    min-height: 100vh;
+    /* opacity: 0.5; */
+}
+
+div.contact {
+    margin: 0;
+    padding: 0;
+    padding-top: 100px;
+    min-height: 70vh;
+    /* z-index: -1; */
+    /* background-color: #22283F; */
+    background-size: cover;
+    background-image: url(/static/media/images/bgc-contact-miktel.webp);
+}
+
+input.s_email {
+    background-color: #2E324A;
+}
+
+textarea.s_email {
+    background-color: #2E324A;
+}
+
+select.s_email {
+    background-color: #2E324A;
+}
+
+textarea.s_email {
+    background-color: #2E324A;
+}
+
+
+.contact button {
+    background-color: #2E7DB6;
+    color: white;
+}
+
+.contact h1,
+h2 {
+    font-size: 35px;
+    font-weight: 600;
+}
+
+.contact p {
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.contact span {
+    font-size: 30px;
+    font-weight: 600;
+    background-color: #2E324A;
+}
+
+.bcg-keys h1 {
+    background-color: black;
+    opacity: 1;
+}
+
+.oferta {
+    color: white;
+}
+
+.oferta h1,
+a {
+    color: white;
+}
+
+/* .title p,
+a {
+    color: black;
+    opacity: 0.5;
+} */
+
+.carousel {
+    height: 270px;
+}
+
+
+.form select {
+    max-width: 100%;
+}
+
+.form p:nth-of-type(3) {
+    max-width: 100%;
+}
+
+div.card {
+    min-height: 145px;
+}
+
+.card h5 {
+    min-height: 75px;
+}
+
+.card img {
+    width: 150px;
+    height: 150px;
+}
+
+.cards_accessory img {
+    max-width: 100px;
+}
+
+#CookielawBanner {
+    background: #fff;
+    padding: 15px 0;
+    margin-top: 0px;
+}
+
+#CookielawBanner .container {
+    position: relative;
+}
+
+#CookielawBanner #CookielawCross {
+    background: url(/static/cookielaw/img/close.png) no-repeat 0 0;
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 15px;
+    height: 15px;
+}
+
+@media (max-width:1024px) {
+    div.top {
+        /* height: 57px; */
+        margin: 0 25px;
+        padding: 0 25px;
+    }
+
+    #CookielawBanner {
+        margin-top: 50px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    /* div.nav-collapse {
+        padding-top: 57px;
+    } */
+
+    table {
+        overflow-x: auto;
+        display: block;
+    }
+
+    /* .top i {
+        font-size: 25px;
+    } */
+
+    nav.navbar {
+        /* height: 110px; */
+        /* padding-bottom: 10px; */
+        z-index: 20;
+    }
+
+    /* button.navbar-toggler {
+        height: 100px;
+    } */
+
+    div.navbar-collapse {
+        /* margin-top: 100px; */
+        background-color: #2D354A;
+    }
+
+    /* 
+    div.under_nav {
+        height: 200px;
+
+    } */
+
+    .navbar-toggler-icon {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    div.link {
+        margin-top: 200px;
+    }
+
+    a.nav-link {
+        padding: 12px 15px;
+        font-size: 25px;
+        height: 70px;
+        line-height: 60px;
+    }
+
+    a.submenu {
+        padding: 12px 15px;
+        font-size: 22px;
+        height: 60px;
+        line-height: 50px;
+    }
+
+    .carousel {
+        height: 100%;
+    }
+
+    .bcg-main p,
+    span,
+    i,
+    h1 {
+        /* font-size: 35px; */
+        color: white;
+    }
+
+    div.bcg-main {
+        background-image: url(/static/media/images/bcg-miktel-store-mobile.webp);
+        background-repeat: repeat;
+        background-position-y: 0px;
+    }
+
+    div.bcg-grav {
+        background-image: url(/static/media/images/bcg-laser-min.webp);
+        background-position-y: 0px;
+        background-position-x: -300px;
+
+    }
+
+    div.bcg-stamp {
+        background-image: url(/static/media/images/bcg_stamp-mobile.webp);
+        background-position-y: 0px;
+        background-position-x: -300px;
+
+    }
+
+    div.bcg-keys {
+        background-image: url(/static/media/images/bcg_keys-mobile.webp);
+        background-position-y: 0px;
+        background-position-x: -300px;
+
+    }
+
+    div.contact {
+        background-image: url(/static/media/images/bgc-contact-miktel-mobile.webp);
+    }
+
+
+    .bg-main h1,
+    h2,
+    h3,
+    h4 {
+        /* font-size: 45px; */
+        color: white;
+        margin-top: 10px;
+
+    }
+
+
+    .info_box p,
+    span {
+        /* background-color: #6977A1; */
+        /* font-size: 35px; */
+        color: black;
+    }
+
+    /* .offer p,
+    span,
+    strong,
+    li {
+        font-size: 35px;
+    } */
+
+    img.img_mini {
+        max-width: 100px;
+        max-height: 100px;
+    }
+
+    img.img_mini_2 {
+        max-width: 220px;
+        max-height: 220px;
+    }
+
+    /* .bcg-main h1 {
+        font-size: 45px;
+    } */
+
+    /* .bcg-grav h1 {
+        font-size: 45px;
+    } */
+
+    .card-group div {
+        min-height: 125px;
+    }
+
+    h5 {
+        /* font-size: 40px; */
+        color: black;
+    }
+
+    .form p {
+        width: 50%;
+        /* font-size: 30px; */
+        align-items: center;
+    }
+
+
+    .form p:nth-of-type(3) {
+        width: 100%;
+        /* font-size: 30px; */
+        text-align: center;
+    }
+
+    .search_link input,
+    button {
+        font-size: 18px;
+        /* min-height: 70px; */
+    }
+
+    /* button.btn {
+        font-size: 24px;
+    } */
+
+    /* label {
+        font-size: 30px;
+    } */
+
+    /* td,
+    th {
+        font-size: 25px;
+    } */
+
+    /* button {
+        height: 50px;
+        font-size: 25px;
+    } */
+}

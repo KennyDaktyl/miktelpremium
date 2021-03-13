@@ -1,0 +1,5 @@
+Sitemap: https://www.miktel.krakow.pl/sitemap.xml
+User-agent: *
+Disallow: /miktel/
+Disallow: /admin/
+Disallow: /polityka-prywatnosci/

@@ -1,0 +1,8 @@
+SECRET_KEY=hxhd0wjur_b+q)4-7nohimb1(ujpslndw+9=1fx5dr_e&w%dww
+DB_USER="postgres"
+DB_PASSWORD="Tofik123!"
+TOKEN_SMS=7s18yl0TsqvqGBSy2yuXegMcCLns9ukXTcRnQ4gv
+GMAIL_USER='miktelgs@miktelgsm.pl'
+GMAIL_PASSWORD='WetodKrk123!'
+RECAP_PUBKEY='6Lc08vkUAAAAAKjbA_kRJPkNg36NZFeFRdF2S1I-'
+RECAP_PRIVKEY='6Lc08vkUAAAAAF4GbfzpvZPw9dTKSI2lrTFop6J-'

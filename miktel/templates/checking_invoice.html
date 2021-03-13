@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+
+    <p>Wprowadzasz fakturę nr: <b>{{faktura.numer}} </b>Data zakupu: <b>{{faktura.data_zak}}</b></p>
+    <ul class="list-group list-group-flush">
+
+        <li class="list-group-item">Miejsce zakupu: <b>{{faktura.sklep}}</b></li>
+        <li class="list-group-item">Pracownik: <b>{{faktura.pracownik_zak}}</b></li>
+        <li class="list-group-item">Telefony:
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Hurtownia</th>
+                        <th scope="col">Data zakupu</th>
+                        <th scope="col">Telefony</th>
+                        <!-- <th scope="col">Pracownik</th> -->
+                        <th scope="col">Suma Netto</th>
+                        <th scope="col">Suma Brutto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{faktura.hurtownia}}</td>
+                        <td>{{faktura.data_zak}}</td>
+                        <td>
+                            <ul>
+                                {% for tel in faktura.telefon.all %}
+                                <li>{{tel.marka}} {{tel.nazwa}} Cena netto: <b>{{tel.price_minus_vat}}</b> Cena Brutto
+                                    <b>{{tel.cena_zak}}</b>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <!-- <td>{{faktura.pracownik_zak}}</td> -->
+                        <td>{{total_minus_tax}}</td>
+                        <td>{{total}}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </li>
+
+
+    </ul>
+</div>
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/miktel/delete_invoice/{{faktura.id}}"><button type="button" class="btn btn-danger">Cofnij
+                wprowadzanie</button></a>
+        <i class="col-4"></i>
+        <a class="col-4" href="/miktel/lista_faktur/"><button type="button" class="btn btn-success">Zapisz i
+                przejdź
+                do listy faktur</button></a>
+    </div>
+</div>
+{% endblock %}

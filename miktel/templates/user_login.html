@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <p>{{request.user.authenticated}}</p>
+        <div class="col-4 mt-2 mr-auto">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ cap_form.as_p }}
+                <input type="submit" value="Zaloguj">
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

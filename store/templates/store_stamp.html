@@ -1,0 +1,73 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Posiadamy duży wybór pieczątek automatycznych. Wykonujemy je na poczekaniu w 15min. Pieczątka wykonywana jest metodą laserowego wypalani gumy'>
+<link rel="canonical" href="https://www.miktel.krakow.pl/wyrob-pieczatek-nasza-oferta/">
+<link rel="stylesheet" href="{% static "store/style_main.css" %}">
+{% endblock %}
+
+{% block title %}
+W naszej ofercie wyrób pieczątek na miejscu w punkcie w Krakowie.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="col-lg-12 mx-auto row text-left link p-0  fixed-top hidden">
+    <a class="text-white text-left" href="/"><span>Strona główna</span></a>
+</div>
+<div class="bcg-stamp col-12 col-12  ml-0 mr-0  mx-auto">
+    {% if send_email %}
+    <div class="col-12 mx-auto text-center">
+        <strong class="col-12 mx-auto text-center text-light h2">{{send_email}}</strong>
+    </div>
+    {% endif %}
+    <h1 class="col-lg-12 mx-auto text-white text-left">WYRÓB PIECZĄTEK - OFERTA</h1>
+    <form class="form-inline col-lg-6 mx-auto row mt-3 pb-3 search_link search_link_keys d-flex align-items-center"
+        method="GET" action="{% url 'store_stamp_search_view' %}">
+        <label class="text-white col-12 mb-3 h5" for="">Wyszukaj produktu w kategorii Pieczątki</label>
+        <div class="col-12 mx-auto row m-0 p-0">
+            <input name="search" id="input" class="text-center form-control mx-auto col-8 m-0 p-0" type="text"
+                placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-light col-3 mx-auto bg-secendary m-0 p-0" type="submit">Search</button>
+        </div>
+    </form>
+    <div id="div_link" class="col-10 col-lg-6 mx-auto bg-white position-absolute search_link border text-center ">
+        <ul class="col-12 link mx-auto text-center row" id="link">
+        </ul>
+    </div>
+    <div class="col-12 ml-0 mr-0 p-0 text-center mx-auto text-white mb-0">
+        <p class="mx-auto col-12 h4 mt-3"><strong>Wyrób pieczątek w Krakowie</strong></p>
+        <p class="mx-auto col-11 col-lg-10 mt-3 mb-2 h4">Posiadamy duży pieczątek automatycznych, pieczątek
+            szkieletowych oraz datowników. <br>Wszystkie pieczątki wykonujemy na miejscu w ciągu 15 minut.<br> Metoda
+            laserowego wypalania pieczątki pozwala na odwzorowanie wszystkich szczegółów.</p>
+
+    </div>
+</div>
+<div class="col-10 mt-3 mx-auto text-center">
+    {% for art in articles %}
+    {{art.text|safe}}
+    {% endfor %}
+</div>
+
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="{% static "store/main_stamp.js" %}" type="text/javascript"></script>
+{% endblock %}

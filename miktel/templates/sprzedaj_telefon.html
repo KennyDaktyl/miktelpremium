@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group row col-10">
+            <div class="row col-6 mt-2 form-group">
+                <label for="exampleFormControlInput1">Cena klient</label>
+            </div>
+            <div class="row col-6 mt-2 form-group"></div>
+            <input value="{{tele.id}}" name="tele" type="hidden">
+            <input name="cena_klient" type="number">
+        </div>
+
+        <div class="form-group row col-10 mt-2">
+            <button type="submit" class="btn btn-dark">Sprzedaj</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

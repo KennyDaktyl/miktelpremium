@@ -1,0 +1,85 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Posiadamy wiele telefonów nowych i używanych. Prowadzimy serwis i naprawy gsm. Posiadamy duży wybór akcesoriów do telefonów. U nas również sprzedaż telefon. Znajdujemy się w centrum Nowej Huty w Krakowie'>
+<link rel="canonical" href="https://www.miktel.krakow.pl/telefony-serwis-akcesoria/">
+<link rel="stylesheet" href="{% static "store/style_main.css" %}">
+{% endblock %}
+
+{% block title %}
+Miktel Store | W naszej ofercie telefony, serwis gsm i akcesoria gsm.
+{% endblock %}
+
+{% block content %}
+
+
+
+<div class="col-lg-12 mx-auto row text-left link p-0 fixed-top hidden">
+    <a class="text-white text-left" href="/"><span>Strona główna</span></a>
+</div>
+<div class="bcg-main col-12  m-0 mb-3 mx-auto row title d-flex align-items-center">
+    {% if send_email %}
+    <div class="col-12 mx-auto text-center">
+        <strong class="col-12 mx-auto text-center text-light h2">{{send_email}}</strong>
+    </div>
+    {% endif %}
+    <div class="col-12 mx-auto text-center">
+        <h1 class="text-white mr-auto col-lg-12 text-left h1">Telefony komórkowe - marka:</h1>
+        {% for mark in phones_mark %}
+        {% if mark.foto_mini != None %}
+        <a class="col-1 mx-auto text-center "
+            href="/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel/?shops=&mark={{mark.id}}&category=&price_start=&price_end=">
+            <img class="img_mark mx-auto bg-white m-2" src="{{ MEDIA_URL }}{{mark.foto_mini.image}}"
+                alt="Telefony marki {{mark.nazwa}}" title="Zdjęcię przedstawia kategoię telefonów marki {{mark.nazwa}}">
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <div class="col-12 mx-auto text-center">
+        <h2 class="text-white mr-auto col-lg-12 text-left h1">Części serwisowe - marka:</h2>
+        {% for mark in phones_mark %}
+        {% if mark.foto_mini != None %}
+        <a class="col-1 mx-auto text-center "
+            href="/produkt/serwis-telefonow-komorkowych-oferta-cennik/?shops=&mark={{mark.id}}&typ=">
+            <img class="img_mark mx-auto bg-white m-2" src="{{ MEDIA_URL }}{{mark.foto_mini.image}}"
+                alt="Czesci serwisowe gsm {{mark.nazwa}}"
+                title="Zdjęcię przedstawia kategoię części gsm marki {{mark.nazwa}}">
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <div class="col-12 mx-auto text-center">
+        <h3 class="text-white mr-auto col-lg-12 text-left h1">Akcesoria GSM - marka:</h3>
+        {% for mark in accessories_factory %}
+        {% if mark.foto_mini_akc != None %}
+        <a class="col-1 mx-auto text-center "
+            href="/produkt/akcesoria-gsm-do-telefonow-komorkowych-oferta-cennik/?shops=&mark={{mark.id}}&typ=">
+            <img class="img_mark mx-auto bg-white m-2" src="{{ MEDIA_URL }}{{mark.foto_mini_akc.image}}"
+                alt="Akcesoria do telefonów marki {{mark.name}}"
+                title="Zdjęcię przedstawia kategoię akcesoriów gsm marki {{mark.name}}">
+        </a>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="col-10 mx-auto text-center">
+    {% for art in articles %}
+    {{art.text|safe}}
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

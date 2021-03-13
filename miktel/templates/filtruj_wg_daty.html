@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Wybierz salon</label>
+                <select name="sklep" class="form-control" id="exampleFormControlSelect1">
+                    {% for el in sklepy %}
+                    <option value="{{el.id}}">{{el.nazwa}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Wybierz miesąc</label>
+                <select name="miesiac" class="form-control" id="exampleFormControlSelect1">
+                    {% for key,value in miesiace %}
+                    <option value="{{key}}">{{value}}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Wybierz rok</label>
+                <select name="rok" class="form-control" id="exampleFormControlSelect1">
+                    {% for key,value in rok %}
+                    <option value="{{value}}">{{value}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-secondary">Pokaż wg daty</button>
+        </form>
+
+
+    </div>
+</div>
+{% endblock %}
