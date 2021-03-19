@@ -20,7 +20,7 @@ django-heroku==0.3.1
 django-sitemaps==1.1.1
 django-storages==1.9.1
 DjangoLightbox==0.2.2
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 docutils==0.15.2
 gunicorn==20.0.4
 html5lib==1.0.1
