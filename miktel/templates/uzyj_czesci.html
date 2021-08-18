@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group row col-10">
+            <div class="row col-6 mt-2 form-group">
+                <label for="exampleFormControlInput1">Wybierz rodzaj usługi</label>
+            </div>
+            <div class="row col-6 mt-2 form-group"></div>
+            <select name="usluga" class="form-group" id="rodzaj">
+                {% for usluga in uslugi %}
+                <option value="{{usluga.id}}">{{usluga.id}} {{usluga}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <input value="{{product.id}}" name="czesc" type="hidden">
+        <div class="row col-6 mt-2 form-group">
+            <label for="exampleFormControlInput1">Mazwa modelu lub usługi</label>
+            <input value="{{product.Company}} {{product.Product_Name}} {{product.Product_Type}}" name="model"
+                type="text" class="form-control" maxlength="128">
+        </div>
+        <div class="form-group row col-3 mt-2">
+            <div class="form-group row col-12">
+                <label for="exampleFormControlSelect1">Miejsce pracy</label><br>
+            </div><br>
+            <div class="form-group row col-3 ">
+                <select name="sklep" class="form-group" id="exampleFormControlSelect1">
+                    {% for sklep in salon %}
+                    <option value="{{sklep.id}}">{{sklep}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="active_form">
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Cena klient</label>
+                    <input name="cena" type="number" class="form-control">
+                </div>
+                <div class="form-group row col-10 mt-2">
+                    <label for="exampleFormControlInput1">Koszt</label>
+                    <input value="{{product.Purchase_Price}}" name="koszt" input type="number" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row col-10 mt-2">
+            <button type="submit" class="btn btn-dark">Zapisz</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

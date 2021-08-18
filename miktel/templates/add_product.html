@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form.helper %}
+{% block content %}
+<div class="container-fluid col-12 m-0 p-0">
+    <div class="col-12 row m-0 p-0">
+        <div class="col-lg-9 mx-auto text-center">
+            <form method="POST" enctype="multipart/form-data" class="col-lg-6 mx-auto text-center mt-2">
+                {% csrf_token %}
+                <div class="form-group col-10">
+                    {{ form|crispy }}
+                    <div class="form-group row ">
+                        <button type="submit" class="btn btn-dark">Dodaj produkt</button>
+                    </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <p class="col-12">-</p>
+        <a href="/miktel/add_category/"><button class="col-12 mt-2 btn btn-success">Dodaj kategorię akc</button></a>
+        <a href="/miktel/add_factory/"><button class="col-12 mt-2 btn btn-success">Dodaj producenta</button></a>
+        <a href="/miktel/dodaj_marke/"><button class="col-12 mt-2 btn btn-success">Dodaj markę</button></a>
+        <a href="/miktel/add_material/"><button class="col-12 mt-2 btn btn-success">Dodaj materiał</button></a>
+    </div>
+</div>
+</div>
+{% endblock %}

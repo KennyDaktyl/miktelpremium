@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-2 col-10 mx-auto">
+    <form method="POST" action="/miktel/wydaj_serwis_czesci/">
+        {% csrf_token %}
+        <p>Wydajesz serwis nr: <b>{{serwis.id}} </b>Data przyjęcia: <b>{{serwis.data}}</b></p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Miejsce naprawy: <b>{{user.sklep_dzisiaj}}</b></li>
+            <li class="list-group-item">Użyte części:<br>
+                <!-- <ul class="list-group list-group-flush"> -->
+                {% for el in query_list %}
+                <input name="checks" type="checkbox" value="{{el.id}}" id="blankCheckbox"
+                    checked="checked" />{{ forloop.counter }}<b>:
+                    Typ:</b>
+                {{el.typ}} <b>Marka:</b>
+                {{el.marka}}
+                <b>Nazwa:</b> {{el.nazwa}}
+                <b>Cena:</b>
+                {{el.cena_zak}}<br>
+                {% endfor %}
+                <!-- </ul> -->
+            </li>
+
+            <li class="list-group-item col-12"><b>Model serwisowany: {{serwis.marka}} {{serwis.model}}</b>
+
+            </li>
+            <li class="list-group-item">Koszt wszystkich czesci: <b>{{total}}</b></li>
+            <li class="list-group-item">Cena ustalona dla klienta: <b>{{serwis.cena_zgoda}}</b></li>
+            <input type="hidden" name="koszt" value="{{total}}">
+            <input type="hidden" name="serwis_id" value="{{serwis.id}}">
+            <li class="list-group-item">{{ form.as_p }}
+
+            </li>
+            <li class="list-group-item">
+                <div class="form-check mt-4">
+                    <input name="sms" class="form-check-input" type="checkbox" value="1" id="defaultCheck1">
+                    Wyślij sms do klienta. Numer to : <b>{{serwis.numer_telefonu}}</b>
+                    <div>
+                        <label for="exampleFormControlSelect1" class="mt-3"><b>Saldo:</b> {{saldo}}zł
+                            (sms:0,16zł)</label>
+                    </div>
+                    <span id="tele2"></span>
+                </div>
+            </li>
+            <div class="form-group mt-3 col-6">
+                <label for="exampleFormControlTextarea1">Informacje</label>
+                <textarea name="info" value="" class="form-control" id="exampleFormControlTextarea1"
+                    rows="3"></textarea>
+            </div>
+        </ul>
+</div>
+<div class="container mt-2 col-10 mx-auto">
+    <div class="row mx-auto">
+        <a class="col-4" href="/miktel/lista_czesci/"><button type="button" class="btn btn-danger">Cofnij
+            </button></a>
+        <i class="col-4"></i>
+
+        <button id="ready_button2" type="submit" class="btn btn-success">Przejdz do Serwis gotowy do odbioru</button>
+
+    </div>
+</div>
+</form>
+{% endblock %}

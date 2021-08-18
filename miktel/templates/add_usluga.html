@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% crispy form.helper %}
+
+{% block content %}
+<div class="container-fluid">
+    <form method="POST" enctype="multipart/form-data" class="col-lg-6 mx-auto text-center uniForm">
+        {% csrf_token %}
+        <div class="form-group row col-12 ml-3">
+            <div class="row col-6 mt-2 form-group">
+                <label for="exampleFormControlInput1">Wybierz rodzaj usługi dd</label>
+            </div>
+            <div class="row col-6 mt-2 form-group"></div>
+            <select name="usluga" class="form-group" id="rodzaj">
+                {% for usluga in uslugi %}
+                <option value="{{usluga.id}}">{{usluga.nazwa}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="dodaj">
+</div>
+{% endblock %}

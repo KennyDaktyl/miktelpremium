@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid col-12">
+    <div class="row .col-3">
+        {% for el in sklep %}
+        <div class="mx-auto m-2 col-sm-6 col-lg-3 col-xl-2 mx-auto">
+            <div class="card .col-3">
+                <img class="img-fluid img-thumbnail img_shops" src="{{ MEDIA_URL }}{{el.foto}}" alt="Foto_sklepu">
+
+                <div class="card-body">
+                    <h5 class="card-title"><b>{{el.nazwa}}</b></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Adres: <b>{{el.adres.ulica}}<br>{{el.adres.miasto}}</b>
+                    </h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Telefon: <b>{{el.adres.numerTelefonu}}</b></h6>
+                    <h6 class="card-title">Telefony: <b>{{el.telefony_mag}} szt.</b></h6>
+                    {% if user.is_superuser %}
+                    <h6 class="card-title">Telefony kwota: <b>{{el.phones_price_sum}} szt.</b></h6>
+                    {% else %}
+                    <h6 class="card-title">Telefony kwota: <b>Tylko Szefo</b></h6>
+                    {% endif %}
+                    <h6 class="card-title">Telefony zawiesz: <b>{{el.telefony_mag_zaw}} szt.</b></h6>
+                    <h6 class="card-title">Um. komisowe <b>{{el.telefony_buy}} szt.</b></h6>
+                    <h6 class="card-title">Tel. sprzed. <b>{{el.telefony_sell}} szt.</b></h6>
+                    <h6 class="card-title">Części gsm: <b>{{el.czesci_mag}} szt.</b></h6>
+
+                    <h6 class="card-title">Ser. Przyjętę: <b>{{el.serwis_mag}} szt.</b></h6>
+                    <h6 class="card-title">Got. do odbioru: <b>{{el.serwis_ready}} szt.</b></h6>
+                    <h6 class="card-title">Ser. Wydane: <b>{{el.serwis_month}} szt.</b></h6>
+                    <h6 class="card-title">Reklamacje ser.: <b>{{el.serwis_reklamacja}} szt.</b></h6>
+                    {% if user.is_superuser %}
+                    <h6 class="card-title">Zysk gsm.: <b>{{el.serwis_zysk}} zł</b></h6>
+                    {% else %}
+                    <h6 class="card-title">Zysk gsm.: <b>Tylko Szefo</b></h6>
+                    {% endif %}
+                    {% if user.is_superuser %}
+                    <h6 class="card-title">Zysk graw.: <b>{{el.serwis_g_zysk}} zł</b></h6>
+                    {% else %}
+                    <h6 class="card-title">Zysk graw.: <b>Tylko Szefo</b></h6>
+                    {% endif %}
+                    <!-- <div class="buy d-flex justify-content-between align-items-center">
+                        <div class="price text-success">
+                            <h5 class="mt-4">$125</h5>
+                        </div>
+                        <a href="#" class="btn btn-danger mt-3"><i class="fas fa-shopping-cart"></i> Add to Cart</a>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

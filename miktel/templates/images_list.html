@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid mr-auto">
+
+
+</div>
+
+</div>
+<section name="products" class="col-12 mx-auto text-center p-0 m-0 row align-items-start">
+    <div class="row col-lg-12 mt-2 mx-auto">
+        <h1 class="col-12">Nasze foty na serwerze:</h1>
+        <div><label for=""><b>Wyszukiwarka:</b> (uwzględnij wielkość liter) TYLKO {{page_records}} wyników!</label>
+        </div>
+        <form method="POST" class="row col-12 mb-2 ml-0 mr-0 mx-auto">
+            {% csrf_token %}
+            <input class="col-xs-8 col-lg-4 m-0 p-0" id="search" type="text" name="s" value="" maxlength="128"
+                placeholder="id, nazwa, categoria">
+            <button name="search" type="submit" class="btn btn-dark col-lg-2 col-xl-2"><span>Przeszukaj całą
+                    bazę</span></button>
+        </form>
+        <button name="add_p" type="button" class="btn btn-warning mb-2 .col-sm-1 .col-lg-3"><a class="dodaj"
+                href="{% url 'add_product' %}">Dodaj
+                produkt</a></button>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">I.D.</th>
+                    <th scope="col">Usuń</th>
+                    <th scope="col">Edytuj</th>
+                    <th scope="col">Foto</th>
+                    <th scope="col">Nazwa</th>
+                    <th scope="col">Profil</th>
+                    <th scope="col">Kategoria</th>
+                    <th scope="col">Marka</th>
+                    <th scope="col">Produkt</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Alt</th>
+                    <th scope="col">Main</th>
+                    <th scope="col">Mini</th>
+                    <th scope="col">Lightbox-big</th>
+                    <th scope="col">Lightbox-mini</th>
+                    <th scope="col">Default</th>
+                    <th scope="col">No foto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for el in products %}
+
+                <tr class="lista">
+                    <th scope="row">{{ products.start_index|add:forloop.counter0 }}</th>
+                    <td>{{el.id}}</td>
+                    <td><a href="/miktel/del_image/{{el.id}}">Usuń</a></td>
+                    <td><a href="/miktel/update_image/{{el.id}}">Edytuj</a></td>
+                    <td class="row"><img class="img_list" src="{{ MEDIA_URL }}{{el.image}}" alt=""></td>
+                    <td>{{el.image}}</td>
+                    <td>{{el.profile_id.nazwa}}</td>
+                    <td>{{el.category_id.name}}</td>
+                    <td>{{el.mark_id.nazwa}}</td>
+                    <td>{{el.product_id.name}}</td>
+                    <td>{{el.title}}</td>
+                    <td>{{el.alt}}</td>
+                    <td>{{el.main}}</td>
+                    <td>{{el.mini}}</td>
+                    <td>{{el.another}}</td>
+                    <td>{{el.another_min}}</td>
+                    <td>{{el.default}}</td>
+                    <td>{{el.nofoto}}</td>
+                    {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<div class="col-8 input-group mb-3 mx-auto">
+    <div class="col-1"></div>
+    <nav aria-label="...">
+        {% if products.has_other_pages %}
+        <ul class="pagination text-dark">
+            {% if products.has_previous %}
+            <li class="page-item">
+                <a class="page-link text-dark" href="?page={{ products.previous_page_number }}">Poprzednia</a>
+            </li>
+            <li class="page-item"><a class="page-link text-dark"
+                    href="?page={{ products.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+            {% for i in products.paginator.page_range %}
+            {% if products.number == i %}
+            <li class="page-item text-light bg-dark active">
+                <span class="page-link text-light bg-dark">
+                    {{ i }}
+                    <span class="sr-only text-dark">(current)</span>
+                </span>
+            </li>
+            {% else %}
+            <li class="page-item text-dark"></li><a class="page-link text-dark" href="?page={{ i }}">{{ i }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+            {% if products.has_next %}
+            <li class="page-item text-dark"><a class="page-link text-dark"
+                    href="?page={{ products.next_page_number }}">&raquo;</a>
+            </li>
+
+            <li class="page-item text-dark ">
+                <a class="page-link text-dark" href="?page={{ products.next_page_number }}">Następna</a>
+            </li>
+            {% else %}
+            <li class="disabled"><span></span></li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </nav>
+</div>
+<div class="col-1"></div>
+</div>
+{% endblock %}

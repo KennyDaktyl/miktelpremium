@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container content">
+    <div class="row profile">
+        <div class="col-sm-12">
+            <div class="col-lg-2">
+                <img src="https://miktelpremium.s3.eu-north-1.amazonaws.com/media/{{pracownik.foto}}"
+                    class="img-fluid img-thumbnail img-responsive">
+                <!-- <img src="{% 'MEDIA_URL' %{{pracownik.foto }} }" class="img-fluid img-thumbnail img-responsive"> -->
+            </div>
+
+            <div>
+                <ul class="nav flex-column">
+                    <li class="active nav-item">
+                        <a href="/miktel/ustaw_foto/{{pracownik.id}}" class="nav-link active">
+                            <i class="fa fa-home"></i>
+                            Ustaw swoje foto </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/miktel/ustaw_haslo/{{pracownik.id}}">
+                            <i class="fa fa-user"></i>
+                            Ustaw haslo </a>
+                    </li>
+                    <li>Aktualnie ustawiono : <b>{{ilosc}}</b></li>
+                    <li>
+                        <!-- <form method="POST" action="/ustaw_page_records/"> -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class=" form-group row col-10">
+                                <div class="active_form">
+                                    {{ form.as_p }}
+                                    <div class="form-group row col-10 mt-2">
+                                        <button type="submit" class="btn btn-dark">Ustaw</button>
+                                    </div>
+                                </div>
+                        </form>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- END MENU -->
+        </div>
+    </div>
+    <div class="col-1"></div>
+    <div class=".col-sm-12">
+        <div class="profile-content">
+            Profil pracownika: <p><b>{{ pracownik.username }}</b></p>
+            <p><b>Imię :{{ pracownik.first_name }}</b></p>
+            <p><b>Nazwisko :{{ pracownik.last_name }}</b></p>
+            <p><b>Przypisany do sklepów :</b>
+                <ul>
+                    <p>{% for sklep in sklepy %}</p>
+                    <li>{{sklep}}</li>
+                    {% endfor %}
+                </ul>
+            </p>
+            <li class="list-inline-item">
+
+                <p>Aktualnie ustwiono dla ,<b>{{user.sklep_dzisiaj}}</b></p>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="page_records" value="{{ilosc}}">
+                    <select name="sklep_sesja" class="custom-select m-2 col-6">
+                        <option value="">ustaw sklep</option>
+                        {% for sklep in sklepy %}
+                        <option value="{{sklep.id}}">{{sklep.nazwa}}</option>
+                        {% endfor %}
+                    </select>
+                    <button name="set_shop" type="submit" class="btn btn-dark m-2 col-4">Ustaw sklep</button>
+                </form>
+            </li>
+        </div>
+    </div>
+</div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9 ft">
+
+        </div>
+    </div>
+</div>
+{% endblock %}

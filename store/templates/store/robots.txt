@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /miktel/
+Disallow: /admin/
+{% comment %} Disallow: / {% endcomment %}

@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <h4>Wyniki premiowane dla <strong>{{pracownik}}</strong> miesiąc <strong>{{data}} {{rok}}</strong> dla sklepu
+        {% if sklep %}
+        <Strong>{{sklep.nazwa}}</Strong>
+        {%else%}
+        <Strong>"wszystkie sklepy" {{sklep}}</Strong>
+        {% endif %}
+    </h4>
+
+    <div class="form-group col-12 mt-2 ">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="col-4 mt-2">
+                <label for="exampleFormControlSelect1">Pokaż inny miesąc</label>
+                <select name="miesiac" class="form-control d-inline-block" id="exampleFormControlSelect1">
+                    {% for key,value in miesiace %}
+                    <option value="{{key}}">{{value}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4 mt-2">
+                <label for="exampleFormControlSelect1">Wybierz rok</label>
+                <select name="rok" class="form-control d-inline-block" id="exampleFormControlSelect1">
+                    {% for key,value in rok_lista %}
+                    <option value="{{value}}">{{value}}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+            <div>
+                <button type="submit" class="btn btn-secondary col-2 mt-2">Pokaż wg daty</button>
+            </div>
+    </div>
+</div>
+
+</form>
+<div class="row col-12 mt-2">
+    <div class="row col-12 mt-2">
+        <h3>Sprzedaż akcesoriów:</h3><br>
+    </div>
+    <div class="row col-4 mt-2">
+        <h3>Suma miesięczna {{suma_all_akc}}</h3>
+    </div>
+    <div class="row col-4 mt-2">
+        <h3>Premia pracownika {{premia_result_akc}} zł</h3>
+    </div>
+
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">L.P.</th>
+                <th scope="col">Data</th>
+                <th scope="col">Sklep</th>
+                <th scope="col">Usługa</th>
+                <th scope="col">Model</th>
+                <th scope="col">Suma za mies.</th>
+                <th scope="col">Premia</th>
+                <!-- <th scope="col">Koszt</th>
+                <th scope="col">Zysk</th> -->
+                <th scope="col">Premia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for akces in akcesoria %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{akces.data}}</td>
+                <td>{{akces.sklep.nazwa}}</td>
+                <td>{{akces.usluga}}</td>
+                <td>{{akces.model}}</td>
+                <!-- <td>{{usluga.cena_klient}}</td>
+                <td>{{usluga.koszt}}</td>
+                <td>{{usluga.get_zysk}}</td> -->
+                <td>{{akces.cena_klient}}</td>
+                <td>{{akces.show_premia}} zł</td>
+                <td><a href="/miktel/edycja_premiaJob/{{akces.id}}">Edytuj</a><br>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="row col-12 mt-2">
+        <h3>Serwisy premiowane:</h3><br>
+    </div>
+    <div class="row col-4 mt-2">
+        <h3>Zysk z usług {{zysk}}</h3>
+    </div>
+    <div class="row col-4 mt-2">
+        <h3>Premia pracownika {{premia}} zł</h3>
+    </div>
+    <div class="row col-4 mt-2">
+        <h3>Zysk netto {{zysk_netto}} zł</h3>
+    </div>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">L.P.</th>
+                <th scope="col">Data</th>
+                <th scope="col">Sklep</th>
+                <th scope="col">Usługa</th>
+                <th scope="col">Model</th>
+                <th scope="col">Cena</th>
+                <th scope="col">Koszt</th>
+                <th scope="col">Zysk</th>
+                <th scope="col">Premia</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usluga in uslugi %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{usluga.data}}</td>
+                <td>{{usluga.sklep.nazwa}}</td>
+                <td>{{usluga.usluga}}</td>
+                <td>{{usluga.model}}</td>
+                {% if usluga.cena_klinet == 0 %}
+                <td></td>
+                {% else %}
+                <td>{{usluga.cena_klient}}</td>
+                {% endif %}
+                <td>{{usluga.koszt}}</td>
+                <td>{{usluga.get_zysk}}</td>
+                <td>{{usluga.show_premia}}</td>
+                <td><a href="/miktel/edycja_premiaJob/{{usluga.id}}">Edytuj</a><br>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row col-12 mt-2">
+        <h2>Inne Prace</h2>
+    </div>
+
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th scope="col">L.P.</th>
+                <th scope="col">Data</th>
+                <th scope="col">Nazwa czynności</th>
+                <th scope="col">Czas trwania</th>
+                <th scope="col">Opis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prace in inne %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{prace.data}}</td>
+                <td>{{prace.nazwa}}</td>
+                <td>{{prace.czas}}h</td>
+                <td>{{prace.opis}}</td>
+
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+{% endblock %}

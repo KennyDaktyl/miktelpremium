@@ -1,0 +1,199 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Szczegóły telefonu komórkowego {{phone.marka}} {{phone.nazwa}} oferowanego w sklepie {{phone.magazyn_aktualny}}'>
+<link rel="stylesheet" href="{% static "store/dist/css/lightbox.css" %}" rel="stylesheet" />
+<!-- <link rel="stylesheet" href="{% static "store/style_main.css" %}"> -->
+<link rel="canonical"
+    href="https://www.miktel.krakow.pl/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel/{{phone.slug}}/{{phone.id}}">
+{% endblock %}
+
+{% block title %}
+Telefon komórkowy |{{phone.marka}} {{phone.nazwa}} typu {{phone.kategoria}} dostępny w {{phone.sklep.nazwa}},
+{{phone.sklep.adres.miasto}}
+{% endblock %}
+
+{% block content %}
+<div class="col-lg-12 mx-auto row text-left link p-0  fixed-top hidden">
+    <a class="text-white text-left" href="/"><span>Strona główna</span></a><span class="text-white"> >> </span><a
+        class="text-white" href="/telefony-serwis-akcesoria/"><span>Oferta GSM, promocje</span></a><span
+        class="text-white"> >> </span><a class="text-white"
+        href="/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel/"><span>Oferta telefonów
+            cennik</span></a><span class="text-white"> >> </span><a class="text-white"
+        href="/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel/{{phone.slug}}/{{phone.id}}"><span>{{phone.marka}}-{{phone.nazwa}}-{{phone.magazyn_aktualny}}</span></a>
+</div>
+<div class="bcg-main col-12  ml-0 mr-0  mx-auto">
+    <h1 class="col-lg-12 mx-auto text-white text-left">Telefon komórkowy:</h1>
+    <h2 class="col-lg-12 mx-auto text-white text-left h4">{{phone.marka}} {{phone.nazwa}}</h2>
+
+    <div class="col-11 row mx-auto bg-white mb-3 align-self-start offer">
+        <div class="col-12  p-0 m-0 mx-auto col-lg-6 row">
+            <div class="col-4 mr-auto text-left m-0 p-0">
+                <img class="img_mini m-2 mx-auto" src="{{ MEDIA_URL }}{{phone.foto_mini.image}}"
+                    alt="{{phone.foto_mini.alt}}" title="{{phone.foto_mini.title}}">
+
+                <h5><strong>Cena telefonu</strong> <br>{{phone.cena_sprzed}}** zł</h5>
+                {% if phone.cena_promo %}
+                <h5 class="text-danger"><strong>Cena promocyjna</strong> <br><span
+                        class="text-danger">{{phone.cena_promo}}** zł</span>
+                </h5>
+                {% endif %}
+                <div class="col-12 m-0 p-0 text-left">
+                    {% if phone.dostepny == True %}
+                    <p class="col-12 m-0 p-0 bg-success text-white text-center"><strong>Magazyn: Dostępny
+                        </strong>
+                    </p>
+                    {% else %}
+                    <p class="col-12 m-0 p-0 bg-danger text-white text-center"><strong>Magazyn: Brak
+                        </strong>
+                    </p>
+                    {% endif %}
+                </div>
+                <p> Zadzwoń do sklepu: <a class="mt-2 text-dark"
+                        href="tel:{{phone.magazyn_aktualny.adres.numerTelefonu}}">{{phone.magazyn_aktualny.adres.numerTelefonu}}
+                    </a>
+                </p>
+                <button type="button" class="btn ask_for text-white mt-2 col-12" data-toggle="modal"
+                    data-target="#exampleModal{{phone.id}}" data-whatever="@getbootstrap">Wyślij email</button>
+
+                <div class="modal fade" id="exampleModal{{phone.id}}" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel{{phone.id}}" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel{{phone.id}}">Wyślij email</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <input type="hidden" name="subject"
+                                            value="Pytanie o {{phone.marka}} {{phone.nazwa}} ID {{phone.id}}">
+                                        <label for="recipient-name" class="col-form-label">Podaj email:</label>
+                                        <input name="email" type="email" value="@" class="form-control"
+                                            id="recipient-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label">Wiadomość:</label>
+                                        <textarea name="text" class="form-control text-left"
+                                            id="message-text text-left">Pytanie dotyczące {{phone.marka}} {{phone.nazwa}} - ID-{{phone.id}}"
+                                            </textarea>
+                                    </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-white" data-dismiss="modal">Zamknij</button>
+                                <button name="ask_for" type="submit" class="btn ask_for text-white ">Wyślij
+                                    email</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-8 mb-3 p-0 m-0 mx-auto text-left">
+                <div class="card-body">
+                    <h5 class="card-title">Specyfikacja telefonu:<strong> {{phone.marka}} {{phone.nazwa}}</strong>
+                    </h5>
+                    <div class="card-text">
+                        <ul>
+                            <span><strong>Id: </strong>{{phone.id}}</span>
+                            <li><strong>Typ: </strong>{{phone.kategoria}}</li>
+                            <li><strong>Stan: </strong> {{phone.get_stan_display}}</li>
+                            <li><strong>Znajduje się w: </strong>{{phone.magazyn_aktualny.nazwa}},
+                                {{phone.magazyn_aktualny.adres.miasto}}</li>
+                            {% for el in details %}
+                            <li>{% if el.aparat_a %}
+                                Aparat główny: {{el.aparat_a}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.aparat_b %}
+                                Aparat tylni: {{el.aparat_b}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.battery %}
+                                Pojemnośc baterii: {{el.battery}}
+                                {% endif %}
+                            </li>
+                            <li>{% if el.info %}
+                                Dodatkowe informacje:<br>{{el.info}}
+                                {% endif %}
+                            </li>
+
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <p class="card-text"><small class="text-muted">Data wprowadzenia: {{phone.data_wprow}}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery mb-3 col-lg-6 row text-center mx-auto">
+            <strong class="col-12">Galeria zdjęć - {{foto_count}} szt.</strong>
+            {% for k,v in fotos_mix.items %}
+            <a href="{{ MEDIA_URL }}{{v.image}}" data-lightbox="{{phone.id}}"
+                data-title="Telefon komórkowy {{phone.marka}} {{phone.nazwa}}" class=" mx-auto text-center">
+                <img class="img_mini_2 m-2 mx-auto text-center m-2 img-thumbnail" src="{{ MEDIA_URL }}{{k.image}}"
+                    alt="Telefon komórkowy {{phone.marka}} {{phone.nazwa}}"
+                    title="Prezentujemy zdjęcie {{foto}} przedstawiajace produkt {{phone.get_stan_display}} telefon marki {{phone.marka}}, nazwa {{phone.nazwa}} w cenie {{phone.cena_sprzed}}">
+            </a>
+            {% endfor %}
+        </div>
+        <p class="card-text col-12"><small class="text-muted">**Przedstawiona oferta cenowa ma charakter
+                informacyjny i nie
+                stanowi
+                oferty handlowej w rozumieniu Art.66 par.1
+                Kodeksu Cywilnego.</small></p>
+    </div>
+</div>
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+{% block script %}
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": "Telefon komórkowy {{phone.nazwa}}",
+        "image": "{{ MEDIA_URL }}{{phone.foto_mini.image}}",
+        "description": "{{phone.info}}",
+        "brand": "{{phone.marka}}",
+        "category": "{{phone.kategoria}}",
+        "productID": "Phone:{{phone.id}}",
+        "offers": {
+            "@type": "Offer",
+            "url": "https://www.miktel.krakow.pl{{phone.get_absolute_url}}",
+            "priceCurrency": "PLN",
+            "price": "{{phone.cena_sprzed}}",
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/NewCondition"
+        }
+    }
+</script>
+<!-- <script src="{% static "store/dist/js/lightbox.js" %}"></script> -->
+{% endblock %}

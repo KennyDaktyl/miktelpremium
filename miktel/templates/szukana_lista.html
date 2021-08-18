@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row col-10 mt-2">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Magazyn</th>
+                    <th scope="col">Firma</th>
+                    <th scope="col">Typ</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Cena zak.</th>
+                    <th scope="col">Ilość</th>
+                    <th scope="col">Info</th>
+                    <th scope="col">Edycja</th>
+                    <th scope="col">Użyj części</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for el in czesci %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{el.Mag_number.Salon_name}}</td>
+                    <td>{{el.Company_Name}}</td>
+                    <td>{{el.Product_Type}}</td>
+                    <td>{{el.Product_Name}}</td>
+                    <td>{{el.Date_Add}}</td>
+                    <td>{{el.Purchase_Price}}</td>
+                    <td>{{el.Quantity}}</td>
+                    <td>{{el.Description}}</td>
+                    <td><a href="/miktel/edycja_czesci/{{el.id}}">Edytuj</a><br><a href="/miktel/usun_czesc/{{el.id}}">Usuń</a></td>
+                    <td><a href="/miktel/uzyj_czesci/{{el.id}}">Użyj części</a><br></td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+    {% endblock %}

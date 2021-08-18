@@ -1,0 +1,5 @@
+{% if form %}
+{% for field in form %}
+{{ field.name }}: {{ field.errors }}
+{% endfor %}
+{% endif%}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Dodaj foty</button>
+</form>
+<div class="col-12 mr-auto mt-3">
+    <a href="{% url 'products_list' %}"><button class="btn btn-warning">Wróć do listy produktów</button></a>
+    <a href="{% url 'products' cat=cat.profile_id.slug slug=cat.slug name=product.name id=product.id %}"><button
+            class="btn btn-primary">Zobacz kartę
+            produktu na stronie
+            WWW</button></a>
+</div>
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th scope="col">L.P.</th>
+            <th scope="col">I.D.</th>
+            <th scope="col">Usuń</th>
+            <th scope="col">Edycja</th>
+            <th scope="col">Foto name</th>
+            <th scope="col">Title</th>
+            <th scope="col">Alt</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for el in images %}
+        <tr class="lista">
+            <th scope="row">{{ products.start_index|add:forloop.counter0 }}</th>
+            <td>{{el.id}}</td>
+            <td><a href="/miktel/del_image/{{el.id}}">Usuń</a></td>
+            <td><a href="/miktel/update_image/{{el.id}}">Edycja</a></td>
+            <td>{{el.image}}</td>
+            <td>{{el.title}}</td>
+            <td>{{el.alt}}</td>
+            {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

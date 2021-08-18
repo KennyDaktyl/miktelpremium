@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "miktel/style.css" %}">
+    <!-- <link rel="stylesheet" href="/static/miktel/style.css"> -->
+    <script src=" https://kit.fontawesome.com/4665aa4717.js" crossorigin="anonymous">
+    </script>
+    {% block head_additional %}
+    {% endblock %}
+    <title>Serwis System Miktel | {% block title %}{% endblock %}</title>
+</head>
+
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/miktel/">Miktel Premium</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+
+
+
+                <li class="nav-item dropdown">
+
+                    <a class="nav-link dropdown-toggle col-xs-12" href="/miktel/zakup_telefonu/" id="navbarDropdown"
+                        role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Telefony
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item col-xs-6" href="/miktel/telefony_magazyn/">Telefony na stanie</a>
+                        <a class="dropdown-item" href="/miktel/telefony_sprzedane/">Telefony sprzedane</a>
+                        <a class="dropdown-item" href="/miktel/telefony_zawieszone/">Telefony zawieszone</a>
+                        <a class="dropdown-item" href="/miktel/umowa_komisowa/">Umowa komisowa</a>
+                        <a class="dropdown-item" href="/miktel/lista_umow/">Lista Umów komisowych</a>
+                        <a class="dropdown-item" href="/miktel/faktura_zakupu/">Faktura Vat</a>
+                        <a class="dropdown-item" href="/miktel/lista_faktur/">Lista Faktura Vat</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_telefon/">Dodaj telefon</a>
+                    </div>
+
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/miktel/zakup_telefonu/" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Serwisy
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/miktel/lista_serwisow/">Lista przyjętych serwisów</a>
+                        <a class="dropdown-item" href="/miktel/lista_serwisow_gotowych/">Lista gotowych serwisów</a>
+                        <a class="dropdown-item" href="/miktel/archiwum_serwisow/">Archiwum napraw</a>
+                        <a class="dropdown-item" href="/miktel/lista_czesci/">Lista części</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_czesc/">Dodaj część</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_serwis/">Przyjmij sprzęt do naprawy</a>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="/miktel/zakup_telefonu/" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Premiowanie
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/miktel/dodaj_premiaJob/">Wykonaj usługę premiowaną</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_inne/">Wykonaj inne prace</a>
+                        <a class="dropdown-item" href="/miktel/akcesoria_gsm_miesiąc/">Dodaj miesięczna sumę<br>
+                            sprzedaży
+                            akcesoriów GSM</a>
+                        <a class="dropdown-item" href="/miktel/twoje_premie/">Twoje premie bieżący miesiąc</a>
+
+                        <a class="dropdown-item" href="/miktel/lista_uslug/">Lista usług premiowanych</a>
+
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Statystyki
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/miktel/dashboard_sklepow/">Usługi premiowane w sklepach</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Administracja
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/miktel/dodaj_uzytkownika/">Dodaj użytkownika</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_foto/">Dodaj foto</a>
+                        <a class="dropdown-item" href="/miktel/lista_sklepow/">Lista sklepow</a>
+                        <a class="dropdown-item" href="/miktel/lista_uzytkownikow/">Lista pracownikow</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_sklep/">Dodaj sklep/magazyn</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_usluge/">Dodaj usługę</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_marke/">Dodaj markę</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_kategorie/">Dodaj kategorię</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_typ/">Dodaj typ części</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_hurtownie/">Dodaj hurtownię</a>
+                        <a class="dropdown-item" href="/miktel/dodaj_adres/">Dodaj adres</a>
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Produkty
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/miktel/products_list/">Lista produktów</a>
+                        <a class="dropdown-item" href="/miktel/profile_list/">Lista kategorii głównych</a>
+                        <a class="dropdown-item" href="/miktel/categorys_list/">Lista podkategorii</a>
+                        <a class="dropdown-item" href="/miktel/images_list/">Lista zdjęć</a>
+                        <a class="dropdown-item" href="/miktel/add_product/">Dodaj Produkt</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Wypłaty/zaliczki
+                    </a>
+                    <div class="dropdown-menu col-xs-6" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/miktel/admin_payments/">Wypłaty</a>
+                        <a class="dropdown-item" href="/miktel/work_schedule/">Grafik</a>
+
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto nav-flex-icons">
+
+                <li class="nav-item dropdown">
+
+
+                    {% if user.is_authenticated %}
+                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        {{ user.username }}
+                        {% else %}
+                        <a class="dropdown-item text-light" href="/miktel/login/">Zaloguj <br></a>
+                        {% endif %}
+                        </i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-default"
+                        aria-labelledby="navbarDropdownMenuLink-333">
+                        <a class="dropdown-item" href="/miktel/profil/{{user.id}}">Mój profil</a>
+                        <a class="dropdown-item" href="/miktel/payments/{{user.id}}">Wypłaty, premie</a>
+                        <a class="dropdown-item" href="/miktel/logout/">Wyloguj</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container-fluid mr-auto">
+        <div class="col-12 mt-2 mx-auto">{% block content %}
+            {% endblock %}
+            <div class="container text-center">
+                <footer class="footer col-12 mx-auto">
+                    <span class="copyright col-12 mx-auto">Copyright &copy; Miktel Premium 2019</span>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="{% static "miktel/main.js" %}" type="text/javascript"></script>
+    {% block script %}
+    {% endblock %}
+</body>
+
+</html>

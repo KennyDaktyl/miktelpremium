@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="container content row col-12 mx-auto">
+    <div class="col-12 mx-auto">
+        <form method="POST" class="col-12">
+            {% csrf_token %}
+            <div class="active_form col-12 row">
+                {{ formM.as_p }}
+                <button name="set_date" type="submit" class="btn btn-dark">Miesiąc</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-2 m-0 p-0 mx-auto">
+        <ul class="nav flex-column">
+            <li class="nav-item col-12 mx-auto">
+                <a class="nav-link col-12 mx-auto" href="/miktel/add_payment/{{user.id}}"><button
+                        class="btn btn-success col-12 mx-auto"> Dodaj
+                        wypłatę</button></a>
+            </li>
+            <li class="nav-item col-12 mx-auto">
+                <a class="nav-link col-12 mx-auto" href="/miktel/add_payment_adv/{{user.id}}"><button
+                        class="btn btn-success col-12">
+                        Dodaj
+                        zaliczkę</button></a>
+            </li>
+            <li class="nav-item col-12 mx-auto">
+                <a class="nav-link col-12 mx-auto" href="/miktel/add_bonus/{{user.id}}"><button
+                        class="btn btn-success col-12">
+                        Dodaj
+                        wypłatę premii</button></a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="col-lg-10 m-0 p-0 mx-auto text-center">
+        <h1 class="mx-auto col-12">Miesiąc {{month_word}}</h1>
+        <div class="col-12 mx-auto row ">
+            <form action="" method="POST" class="mx-auto">
+                {% csrf_token %}
+                {% if payments_true %}
+                <button name="payment" class="btn btn-outline-secondary active">Wypłaty</button></form>
+            {% else %}
+            <button name="payment" class="btn btn-outline-secondary">Wypłaty</button></form>
+            {% endif %}
+            </form>
+            <form action="" method="POST" class="mx-auto">
+                {% csrf_token %}
+                {% if payments_adv_true %}
+                <button name="payment_adv" class="btn btn-outline-secondary active">Zaliczki</button></form>
+            {% else %}
+            <button name="payment_adv" class="btn btn-outline-secondary">Zaliczki</button></form>
+            {% endif %}
+            </form>
+            <form action="" method="POST" class="mx-auto">
+                {% csrf_token %}
+                {% if payments_bonus_true %}
+                <button name="bonus" class="btn btn-outline-secondary active">Premie</button></form>
+            {% else %}
+            <button name="bonus" class="btn btn-outline-secondary">Premie</button></form>
+            {% endif %}
+            </form>
+        </div>
+
+
+        {% if payments_true %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Ilość</th>
+                    <th scope="col">Kwota pobrana</th>
+                    <th scope="col">Kwota należna wg stawki</th>
+                    <th scope="col">Różnica/zwrot</th>
+                    <th scope="col">Info</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for el in payments %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{el.date}}</td>
+                    <td>{{el.user_id.first_name}} {{el.user_id.last_name}}</td>
+                    <td>{{el.hours_count}} h</td>
+
+                    <td>{{el.payment}}</td>
+                    {% if el.payment_real != None %}
+                    <td>{{el.payment_real}}</td>
+                    {% else %}
+                    <td>Nie wpisano satwki za godznie</td>
+                    {% endif %}
+                    {% if el.payment_difr != None %}
+                    {% if el.payment_difr > 0 %}
+                    <td class="text-danger"> {{el.payment_difr}}</td>
+                    {% else %}
+                    <td class="text-success"> {{el.payment_difr}}</td>
+                    {% endif %}
+
+                    {% else %}
+                    <td>Nie wpisano satwki za godznie</td>
+                    {% endif %}
+                    <td>{% if el.info %}
+                        {{el.info}}
+                        {% endif %}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Suma: {{payments_hours_sum}}h</td>
+                    <td>Suma: {{payments_pay_sum}}zł</td>
+                    <td>Suma: {{payment_real_by_h}}zł</td>
+                    <td>Różnica:
+                        {% if payment_real_dif < 0 %}
+                        Do zwrotu: <span class="text-danger">{{payment_real_dif}}</span>
+                        {% else %}
+                        Do wypłaty: <span class="text-success">{{payment_real_dif}}</span>
+
+                        {% endif %}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+        {% if payments_adv_true %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Kwota pobrana</th>
+                    <th scope="col">Info</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for el in payments_adv %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{el.date}}</td>
+                    <td>{{el.user_id.first_name}} {{el.user_id.last_name}}</td>
+
+                    <td>{{el.payment}}</td>
+                    {% if el.payment > 0 %}
+                    <td><a class="nav-link col-12 mx-auto" href="/miktel/del_payment_adv/{{user.id}}"><button
+                                class="btn btn-danger col-12 mx-auto"> Spłać zaliczkę</button></a></td>
+                    {% else %}
+                    <td>
+                        <button class="btn btn-success col-12 mx-auto"> Wpłata</button>
+                        {% endif %}
+                    </td>
+                    <td>{% if el.info %}
+                        {{el.info}}
+                        {% endif %}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Suma: {{payments_pay_adv_sum}}zł</td>
+
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+        {% if payments_bonus_true %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">L.P.</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Pracownik</th>
+                    <th scope="col">Kwota Premii</th>
+                    <th scope="col">Info</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for el in payments_bonus %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{el.date}}</td>
+                    <td>{{el.user_id.first_name}} {{el.user_id.last_name}}</td>
+
+                    <td>{{el.payment}}</td>
+                    <td>
+                        {% if el.info %}
+                        {{el.info}}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Suma: {{payments_bonus_sum}}zł</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

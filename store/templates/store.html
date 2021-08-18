@@ -1,0 +1,361 @@
+{% extends 'base_store.html' %}
+{% load static %}
+
+{% block head %}
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="n1_YSbvYUnTROCFU9249qWilJCn9rKRcPM4mFRANpEk" />
+<meta name="google-site-verification" content="_qb43naZBKuiJg6mWdOUITceUHryikkcZcbDBmRGNlM" />
+<meta name="google-site-verification" content="YSaG_jmu0TwExlcMbGiaWb2Ko6pQh-sprjEzhDusGhU" />
+<meta name="google-site-verification" content="xhVGOnN3XP54XGZrgntyYrkumNYbYzh-SZNnOFnwx3Q" />
+<meta name="google-site-verification" content="Tq6mKOhY72AQGqqLSXAk_nSF9ExLoasZO-lcN5gTlHI" />
+<meta name="google-site-verification" content="xYom_-5duiE4Y3T7PSFvO-a1Pmid-21ANnDaX1pjE3g" />
+<meta name="google-site-verification" content="WyZfk_74JuZNYwbwD-69QWTOclSECA9yYqOEmt6G96M" />
+<meta name="google-site-verification" content="zqSv9rLwnjBiC01BzRhvZLUknuIeFiKOebKcGxbdNPU" />
+<meta name=”keywords”
+    content='skup telefonów komórkowych kraków, skup telefonów kraków cennik, serwis gsm Kraków, naprawy telefonów Kraków, problemy z ładowaniem Kraków, Pieczątki firmowe Kraków, Pieczątki Kraków, tabliczki grawerowane Kraków, grawer na prezent Kraków, grawerowanie w drewnie Kraków, grawerowanie w szkle Kraków'>
+
+<meta name="description"
+    content='Firma Miktel znajduje się w Krakowie w samym centrum Nowej Huty. Zajmujemy się serwisem telefonów komórkowych, naprawą wyświetlaczy, złącza ładowania wielu marek takich jak Samsung, Xiaomi, Huawei, Apple Iphone i innych. W ofercie również wyrobienie pieczątek firmowych, pieczątek imiennych i innych. Dorabiamy również klucze mieszkaniowe i klucze samochodowe z immobiliserem.'>
+<link rel="canonical" href="https://www.miktel.krakow.pl/">
+{% endblock %}
+
+{% block title %}
+Miktel w Krakowie. W ofercie Serwis GSM, Pieczątki, Klucze.
+{% endblock %}
+
+{% block content %}
+<div class="bcg-main col-12  ml-0 mr-0  mx-auto">
+    <style type="text/css">
+        h1 {
+            color: #fff;
+            font-size: 40px;
+            margin-bottom: 30px;
+        }
+
+        .budowa {
+            width: 100vw;
+            height: 200px;
+
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
+
+        a,
+        a:link,
+        a:visited,
+        a:active,
+        a:hover {
+            text-decoration: none;
+        }
+
+        .button {
+            padding: 7px 14px 7px 14px;
+            border: 1px solid #fff;
+            border-radius: 20px;
+            -moz-border-radius: 20px;
+            -webkit-border-radius: 20px;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color .1s linear, color .1s linear
+        }
+
+        .button:hover {
+            background-color: #fff;
+            color: #333;
+        }
+    </style>
+
+
+
+    <div class="budowa mx-auto text-center col-10">
+        <p class="h3 text-white">Zmiany dotyczące Korona Wirus !!!</p>
+        <!-- <a class="border rounded-pill p-2" href="mailto:krakow@miktelgsm.pl" class="button">krakow@miktelgsm.pl</a> -->
+    </div>
+    <h5 class="mx-auto text-center text-light">Pracujemy nieregularnie - kontakt z nami</h5>
+    <h5 class="mx-auto text-center text-light">506 080 859 oraz 506 029 980</h5>
+    <ul class="col-11 col-lg-6 mx-auto text-center text-light row">
+        <li class="col-12 text-light">Telefony wyprzedaż do 20% !!!<a
+                href="/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel-krakow/">Tutaj lista telefonów</a></li>
+        <li class="col-12 text-light">Serwis gsm Umów wizytę przez kontak telefoniczny</li>
+        <li class="col-12 text-light">W sprzedaży cały czas akcesoria, pieczątki, klucze</li>
+    </ul>
+</div>
+<div class="col-10 mx-auto text-center">
+    {% for art in articles %}
+    {{art.text|safe}}
+    {% endfor %}
+</div>
+<div class="bcg-main col-12 m-0 mb-3 mx-auto row title ml-0 mr-0">
+    <h1 class="mx-auto text-white col-10 text-center display-5">Telefony komórkowe - Serwis, akcesoria</h1>
+    <div class="col-12 row oferta text-wrap mx-auto">
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box">
+            <h4 class="mx-auto display-6  col-10 col-lg-12  box_200" style="height: 110px;">Telefony<br> komórkowe
+            </h4>
+            <p class="lead  mx-auto text-center col-10 col-lg-12" style=" height: 120px;">Sprzedajemy
+                telefony
+                komórkowe. Nowe i
+                używane</p>
+            <i class="fas fa-mobile-alt mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">W naszych sklepach w
+                ciągłej
+                ofercie mamy
+                około 200
+                telefonów.
+                Nowych
+                i używanych
+            </p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center"
+                    href="/produkt/telefony-komorkowe-dostepne-w-sklepach-miktel/">
+                    <p class="p-0 m-0">Zobacz
+                        naszą
+                        ofertę
+                        telefonów</p>
+                </a>
+            </div>
+        </div>
+        <div class="mx-auto col-lg-4 flex-column text-center box">
+            <h4 class="display-6 col-12 mx-auto text-center" style="height: 110px;">Serwis<br> GSM</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" height: 120px;">Naprawy pogwarancyjne
+                większości marek producentów
+                telefonów</p>
+            <i class="fas fa-tools mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Wieloletnie doświadczenie z
+                zakresu
+                napraw telefonów
+                komórkowych. </p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center"
+                    href="/produkt/serwis-telefonow-komorkowych-oferta-cennik/">
+                    <p class="p-0 m-0">Zobacz ofertę
+                        serwisu</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box">
+            <h4 class="display-6 col-12" style="height: 110px;">Akcesoria<br> do telefonów</h4>
+            <p class="lead  mx-auto text-center col-10 col-lg-12" style=" height: 120px;">Posiadamy duży wybór
+                akcesoriów do telefonów komórkowych
+            </p>
+            <i class="fab fa-usb mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">W stałęj ofecie casy, futerały,
+                ładowarki, uchwyty
+                samochodowe, szkła
+                hartowane
+                oraz wiele innych</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center" href="/produkt/akcesoria-gsm/">
+                    <p class="p-0 m-0">Zobacz
+                        ofertę
+                        akcesoriów</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 row oferta border-top mx-auto d-flex align-items-stretch">
+        <h3 class="mx-auto col-10 text-center display-5">Grawerowanie laserem - cięcie</h3>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box ">
+            <h4 class="display-6 mx-auto text-center col-10 col-lg-12" style=" height: 110px;">Grawerowanie<br>
+                laserem
+                CO2</h4>
+            <p class="lead col-12" style=" height: 90px;">Grawerujemy w miękkim materiale</p>
+            <i class="fas fa-draw-polygon mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Wszelkiego rodzaju tabliczki
+                informacyjne, nieśmiertwelniki dla
+                zwierząt, żetony, identyfikatory</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto" href="/produkt/grawerowanie-laserem-co2/">
+                    <p class="p-0 m-0">Zobacz
+                        ofertę
+                        grawerów</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta ">
+            <h4 class="display-6 col-12" style=" height: 110px;">Znakowanie<br> laserem</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" height: 90px;">Utwardzamy laserem specjalny
+                lakier w stali nierdzewnej</p>
+            <i class="fas fa-marker mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Znakowanie w stali pozwala na
+                trwałe
+                narysowanie grafiki lub
+                tekstu w stali</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto text-center" href="/produkt/znakowanie-laserem-co2/">
+                    <p class="p-0 m-0 mx-auto text-center">Zobacz ofertę
+                        znakowania</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 row oferta border-top mx-auto">
+        <h2 class="mx-auto col-10 text-center display-5">Wyrób pieczątek - datowniki, numeratory</h2>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta">
+            <h4 class="display-6 col-12" style=" height: 110px;">Pieczątki automatyczne</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Wyrabiamy pieczątki w 15
+                minut
+            </p>
+            <i class="fas fa-stamp mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">W naszej ofercie pieczątki
+                wszystkich
+                rozmiarów. W szczególności
+                pieczątki firmowe, pieczątki imienne oraz pieczątki z logiem</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center" href="/produkt/pieczatki/pieczatki-firmowe/">
+                    <p class="p-0 m-0">Zobacz
+                        ofertę
+                        pieczątek</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta">
+            <h4 class="display-6 col-12" style=" height: 110px;">Datowniki, numeratory</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Posiadamy pieczątki typu
+                datowniki i numeratory</p>
+            <i class="far fa-calendar-alt mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Tego typu pieczątki bardzo
+                przydatne
+                w przedsiębiorstwach,
+                biurach. Do wyboru modele podstawowe oraz profesjonalne</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center" href="/produkt/pieczatki/pieczatki-datowniki-numeratory/">
+                    <p class="p-0 m-0">Zobacz ofertę
+                        datowników, numeratorów</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta">
+            <h4 class="display-6 col-12" style=" height: 110px;">Pieczątki z logiem</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Przenieś logo swojej firmy
+                na
+                pieczatke</p>
+            <i class="fas fa-drafting-compass mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Wykonujemy przeniesienie państwa
+                loga
+                firmowego lub znaku
+                graficznego na pieczątkę firmową. </p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center" href="/produkt/pieczatki/pieczatki-z-logiem/">
+                    <p class="p-0 m-0">Zobacz ofertę
+                        pieczątek z logiem</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 row oferta border-top mx-auto">
+        <h3 class="mx-auto col-10 text-center display-5 mb-3">Dorabianie kluczy - <br>mieszkaniowe i samochodowe</h3>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta">
+            <h4 class="display-6 col-12" style=" height: 120px;">Klucze mieszkaniowe</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Dorabiamy klucze nacinane,
+                nawiercane oraz numeryczne</p>
+            <i class="fas fa-key mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style=" min-height: 140px;">Posiadamy dwa urządzenia do
+                dorabiania kluczy oraz tysiące
+                rodzaji surówek kluczy. Sprzedajemu również gotowe klucze numeryczne</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center" href="/produkt/klucze/klucze-mieszkaniowe/">
+                    <p class="p-0 m-0">Zobacz
+                        ofertę
+                        kluczy mieszkaniowych</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta">
+            <h4 class="display-6 col-12" style=" height: 120px;">Klucze samochodowe z immobiliserem</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">Oferujemy kopiowanie
+                immobiliserów samochodowych oraz
+                programowanie pilotów samochodowych</p>
+            <i class="fas fa-car-side mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style="min-height: 140px;">Ponieważ większość kluczy
+                samochodowych posiada immobiliser,
+                dorobienie klucza samochodowego wiąże się z koniecznością programowania nowego klucza oraz pilota
+                centralnego zamka</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center"
+                    href="/produkt/klucze-samochodowe-obudowy-pilotow-samochodowych/">
+                    <p class="p-0 m-0">Zobacz ofertę
+                        kluczy samochodowych</p>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4 bd-highlight mb-3 mx-auto text-center box oferta">
+            <h4 class="display-6 col-12" style=" height: 120px;">Naprawa pilotów</h4>
+            <p class="lead mx-auto text-center col-10 col-lg-12" style=" min-height: 120px;">W naszym punkcie naprawisz
+                pilota samochodowego</p>
+            <i class="fas fa-magic mx-auto h2"></i>
+            <p class="mx-auto text-center col-10 col-lg-12" style="min-height: 140px;">Wykonujemy programowanie pilota,
+                naprawy switchy, guzików,
+                wymiany baterii oraz czyszczenie po zalaniu urządzenia</p>
+            <div class="border text-center p-3 col-8 col-lg-10 mx-auto d-flex align-items-center"
+                style="height: 100px;">
+                <a class="mx-auto d-flex align-items-center"
+                    href="/produkt/klucze/kodowanie-i-naprawa-pilotow-samochodowych/">
+                    <p class="p-0 m-0">Zobacz ofertę
+                        naprawa pilotów</p>
+                </a>
+            </div>
+        </div>
+    </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": "Miktel Centrum B 1 Kraków",
+        "description": "Miktel Store firma usługowo-handlowa. Zajmujemy się sprzedażą i naprawą telefonów komórkowych. W naszej ofercie również produkty wykonywane laserem CO2, takie jak pieczątki, tabliczki informacyjne, ozdabianie prezentów, grawer i cięcie materiałów grawerskich",
+        "image": "https://www.miktel.krakow.pl/static/media/images/siedziba-miktel-krakow.webp",
+        "@id": "",
+        "url": "https://www.miktel.krakow.pl/",
+        "telephone": "518530057",
+        "priceRange": "0-1000",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "os. Centrum B 1",
+            "addressLocality": "Kraków",
+            "postalCode": "31-926",
+            "addressCountry": "PL"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": "{{shop.adres.latitude}}",
+            "longitude": "{{shop.adres.longitude}}"
+        },
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+            ],
+            "opens": "10:00",
+            "closes": "18:00"
+        },
+        "sameAs": [
+            "https://www.facebook.com/miktelgsm/",
+            "https://www.instagram.com/miktelgrawer/",
+            "https://www.youtube.com/channel/UCvGDJJrET2fRhgeQ0YqkiNg"
+        ]
+    }
+</script>
+{% endblock %}

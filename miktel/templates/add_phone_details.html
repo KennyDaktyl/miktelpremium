@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Ustaw szczegóły</button>
+</form>
+<div class="col-12 mr-auto mt-3">
+    <a href="{% url 'telefony_magazyn' %}"><button class="btn btn-warning">Wróć do listy telefonów</button></a>
+    <a href="{% url 'store_gsm_phones_details_view' slug=phone.marka id=phone.id %}"><button
+            class="btn btn-primary">Zobacz kartę
+            produktu na stronie
+            WWW</button></a>
+</div>
+{% endblock %}
