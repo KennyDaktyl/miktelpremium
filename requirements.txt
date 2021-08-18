@@ -161,4 +161,3 @@ whitenoise==4.1.4
 wrapt==1.12.1
 xdg==5
 xkit==0.0.0
-xmltodict==0.12.0
