@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.views import View
 from django.db.models import Q
 from functools import reduce
-from operator import or_, and_
+from operator import countOf, or_, and_
 import json
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
@@ -777,7 +777,7 @@ class ContactView(View):
                 email = request.POST.get("email")
                 subject = request.POST.get("subject")
                 text = request.POST.get("text")
-                print(request.POST.get("subject"))
+                counter = request.POST.get("counter")
                 if subject != '-1' and subject != '-2':
                     subject = Profile.objects.get(pk=int(subject))
                     subject = subject.name
@@ -794,10 +794,16 @@ class ContactView(View):
                     text += "\n" + "Temat emaila : " + str(
                         subject) + "\n" + "Email kontaktowy - " + str(
                             email) + "\n" + "Kontakt do " + str(shop)
-                send_mail(subject, text, settings.EMAIL_HOST_USER,
-                          [settings.EMAIL_HOST_USER])
-                messages.success(request,
-                                 'Wysysłanie email zakończnono poprawnie.')
+                if int(counter) > 10:
+                    print('OK')
+                    send_mail(subject, text, settings.EMAIL_HOST_USER,
+                            [settings.EMAIL_HOST_USER])
+                    messages.success(request,
+                                    'Wysysłanie email zakończnono poprawnie.')
+                else:
+                    print('Not OK')
+                    messages.error(request,
+                                    'Wysysłanie email zbyt szybko. Chyba jesteś robotem?.')
             else:
                 messages.error(request,
                                'Wystąpił błąd podczas wypełniana formularza.')
