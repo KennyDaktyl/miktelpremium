@@ -1637,6 +1637,7 @@ class WydajSerwisView(PermissionRequiredMixin, View):
                 premia.save()
         service.cena_zgoda = cena
         service.status = "5"
+        service.info = request.POST['info']
         service.data_wydania = datetime.now()
         service.archiwum = True
 

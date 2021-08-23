@@ -779,7 +779,7 @@ class ContactView(View):
                 email = request.POST.get("email")
                 subject = request.POST.get("subject")
                 text = request.POST.get("text")
-                print(request.POST.get("subject"))
+                counter = request.POST.get("counter")
                 if subject != '-1' and subject != '-2' and email!="":
                     subject = Profile.objects.get(pk=int(subject))
                     subject = subject.name
@@ -796,10 +796,15 @@ class ContactView(View):
                     text += "\n" + "Temat emaila : " + str(
                         subject) + "\n" + "Email kontaktowy - " + str(
                             email) + "\n" + "Kontakt do " + str(shop)
-                send_mail(subject, text, settings.EMAIL_HOST_USER,
+                if int(counter) > 10:
+                    send_mail(subject, text, settings.EMAIL_HOST_USER,
                           [settings.EMAIL_HOST_USER])
-                messages.success(request,
+                    messages.success(request,
                                  'Wysysłanie email zakończnono poprawnie.')
+                else:
+                    messages.error(request,
+                               'Wystąpił błąd podczas wypełniana formularza, chyba jesteś robotem')
+
             else:
                 messages.error(request,
                                'Wystąpił błąd podczas wypełniana formularza, brak emaila kontakowego')

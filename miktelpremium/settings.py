@@ -19,8 +19,8 @@ ALLOWED_HOSTS = [
     'www.miktel.krakow.pl',
     'miktel.krakow.pl',
     'www.tabliczki.krakow.pl',
-    'www.immobilizer.krakow.pl',
-    'vps689102',
+    'www.immobilizer.krakow.pl','www.miktelgsm.pl', 'miktelgsm.pl',
+    'vps689102','localhost', '127.0.0.1','51.75.127.94',
 ]
 
 # Application definition
@@ -211,14 +211,14 @@ LOGIN_URL = "/miktel/login/"
 #SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_SAVE_EVERY_REQUEST = True
 #SESSION_COOKIE_AGE = 3600
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
-X_FRAME_OPTIONS = 'DENY'
-SECURE_HSTS_SECONDS = 60
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+#CSRF_COOKIE_SECURE = True
+#SESSION_COOKIE_SECURE = True
+#SECURE_CONTENT_TYPE_NOSNIFF = True
+#SECURE_BROWSER_XSS_FILTER = True
+#X_FRAME_OPTIONS = 'DENY'
+#SECURE_HSTS_SECONDS = 60
+#SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+#SECURE_HSTS_PRELOAD = True
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.server458609.nazwa.pl'
@@ -252,8 +252,8 @@ if socket.gethostname() == "kenny-N551JX" or socket.gethostname(
 ) == "vps689102":
     print(socket.gethostname())
     DEBUG =False
-    SECURE_SSL_REDIRECT = True
-    PREPEND_WWW = True
+    # SECURE_SSL_REDIRECT = False
+    # PREPEND_WWW = 
     STATIC_URL = '/static/'
     SITE_ROOT = os.path.dirname(os.path.realpath(__file__))
     STATICFILES_DIRS = (os.path.join(SITE_ROOT, "static/"), )

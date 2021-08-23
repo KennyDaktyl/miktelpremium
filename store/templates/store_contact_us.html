@@ -83,6 +83,7 @@ Miktel {{shop.nazwa}} | Kontakt {{shop.adres}} tel:{{shop.adres.numerTelefonu}}.
                 <div class="captcha form-group text-center">
                     {{ reCapForm.as_p }}
                 </div>
+		<input name="counter" type="hidden" id="input_counter">
                 <button name="ask_for" class="btn col-10 rounded-pill text-center" type="submit">Wyślij email</button>
             </form>
         </div>
@@ -167,5 +168,15 @@ Miktel {{shop.nazwa}} | Kontakt {{shop.adres}} tel:{{shop.adres.numerTelefonu}}.
             "https://www.youtube.com/channel/UCvGDJJrET2fRhgeQ0YqkiNg"
         ]
     }
+</script>
+<script>
+var counter = 0;
+var input_counter = $('#input_counter');
+
+setInterval(function () {
+  ++counter;
+  input_counter.val(counter);
+  console.log(input_counter.val());
+}, 1000);
 </script>
 {% endblock %}
