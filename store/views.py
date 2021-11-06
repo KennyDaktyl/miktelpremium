@@ -169,7 +169,9 @@ class StoreGsmPhonesMainView(View):
             total = (el['total'])
             dict_cats = {'cat': cat, 'total': total}
             c.append(dict_cats)
-        phones = Telefon.objects.filter(dostepny=True).order_by(
+        phones =  Telefon.objects.filter(
+            dostepny=True).filter(
+            zawieszony=False).order_by(
             'marka', 'nazwa', 'cena_sprzed')
 
         if promo == "on":
@@ -200,8 +202,10 @@ class StoreGsmPhonesMainView(View):
             cena_sprzed__lte=price_end).order_by('cena_sprzed')
 
         if shop == None or mark == None or category == None:
-            phones = Telefon.objects.filter(dostepny=True).order_by(
-                'marka', 'nazwa', 'cena_sprzed')
+            phones =  Telefon.objects.filter(
+            dostepny=True).filter(
+            zawieszony=False).order_by(
+            'marka', 'nazwa', 'cena_sprzed')
         page = request.GET.get('page')
         page_records = 20
         paginator = Paginator(phones, page_records)
