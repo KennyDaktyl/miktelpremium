@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.views import View
 from django.db.models import Q
 from functools import reduce
-from operator import or_, and_
+from operator import countOf, or_, and_
 import json
 from django.http import JsonResponse
 from django.core.serializers.json import DjangoJSONEncoder
@@ -73,8 +73,7 @@ class StoreMainView(View):
         response = HttpResponse()
         response.delete_cookie('cookielaw_accepted')
         articles = Articles.objects.filter(site_id=1)
-        shop = Sklep.objects.get(pk=4)
-        # print(article.text)
+        shop = Sklep.objects.all().first()
         ctx = {'articles': articles, 'shop': shop}
         return TemplateResponse(request, "store.html", ctx)
 
@@ -145,7 +144,9 @@ class StoreGsmPhonesMainView(View):
         shop = request.GET.get('shops')
         price_start = request.GET.get('price_start')
         price_end = request.GET.get('price_end')
-        phones = Telefon.objects.filter(dostepny=True).order_by(
+        phones = Telefon.objects.filter(
+            dostepny=True).filter(
+            zawieszony=False).order_by(
             'marka', 'nazwa', 'cena_sprzed')
 
         phones_counter = phones.count()
@@ -773,20 +774,19 @@ class ContactView(View):
     def post(self, request, slug):
         shop = Sklep.objects.get(slug=slug)
         if 'ask_for' in request.POST:
-            email = request.POST.get("email")
             reCapForm = ReCAPTCHAForm(request.POST)
-            if reCapForm.is_valid() and email!="":
+            if reCapForm.is_valid():
                 email = request.POST.get("email")
                 subject = request.POST.get("subject")
                 text = request.POST.get("text")
                 counter = request.POST.get("counter")
-                if subject != '-1' and subject != '-2' and email!="":
+                if subject != '-1' and subject != '-2':
                     subject = Profile.objects.get(pk=int(subject))
                     subject = subject.name
                     text += "\n" + "Temat emaila : " + str(
                         subject) + "\n" + "Email kontaktowy - " + str(
                             email) + "\n" + "Kontakt do " + str(shop)
-                elif subject == '-2' and email!="":
+                elif subject == '-2':
                     subject = "Dział inne"
                     text += "\n" + "Temat emaila : " + str(
                         subject) + "\n" + "Email kontaktowy - " + str(
@@ -798,16 +798,16 @@ class ContactView(View):
                             email) + "\n" + "Kontakt do " + str(shop)
                 if int(counter) > 10:
                     send_mail(subject, text, settings.EMAIL_HOST_USER,
-                          [settings.EMAIL_HOST_USER])
+                            [settings.EMAIL_HOST_USER])
                     messages.success(request,
-                                 'Wysysłanie email zakończnono poprawnie.')
+                                    'Wysysłanie email zakończnono poprawnie.')
                 else:
+                    print('Not OK')
                     messages.error(request,
-                               'Wystąpił błąd podczas wypełniana formularza, chyba jesteś robotem')
-
+                                    'Wysysłanie email zbyt szybko. Chyba jesteś robotem?.')
             else:
                 messages.error(request,
-                               'Wystąpił błąd podczas wypełniana formularza, brak emaila kontakowego')
+                               'Wystąpił błąd podczas wypełniana formularza.')
             return redirect('contact_page', slug=shop.slug)
 
 
