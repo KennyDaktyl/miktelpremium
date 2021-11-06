@@ -144,7 +144,9 @@ class StoreGsmPhonesMainView(View):
         shop = request.GET.get('shops')
         price_start = request.GET.get('price_start')
         price_end = request.GET.get('price_end')
-        phones = Telefon.objects.filter(dostepny=True).order_by(
+        phones = Telefon.objects.filter(
+            dostepny=True).filter(
+            zawieszony=False).order_by(
             'marka', 'nazwa', 'cena_sprzed')
 
         phones_counter = phones.count()
@@ -795,7 +797,6 @@ class ContactView(View):
                         subject) + "\n" + "Email kontaktowy - " + str(
                             email) + "\n" + "Kontakt do " + str(shop)
                 if int(counter) > 10:
-                    print('OK')
                     send_mail(subject, text, settings.EMAIL_HOST_USER,
                             [settings.EMAIL_HOST_USER])
                     messages.success(request,
