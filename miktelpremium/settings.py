@@ -251,7 +251,7 @@ import socket
 if socket.gethostname() == "kenny-N551JX" or socket.gethostname(
 ) == "vps689102":
     print(socket.gethostname())
-    DEBUG =False
+    DEBUG = False
     # SECURE_SSL_REDIRECT = False
     # PREPEND_WWW = 
     STATIC_URL = '/static/'
